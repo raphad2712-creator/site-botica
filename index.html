@@ -11,18 +11,17 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="splash">
-      <div>B</div>
-      <b>BOTICA</b><span>Bioenergética</span>
-    </div>
+    <div class="splash"><img src="botica-logo.png" alt="" /></div>
     <div class="promo">
       <span>Frete grátis acima de R$ 210</span><span>Até 6x sem juros</span
       ><span>Compra segura</span>
     </div>
     <header>
       <button class="hamb">☰</button
-      ><a class="logo" href="#"
-        ><i>B</i><span><b>BOTICA</b><small>Bioenergética</small></span></a
+      ><a class="official-logo" href="#"
+        ><img
+          src="botica-logo.png"
+          alt="Botica Bioenergética - Farmácia de Manipulação e Drogaria" /></a
       ><label class="search"
         ><span>⌕</span><input placeholder="O que você está buscando?"
       /></label>
@@ -86,45 +85,128 @@
       </section>
       <section class="objectives scroll-reveal" id="objetivos">
         <div class="title">
-          <small>ENCONTRE O QUE PRECISA</small>
-          <h2>Produtos para seus objetivos</h2>
+          <small>LINHAS DA BOTICA</small>
+          <h2>Compre por categoria</h2>
+          <p>Cada linha reúne fórmulas e produtos pensados para um objetivo.</p>
         </div>
         <div class="objective-grid">
-          <a href="#produtos"><i>⚡</i><b>Energia e disposição</b></a
-          ><a href="#produtos"><i>♧</i><b>Imunidade</b></a
-          ><a href="#produtos"><i>◌</i><b>Beleza e pele</b></a
-          ><a href="#produtos"><i>☾</i><b>Sono e relaxamento</b></a
-          ><a href="#produtos"><i>◇</i><b>Vitaminas e minerais</b></a
-          ><a href="#receita"><i>+</i><b>Fórmulas personalizadas</b></a>
+          <button data-filter="Academia"><i>◆</i><b>Academia</b></button
+          ><button data-filter="Sono"><i>☾</i><b>Sono</b></button
+          ><button data-filter="Florais"><i>✿</i><b>Florais</b></button
+          ><button data-filter="Vitaminas"><i>◇</i><b>Vitaminas</b></button
+          ><button data-filter="Emagrecimento">
+            <i>◌</i><b>Emagrecimento</b></button
+          ><button data-filter="Beleza"><i>+</i><b>Beleza</b></button>
         </div>
       </section>
       <section class="catalog scroll-reveal" id="produtos">
         <div class="catalog-head">
           <div>
-            <small>OS FAVORITOS DA BOTICA</small>
-            <h2>Mais buscados</h2>
+            <small>PRODUTOS BOTICA BIOENERGÉTICA</small>
+            <h2 class="catalog-title">Todos os produtos</h2>
           </div>
-          <a href="#produtos">Ver todos →</a>
+          <button class="show-all">Ver todos →</button>
+        </div>
+        <div class="category-tabs">
+          <button class="active" data-filter="Todos">Todos</button
+          ><button data-filter="Academia">Academia</button
+          ><button data-filter="Sono">Sono</button
+          ><button data-filter="Florais">Florais</button
+          ><button data-filter="Vitaminas">Vitaminas</button
+          ><button data-filter="Emagrecimento">Emagrecimento</button
+          ><button data-filter="Beleza">Beleza</button>
         </div>
         <div class="products">
           <article
             class="card"
-            data-name="Magnésio Quelato 60 cápsulas"
-            data-area="Saúde e bem-estar"
-            data-price="42.90"
+            data-category="Academia"
+            data-name="Creatina Monohidratada 300g"
+            data-area="Força e desempenho"
+            data-price="69.90"
           >
             <div class="photo p1">
-              <em>28% OFF</em><button>♡</button>
-              <div class="jar"><i></i><b>BOTICA</b><small>Saúde</small></div>
+              <em>22% OFF</em><button>♡</button>
+              <div class="jar"><i></i><b>BOTICA</b><small>Academia</small></div>
             </div>
-            <p>Saúde e bem-estar</p>
-            <h3>Magnésio Quelato 60 cápsulas</h3>
-            <del>R$ 59,90</del><strong>R$ 42,90</strong
-            ><small>ou 2x de R$ 21,45</small
+            <p>Força e desempenho</p>
+            <h3>Creatina Monohidratada 300g</h3>
+            <del>R$ 89,90</del><strong>R$ 69,90</strong
+            ><small>ou 2x de R$ 34,95</small
             ><button class="buy">ADICIONAR</button>
           </article>
           <article
             class="card"
+            data-category="Academia"
+            data-name="Composto para Testosterona"
+            data-area="Desempenho físico"
+            data-price="89.90"
+          >
+            <div class="photo p1">
+              <em>18% OFF</em><button>♡</button>
+              <div class="jar"><i></i><b>BOTICA</b><small>Academia</small></div>
+            </div>
+            <p>Desempenho físico</p>
+            <h3>Composto para Testosterona</h3>
+            <del>R$ 109,90</del><strong>R$ 89,90</strong
+            ><small>ou 2x de R$ 44,95</small
+            ><button class="buy">ADICIONAR</button>
+          </article>
+          <article
+            class="card"
+            data-category="Sono"
+            data-name="Fórmula Sono Tranquilo"
+            data-area="Sono e relaxamento"
+            data-price="49.90"
+          >
+            <div class="photo p3">
+              <em>17% OFF</em><button>♡</button>
+              <div class="jar"><i></i><b>BOTICA</b><small>Sono</small></div>
+            </div>
+            <p>Sono e relaxamento</p>
+            <h3>Fórmula Sono Tranquilo</h3>
+            <del>R$ 59,90</del><strong>R$ 49,90</strong
+            ><small>ou 2x de R$ 24,95</small
+            ><button class="buy">ADICIONAR</button>
+          </article>
+          <article
+            class="card"
+            data-category="Florais"
+            data-name="Floral Equilíbrio"
+            data-area="Florais da Botica"
+            data-price="39.90"
+          >
+            <div class="photo p3">
+              <em>20% OFF</em><button>♡</button>
+              <div class="jar"><i></i><b>BOTICA</b><small>Florais</small></div>
+            </div>
+            <p>Florais da Botica</p>
+            <h3>Floral Equilíbrio</h3>
+            <del>R$ 49,90</del><strong>R$ 39,90</strong
+            ><small>ou 2x de R$ 19,95</small
+            ><button class="buy">ADICIONAR</button>
+          </article>
+          <article
+            class="card"
+            data-category="Vitaminas"
+            data-name="Vitamina B12 1000mcg"
+            data-area="Energia e disposição"
+            data-price="29.90"
+          >
+            <div class="photo p5">
+              <em>40% OFF</em><button>♡</button>
+              <div class="jar">
+                <i></i><b>BOTICA</b><small>Vitaminas</small>
+              </div>
+            </div>
+            <p>Energia e disposição</p>
+            <h3>Vitamina B12 1000mcg</h3>
+            <del>R$ 49,90</del><strong>R$ 29,90</strong
+            ><small>ou 2x de R$ 14,95</small
+            ><button class="buy">ADICIONAR</button>
+          </article>
+          <article
+            class="card"
+            data-category="Vitaminas"
             data-name="Vitamina D3 2000 UI"
             data-area="Vitaminas e minerais"
             data-price="34.90"
@@ -143,6 +225,26 @@
           </article>
           <article
             class="card"
+            data-category="Emagrecimento"
+            data-name="Emagrecedor Natural"
+            data-area="Controle e bem-estar"
+            data-price="99.90"
+          >
+            <div class="photo p4">
+              <em>41% OFF</em><button>♡</button>
+              <div class="jar">
+                <i></i><b>BOTICA</b><small>Emagrecimento</small>
+              </div>
+            </div>
+            <p>Controle e bem-estar</p>
+            <h3>Emagrecedor Natural</h3>
+            <del>R$ 169,90</del><strong>R$ 99,90</strong
+            ><small>ou 2x de R$ 49,95</small
+            ><button class="buy">ADICIONAR</button>
+          </article>
+          <article
+            class="card"
+            data-category="Beleza"
             data-name="Sérum Facial Botânico 30ml"
             data-area="Beleza e pele"
             data-price="58.50"
@@ -155,38 +257,6 @@
             <h3>Sérum Facial Botânico 30ml</h3>
             <del>R$ 69,90</del><strong>R$ 58,50</strong
             ><small>ou 2x de R$ 29,25</small
-            ><button class="buy">ADICIONAR</button>
-          </article>
-          <article
-            class="card"
-            data-name="Ômega 3 Ultra 60 cápsulas"
-            data-area="Saúde cardiovascular"
-            data-price="64.90"
-          >
-            <div class="photo p4">
-              <em>19% OFF</em><button>♡</button>
-              <div class="jar"><i></i><b>BOTICA</b><small>Saúde</small></div>
-            </div>
-            <p>Saúde cardiovascular</p>
-            <h3>Ômega 3 Ultra 60 cápsulas</h3>
-            <del>R$ 79,90</del><strong>R$ 64,90</strong
-            ><small>ou 2x de R$ 32,45</small
-            ><button class="buy">ADICIONAR</button>
-          </article>
-          <article
-            class="card"
-            data-name="Complexo B 60 cápsulas"
-            data-area="Energia e disposição"
-            data-price="39.90"
-          >
-            <div class="photo p5">
-              <em>20% OFF</em><button>♡</button>
-              <div class="jar"><i></i><b>BOTICA</b><small>Energia</small></div>
-            </div>
-            <p>Energia e disposição</p>
-            <h3>Complexo B 60 cápsulas</h3>
-            <del>R$ 49,90</del><strong>R$ 39,90</strong
-            ><small>ou 2x de R$ 19,95</small
             ><button class="buy">ADICIONAR</button>
           </article>
         </div>
@@ -258,8 +328,8 @@
       </section>
     </main>
     <footer>
-      <div class="logo light">
-        <i>B</i><span><b>BOTICA</b><small>Bioenergética</small></span>
+      <div class="footer-logo">
+        <img src="botica-logo.png" alt="Botica Bioenergética" />
       </div>
       <div>
         <b>INSTITUCIONAL</b><a>Sobre a Botica</a><a>Política de privacidade</a

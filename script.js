@@ -83,6 +83,29 @@ $(".newsletter form").onsubmit = (e) => {
 };
 $(".finish").onclick = () => toast("Checkout demonstrativo aberto");
 
+function filterProducts(category) {
+  $$(".card").forEach((card) => {
+    card.style.display =
+      category === "Todos" || card.dataset.category === category
+        ? "block"
+        : "none";
+  });
+  $(".catalog-title").textContent =
+    category === "Todos" ? "Todos os produtos" : category;
+  $$("[data-filter]").forEach((button) =>
+    button.classList.toggle("active", button.dataset.filter === category),
+  );
+}
+
+$$("[data-filter]").forEach((button) => {
+  button.onclick = () => {
+    filterProducts(button.dataset.filter);
+    $("#produtos").scrollIntoView({ behavior: "smooth" });
+  };
+});
+
+$(".show-all").onclick = () => filterProducts("Todos");
+
 const scrollObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
