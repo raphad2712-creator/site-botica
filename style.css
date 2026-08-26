@@ -969,3 +969,168 @@ footer > div > b {
     right: 15px;
   }
 }
+.bag-button {
+  min-height: 44px;
+  padding: 6px 10px !important;
+  border: 1px solid #dfe6e1 !important;
+  border-radius: 8px;
+  background: #f7f9f7 !important;
+  position: relative;
+}
+.bag-icon {
+  font-size: 24px;
+  line-height: 1;
+  transform: rotate(180deg);
+  display: inline-block;
+}
+.bag-label {
+  font-size: 11px !important;
+  font-weight: 700;
+}
+.bag-button b {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  box-shadow: 0 3px 9px #123b2722;
+}
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.catalog.scroll-reveal {
+  transform: translateY(42px);
+}
+.catalog.scroll-reveal.is-visible {
+  transform: none;
+}
+@media (max-width: 560px) {
+  header {
+    justify-content: space-between;
+  }
+  .hamb {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #f1f5f2;
+  }
+  .logo {
+    flex: 1;
+    min-width: 0;
+  }
+  .logo span {
+    white-space: nowrap;
+  }
+  .head-actions {
+    flex: 0 0 auto;
+    margin-left: 4px;
+  }
+  .account-button {
+    display: none !important;
+  }
+  .bag-button {
+    width: 48px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0 !important;
+    justify-content: center !important;
+    background: #f0f5f1 !important;
+  }
+  .bag-label {
+    display: none !important;
+  }
+  .bag-icon {
+    font-size: 25px;
+  }
+  .bag-button b {
+    right: -4px;
+    top: -5px;
+    width: 19px !important;
+    height: 19px !important;
+  }
+  .scroll-reveal {
+    transform: translateY(25px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+.account-button {
+  border: 1px solid #d9e4dd !important;
+  border-radius: 7px !important;
+  padding: 9px 15px !important;
+  background: #fff !important;
+  color: var(--green) !important;
+  font-weight: 700;
+}
+.account-button span {
+  font-size: 13px !important;
+  text-align: center !important;
+}
+.account-button small {
+  display: block;
+  margin-top: 2px;
+}
+.account-button:hover {
+  background: #eef5ef !important;
+  border-color: #9fbea9 !important;
+}
+.cart-simple {
+  min-width: 58px;
+  height: 44px;
+  padding: 6px 11px !important;
+  border: 0 !important;
+  background: transparent !important;
+  font-size: 24px !important;
+  position: relative;
+  justify-content: center !important;
+}
+.cart-simple b {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 19px !important;
+  height: 19px !important;
+  font-size: 9px !important;
+  box-shadow: 0 2px 7px #123b2725;
+}
+@media (max-width: 560px) {
+  .account-button {
+    display: flex !important;
+    padding: 8px 11px !important;
+    min-width: 60px;
+    justify-content: center;
+  }
+  .account-button span {
+    display: block !important;
+    font-size: 12px !important;
+  }
+  .account-button small {
+    display: none;
+  }
+  .cart-simple {
+    width: 45px;
+    min-width: 45px;
+    padding: 0 !important;
+    font-size: 22px !important;
+  }
+  .head-actions {
+    gap: 5px;
+  }
+  .logo span > b {
+    font-size: 12px;
+  }
+  .logo small {
+    font-size: 8px;
+  }
+}

@@ -82,4 +82,18 @@ $(".newsletter form").onsubmit = (e) => {
   toast("E-mail cadastrado com sucesso");
 };
 $(".finish").onclick = () => toast("Checkout demonstrativo aberto");
+
+const scrollObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        scrollObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.12, rootMargin: "0px 0px -35px" },
+);
+
+$$(".scroll-reveal").forEach((section) => scrollObserver.observe(section));
 render();
