@@ -2,12 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./cart-provider";
+import { criarClienteSupabase } from "@/lib/supabase/client";
 
 export function Header() {
   const { totalItens, abrirCarrinho } = useCart();
   const [menu, setMenu] = useState(false);
+  const [usuario, setUsuario] = useState<{ email?: string } | null>(null);
+
+  useEffect(() => {
+    const supabase = criarClienteSupabase();
+    supabase.auth.getUser().then(({ data }) => setUsuario(data.user));
+    const { data } = supabase.auth.onAuthStateChange((_evento, sessao) => setUsuario(sessao?.user ?? null));
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -30,9 +39,9 @@ export function Header() {
         </Link>
         <form className="search" action="/#produtos"><span>⌕</span><input name="busca" placeholder="O que você está buscando?" /></form>
         <div className="head-actions">
-          <Link href="/login" className="account-button" aria-label="Entrar ou criar conta">
+          <Link href={usuario ? "/minha-conta" : "/login"} className="account-button" aria-label={usuario ? "Abrir minha conta" : "Entrar ou criar conta"}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg>
-            <span>Entrar<small>ou criar conta</small></span>
+            <span>{usuario ? "Minha conta" : "Entrar"}<small>{usuario ? usuario.email?.split("@")[0] : "ou criar conta"}</small></span>
           </Link>
           <button className="cart-simple" onClick={abrirCarrinho} aria-label="Abrir carrinho">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M18 20h.01" /></svg>
@@ -46,7 +55,7 @@ export function Header() {
       <nav className="mobile-bottom-nav" aria-label="Navegação rápida">
         <Link href="/" aria-label="Início"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" /></svg><span>Início</span></Link>
         <Link href="/#produtos" aria-label="Produtos"><svg viewBox="0 0 24 24"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M9 11h6" /></svg><span>Produtos</span></Link>
-        <Link href="/login" aria-label="Minha conta"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg><span>Conta</span></Link>
+        <Link href={usuario ? "/minha-conta" : "/login"} aria-label="Minha conta"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg><span>{usuario ? "Minha conta" : "Entrar"}</span></Link>
         <button onClick={abrirCarrinho} aria-label={`Carrinho com ${totalItens} itens`}><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M18 20h.01" /></svg><span>Carrinho</span>{totalItens > 0 && <b>{totalItens}</b>}</button>
       </nav>
     </>

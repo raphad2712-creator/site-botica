@@ -1,29 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
 
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default function CarrinhoPage() {
-  const { itens, total, alterarQuantidade, remover, limpar } = useCart();
-  const [mensagem, setMensagem] = useState("");
+  const { itens, total, alterarQuantidade, remover } = useCart();
 
-  async function finalizar() {
-    setMensagem("Criando pedido...");
-    const resposta = await fetch("/api/pedidos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ itens: itens.map(({ id, quantidade }) => ({ produto_id: id, quantidade })) }),
-    });
-    const dados = await resposta.json();
-    if (!resposta.ok) return setMensagem(dados.erro ?? "Não foi possível criar o pedido.");
-    limpar();
-    setMensagem(`Pedido #${dados.pedido_id} criado com sucesso.`);
-  }
-
-  if (!itens.length) return <section className="empty-page"><h1>Seu carrinho está vazio</h1><Link href="/">Ver produtos</Link>{mensagem && <p>{mensagem}</p>}</section>;
+  if (!itens.length) return <section className="empty-page"><h1>Seu carrinho está vazio</h1><Link href="/">Ver produtos</Link></section>;
 
   return (
     <section className="cart-page">
@@ -41,9 +26,8 @@ export default function CarrinhoPage() {
         </article>
       ))}
       <div className="cart-total"><span>Total</span><b>{moeda(total)}</b></div>
-      <button className="checkout" onClick={finalizar}>CRIAR PEDIDO</button>
-      <p className="form-message">{mensagem}</p>
-      <small>O pagamento ainda é demonstrativo. Mercado Pago será integrado na próxima etapa.</small>
+      <Link className="checkout cart-checkout-link" href="/checkout">IR PARA A FINALIZAÇÃO</Link>
+      <small>Confira seus dados, endereço e frete antes de confirmar o pedido.</small>
     </section>
   );
 }

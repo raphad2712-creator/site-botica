@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 
 type ItemRecebido = { produto_id: number; quantidade: number };
+type ClienteRecebido = { cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
 
 export async function POST(request: Request) {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
 
-  const body = (await request.json()) as { itens?: ItemRecebido[] };
+  const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido; frete?: number };
   if (!body.itens?.length) return NextResponse.json({ erro: "Carrinho vazio." }, { status: 400 });
 
   const ids = [...new Set(body.itens.map((item) => item.produto_id))];
@@ -22,19 +23,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
   }
 
-  let total = 0;
-  const itensPedido = body.itens.map((item) => {
-    const produto = produtos.find((p) => p.id === item.produto_id)!;
-    const quantidade = Math.max(1, Math.floor(item.quantidade));
-    if (quantidade > produto.estoque) throw new Error(`Estoque insuficiente para ${produto.nome}`);
-    total += Number(produto.preco) * quantidade;
-    return { produto_id: produto.id, quantidade, preco_unitario: produto.preco };
-  });
-
   try {
+    let total = 0;
+    const itensPedido = body.itens.map((item) => {
+      const produto = produtos.find((p) => p.id === item.produto_id)!;
+      const quantidade = Math.max(1, Math.floor(Number(item.quantidade)));
+      if (!Number.isFinite(quantidade) || quantidade > Number(produto.estoque)) {
+        throw new Error(`ESTOQUE:${produto.nome}`);
+      }
+      total += Number(produto.preco) * quantidade;
+      return { produto_id: produto.id, quantidade, preco_unitario: produto.preco };
+    });
+    let enderecoId: number | null = null;
+    if (body.cliente?.cep && body.cliente.rua && body.cliente.numero && body.cliente.bairro && body.cliente.cidade && body.cliente.estado) {
+      const { data: endereco, error: enderecoError } = await supabase.from("enderecos").insert({
+        usuario_id: auth.user.id,
+        cep: body.cliente.cep,
+        rua: body.cliente.rua,
+        numero: body.cliente.numero,
+        complemento: body.cliente.complemento || null,
+        bairro: body.cliente.bairro,
+        cidade: body.cliente.cidade,
+        estado: body.cliente.estado.toUpperCase(),
+      }).select("id").single();
+      if (enderecoError) throw enderecoError;
+      enderecoId = endereco.id;
+    }
     const { data: pedido, error: pedidoError } = await supabase
       .from("pedidos")
-      .insert({ usuario_id: auth.user.id, total, status: "aguardando_pagamento" })
+      .insert({ usuario_id: auth.user.id, endereco_id: enderecoId, total: total + Number(body.frete ?? 0), frete: Number(body.frete ?? 0), status: "aguardando_pagamento" })
       .select("id")
       .single();
     if (pedidoError) throw pedidoError;
@@ -46,7 +63,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ pedido_id: pedido.id });
   } catch (erro) {
-    const mensagem = erro instanceof Error ? erro.message : "Erro ao criar pedido.";
+    const codigo = typeof erro === "object" && erro && "code" in erro ? String(erro.code) : "";
+    const detalhe = erro instanceof Error ? erro.message : "";
+    const mensagem = detalhe.startsWith("ESTOQUE:")
+      ? `Estoque insuficiente para ${detalhe.slice(8)}.`
+      : codigo === "42P01" || codigo === "PGRST205"
+        ? "O banco de pedidos ainda precisa ser configurado no Supabase."
+        : "Não foi possível criar o pedido. Tente novamente.";
     return NextResponse.json({ erro: mensagem }, { status: 400 });
   }
 }

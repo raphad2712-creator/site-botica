@@ -4,7 +4,8 @@ import { FormEvent, useState } from "react";
 import type { Provider } from "@supabase/supabase-js";
 import { criarClienteSupabase } from "@/lib/supabase/client";
 
-const TEMPO_LIMITE = 15000;
+// A primeira função da Vercel pode levar mais tempo para iniciar em redes móveis.
+const TEMPO_LIMITE = 35000;
 
 function comTempoLimite<T>(promessa: PromiseLike<T>): Promise<T> {
   return Promise.race([
@@ -48,6 +49,8 @@ export default function LoginPage() {
       const resposta = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
         body: JSON.stringify({ acao: cadastro ? "cadastro" : "login", email, password, nome }),
         signal: controller.signal,
       });
