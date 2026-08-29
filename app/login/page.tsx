@@ -15,6 +15,9 @@ function comTempoLimite<T>(promessa: PromiseLike<T>): Promise<T> {
 
 function traduzirErro(mensagem = "") {
   const erro = mensagem.toLowerCase();
+  if (erro.includes("e-mail ou senha incorretos")) return "E-mail ou senha incorretos.";
+  if (erro.includes("confirme seu e-mail")) return "Confirme seu e-mail antes de entrar.";
+  if (erro.includes("muitas tentativas")) return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
   if (erro.includes("timeout")) return "A conexão demorou demais. Verifique sua internet e tente novamente.";
   if (erro.includes("invalid login credentials")) return "E-mail ou senha incorretos.";
   if (erro.includes("email not confirmed")) return "Confirme seu e-mail antes de entrar.";
@@ -39,29 +42,27 @@ export default function LoginPage() {
     const email = String(form.get("email") ?? "").trim().toLowerCase();
     const password = String(form.get("password") ?? "");
     const nome = String(form.get("nome") ?? "").trim();
-    const supabase = criarClienteSupabase();
-
     try {
-      if (cadastro) {
-        const { data, error } = await comTempoLimite(supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { nome }, emailRedirectTo: `${window.location.origin}/auth/callback?next=/minha-conta` },
-        }));
-        if (error) throw error;
-        if (data.session) {
-          window.location.replace("/minha-conta");
-          return;
-        }
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), TEMPO_LIMITE);
+      const resposta = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ acao: cadastro ? "cadastro" : "login", email, password, nome }),
+        signal: controller.signal,
+      });
+      window.clearTimeout(timer);
+      const dados = await resposta.json().catch(() => ({}));
+      if (!resposta.ok) throw new Error(dados.erro ?? "Falha de autenticação");
+
+      if (cadastro && dados.confirmacaoNecessaria) {
         setMensagem("Conta criada. Abra o e-mail de confirmação para ativar seu acesso.");
-      } else {
-        const { data, error } = await comTempoLimite(supabase.auth.signInWithPassword({ email, password }));
-        if (error) throw error;
-        if (!data.session) throw new Error("Sessão não criada");
-        window.location.replace("/minha-conta");
+        return;
       }
+      window.location.assign("/minha-conta");
     } catch (erro) {
-      setMensagem(traduzirErro(erro instanceof Error ? erro.message : ""));
+      const mensagemErro = erro instanceof DOMException && erro.name === "AbortError" ? "timeout" : erro instanceof Error ? erro.message : "";
+      setMensagem(traduzirErro(mensagemErro));
     } finally {
       setCarregando(false);
     }
