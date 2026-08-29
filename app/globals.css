@@ -10,3 +10,26 @@
 
 /* Respostas visuais das ações e correção da logo do rodapé */
 .site-footer img{background:#fff!important;border-radius:8px;padding:5px;filter:none!important}.product-card>button.added,.buy-box>button.added{background:#84ad4e;animation:addedPulse .45s ease}.cart-toast{position:fixed;right:24px;bottom:24px;z-index:120;max-width:min(390px,calc(100vw - 32px));display:flex;align-items:center;gap:13px;padding:16px 19px;background:#fff;color:#174b39;border-left:5px solid #8ebc54;border-radius:8px;box-shadow:0 18px 55px #0f372a35;opacity:0;visibility:hidden;transform:translateY(25px) scale(.96);transition:.3s}.cart-toast.show{opacity:1;visibility:visible;transform:none}.cart-toast>span{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#8ebc54;color:#fff;font-weight:900}.cart-toast b,.cart-toast small{display:block}.cart-toast b{font-size:13px}.cart-toast small{max-width:270px;margin-top:3px;color:#6a7b72;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@keyframes addedPulse{50%{transform:scale(.97);box-shadow:0 0 0 5px #8ebc5430}}@media(max-width:600px){.cart-toast{right:16px;bottom:16px;left:16px}.cart-toast small{max-width:230px}}
+
+/* Acesso seguro: formulário responsivo, login social e estado de carregamento. */
+.auth-card{width:min(480px,calc(100% - 32px));margin:56px auto;padding:46px;background:#fff;border:1px solid #e4ebe6;border-radius:14px;box-shadow:0 18px 55px #123b2715;text-align:center}
+.auth-card h1{margin:10px 0 8px}
+.auth-subtitle{margin:0 0 24px;color:#6e7b74;font-size:13px}
+.auth-card form{gap:12px}
+.auth-card input{padding:15px;border-radius:6px;background:#fff;outline:none}
+.auth-card input:focus{border-color:#5e947c;box-shadow:0 0 0 3px #5e947c1c}
+.auth-card form button{min-height:48px;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:9px}
+.auth-card button:disabled,.auth-card input:disabled{cursor:not-allowed;opacity:.65}
+.social-login{display:flex;justify-content:center;gap:12px;margin:20px 0}
+.social-login button{width:50px;height:50px;border:1px solid #d8e0db;border-radius:50%;background:#fff;display:grid;place-items:center;transition:transform .2s,box-shadow .2s,border-color .2s}
+.social-login button:hover:not(:disabled){transform:translateY(-2px);border-color:#a9beb2;box-shadow:0 8px 20px #123b2714}
+.social-login svg{width:21px;height:21px}
+.auth-divider{display:flex;align-items:center;gap:12px;color:#829088;font-size:10px;margin:4px 0 18px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;background:#e2e8e4;flex:1}
+.auth-divider span{white-space:nowrap}
+.auth-spinner{width:15px;height:15px;border:2px solid #ffffff80;border-top-color:#fff;border-radius:50%;animation:authSpin .7s linear infinite}
+.auth-card .form-message{font-size:12px;line-height:1.5;margin:14px 0 3px}
+.auth-card .text-button{margin-top:13px;padding:10px}
+@keyframes authSpin{to{transform:rotate(360deg)}}
+@media(max-width:560px){.auth-card{margin:24px auto;padding:30px 20px;border-radius:10px}.auth-card h1{font-size:34px}.auth-subtitle{font-size:12px}.social-login button{width:48px;height:48px}.auth-card input{min-height:50px;font-size:16px}}
+@media(prefers-reduced-motion:reduce){.social-login button{transition:none}.auth-spinner{animation-duration:1.4s}}
