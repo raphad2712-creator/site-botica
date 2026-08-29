@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import type { Provider } from "@supabase/supabase-js";
 import { criarClienteSupabase } from "@/lib/supabase/client";
 
@@ -30,7 +29,6 @@ export default function LoginPage() {
   const [cadastro, setCadastro] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
-  const router = useRouter();
 
   async function enviar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,16 +50,15 @@ export default function LoginPage() {
         }));
         if (error) throw error;
         if (data.session) {
-          router.replace("/minha-conta");
-          router.refresh();
+          window.location.replace("/minha-conta");
           return;
         }
         setMensagem("Conta criada. Abra o e-mail de confirmação para ativar seu acesso.");
       } else {
-        const { error } = await comTempoLimite(supabase.auth.signInWithPassword({ email, password }));
+        const { data, error } = await comTempoLimite(supabase.auth.signInWithPassword({ email, password }));
         if (error) throw error;
-        router.replace("/minha-conta");
-        router.refresh();
+        if (!data.session) throw new Error("Sessão não criada");
+        window.location.replace("/minha-conta");
       }
     } catch (erro) {
       setMensagem(traduzirErro(erro instanceof Error ? erro.message : ""));
