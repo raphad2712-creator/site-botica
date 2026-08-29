@@ -3,9 +3,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!supabaseUrl?.startsWith("http") || !supabaseKey) return response;
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
@@ -17,7 +20,13 @@ export async function middleware(request: NextRequest) {
       },
     },
   );
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user && (request.nextUrl.pathname.startsWith("/minha-conta") || request.nextUrl.pathname.startsWith("/admin"))) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.search = "";
+    return NextResponse.redirect(loginUrl);
+  }
   return response;
 }
 
