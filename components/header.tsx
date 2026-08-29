@@ -43,6 +43,12 @@ export function Header() {
       <nav className={`nav ${menu ? "open" : ""}`}>
         <a href="/#produtos" onClick={() => setMenu(false)}>Todos os produtos</a><a href="/?categoria=Emagrecimento#produtos" onClick={() => setMenu(false)}>Emagrecimento</a><a href="/?categoria=Academia#produtos" onClick={() => setMenu(false)}>Desempenho físico</a><a href="/?categoria=Vitaminas#produtos" onClick={() => setMenu(false)}>Saúde</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Queda capilar</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Beleza</a><a href="/#receita" onClick={() => setMenu(false)}>Envie sua receita</a>
       </nav>
+      <nav className="mobile-bottom-nav" aria-label="Navegação rápida">
+        <Link href="/" aria-label="Início"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" /></svg><span>Início</span></Link>
+        <Link href="/#produtos" aria-label="Produtos"><svg viewBox="0 0 24 24"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M9 11h6" /></svg><span>Produtos</span></Link>
+        <Link href="/login" aria-label="Minha conta"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg><span>Conta</span></Link>
+        <button onClick={abrirCarrinho} aria-label={`Carrinho com ${totalItens} itens`}><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M18 20h.01" /></svg><span>Carrinho</span>{totalItens > 0 && <b>{totalItens}</b>}</button>
+      </nav>
     </>
   );
 }

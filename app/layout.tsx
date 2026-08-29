@@ -5,6 +5,7 @@ import "./enhancements.css";
 import "./mobile.css";
 import "./backend.css";
 import "./front-match.css";
+import "./shop-polish.css";
 import { CartProvider } from "@/components/cart-provider";
 import { Header } from "@/components/header";
 

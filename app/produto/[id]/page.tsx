@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { AddProduct } from "@/components/add-product";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Produto } from "@/lib/types";
+import Link from "next/link";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -14,7 +15,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
   const produto = data as Produto;
 
   return (
-    <section className="product-page">
+    <><nav className="product-breadcrumb" aria-label="Navegação estrutural"><Link href="/">Início</Link><span>›</span><Link href={`/?categoria=${encodeURIComponent(produto.categoria)}#produtos`}>{produto.categoria}</Link><span>›</span><b>{produto.nome}</b></nav><section className="product-page">
       <div className="product-page-visual">
         {produto.imagem_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -31,11 +32,12 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
         <strong>{moeda(produto.preco)}</strong>
         <span>{produto.estoque} unidades disponíveis</span>
         <AddProduct produto={produto} />
+        <div className="product-benefits"><span><b>✓</b> Compra segura</span><span><b>↗</b> Frete calculado no checkout</span><span><b>♡</b> Cuidado selecionado</span></div>
         <div className="care-note">
           <b>Informação importante</b>
           <p>Confira o rótulo e procure orientação profissional quando necessário. Medicamentos manipulados exigem avaliação da farmácia.</p>
         </div>
       </div>
-    </section>
+    </section></>
   );
 }

@@ -17,6 +17,7 @@ const icones: Record<string, string> = {
 export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: string }) {
   const [categoria, setCategoria] = useState("Todos");
   const [busca, setBusca] = useState("");
+  const [ordem, setOrdem] = useState("relevancia");
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const inicial = params.get("categoria");
@@ -35,7 +36,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     const correspondeCategoria = categoria === "Todos" || produto.categoria.toLowerCase() === categoria.toLowerCase();
     const texto = `${produto.nome} ${produto.descricao} ${produto.categoria}`.toLowerCase();
     return correspondeCategoria && texto.includes(busca.toLowerCase());
-  }), [produtos, categoria, busca]);
+  }).sort((a, b) => ordem === "menor" ? Number(a.preco) - Number(b.preco) : ordem === "maior" ? Number(b.preco) - Number(a.preco) : ordem === "nome" ? a.nome.localeCompare(b.nome) : a.id - b.id), [produtos, categoria, busca, ordem]);
 
   return (
     <>
@@ -52,7 +53,8 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.
           </p>
-          <a href="#produtos">COMPRAR AGORA</a>
+          <div className="hero-actions"><a href="#produtos">COMPRAR AGORA</a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
+          <div className="hero-assurances"><span>✓ Compra protegida</span><span>✓ Atendimento farmacêutico</span></div>
         </div>
         <div className="hero-img">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -75,7 +77,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         </div>
         <div className="objective-grid">
           {categorias.slice(1).map((item) => (
-            <button key={item} onClick={() => { setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }}>
+            <button className={categoria === item ? "active" : ""} key={item} onClick={() => { setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={categoria === item}>
               <i><svg viewBox="0 0 24 24"><path d={icones[item]} /></svg></i>
               <b>{item}</b>
             </button>
@@ -84,12 +86,15 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       </section>
 
       <section className="catalog scroll-reveal" id="produtos">
-        <div className="catalog-head"><div><small>PRODUTOS BOTICA BIOENERGÉTICA</small><h2>{categoria === "Todos" ? "Todos os produtos" : categoria}</h2></div></div>
-        <label className="catalog-search"><span>⌕</span><input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar no catálogo" /></label>
+        <div className="catalog-head"><div><small>PRODUTOS BOTICA BIOENERGÉTICA</small><h2>{categoria === "Todos" ? "Encontre o cuidado ideal" : categoria}</h2><p>{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</p></div></div>
+        <div className="catalog-tools">
+          <label className="catalog-search"><span>⌕</span><input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Busque por produto ou objetivo" aria-label="Buscar produtos" />{busca && <button onClick={() => setBusca("")} aria-label="Limpar busca">×</button>}</label>
+          <label className="catalog-sort"><span>Ordenar por</span><select value={ordem} onChange={(e) => setOrdem(e.target.value)}><option value="relevancia">Mais relevantes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="nome">Nome A–Z</option></select></label>
+        </div>
         <div className="category-tabs">
           {categorias.map((item) => <button key={item} className={categoria === item ? "active" : ""} onClick={() => setCategoria(item)}>{item}</button>)}
         </div>
-        {erro ? <div className="notice error">Conecte o Supabase para carregar os produtos: {erro}</div> : filtrados.length ? <div className="products">{filtrados.map((produto) => <ProductCard key={produto.id} produto={produto} />)}</div> : <div className="notice">Nenhum produto encontrado nessa categoria.</div>}
+        {erro ? <div className="notice error">Não foi possível carregar os produtos agora. Tente novamente em instantes.</div> : filtrados.length ? <div className="products">{filtrados.map((produto) => <ProductCard key={produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente outro termo ou volte a visualizar todo o catálogo.</p><button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button></div>}
       </section>
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>

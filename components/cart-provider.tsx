@@ -60,6 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       <div className={`cart-drawer-backdrop ${aberto ? "open" : ""}`} onClick={() => setAberto(false)} />
       <aside className={`cart-drawer ${aberto ? "open" : ""}`} aria-hidden={!aberto}>
         <div className="drawer-head"><div><h2>Carrinho</h2><small>{totalItens} {totalItens === 1 ? "item" : "itens"} no carrinho</small></div><button onClick={() => setAberto(false)}>×</button></div>
+        {!!itens.length && <div className={`free-shipping ${total >= 210 ? "complete" : ""}`}><span>{total >= 210 ? "✓ Você ganhou frete grátis" : `Faltam ${moeda(210 - total)} para o frete grátis`}</span><div><i style={{ "--progress": `${Math.min(100, total / 2.1)}%` } as React.CSSProperties} /><b>{Math.min(100, Math.round(total / 2.1))}%</b></div></div>}
         <div className="drawer-items">
           {!itens.length && <div className="drawer-empty"><b>Sua sacola está vazia</b><p>Adicione produtos para continuar.</p><a href="/#produtos" onClick={() => setAberto(false)}>VER PRODUTOS</a></div>}
           {itens.map((item) => (
