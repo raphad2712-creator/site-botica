@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
 import { ProductCard } from "./product-card";
@@ -18,21 +17,18 @@ const icones: Record<string, string> = {
 export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: string }) {
   const [categoria, setCategoria] = useState("Todos");
   const [busca, setBusca] = useState("");
-  const [splash, setSplash] = useState(true);
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const inicial = params.get("categoria");
     if (inicial && categorias.includes(inicial)) setCategoria(inicial);
     const termo = params.get("busca");
     if (termo) setBusca(termo);
-    const timer = window.setTimeout(() => setSplash(false), 1150);
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("visible")),
       { threshold: 0.12 },
     );
     document.querySelectorAll(".scroll-reveal").forEach((item) => observer.observe(item));
-    return () => { window.clearTimeout(timer); observer.disconnect(); };
+    return () => observer.disconnect();
   }, []);
 
   const filtrados = useMemo(() => produtos.filter((produto) => {
@@ -43,14 +39,15 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
 
   return (
     <>
-      <div className={`splash ${splash ? "" : "hidden"}`} aria-hidden={!splash}>
-        <Image src="/botica-logo-nova.jpeg" alt="Botica Bioenergética" width={384} height={114} priority />
-      </div>
-
       <section className="hero">
         <div className="hero-copy">
           <span>FARMÁCIA DE MANIPULAÇÃO</span>
-          <h1>Cuidado feito para o seu momento.</h1>
+          <h1>
+            Cuidado<br />
+            feito<br />
+            para&nbsp;o&nbsp;seu<br />
+            momento.
+          </h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.

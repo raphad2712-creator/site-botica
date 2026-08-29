@@ -303,7 +303,7 @@ header {
   margin: auto;
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
 }
 .catalog-head h2 {
   margin-bottom: 24px;
