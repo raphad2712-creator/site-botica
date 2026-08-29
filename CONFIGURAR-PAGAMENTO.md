@@ -30,6 +30,7 @@ Em **Vercel > projeto > Settings > Environment Variables**, adicione para Produc
 SUPABASE_SERVICE_ROLE_KEY = chave service_role do Supabase
 MERCADO_PAGO_ACCESS_TOKEN = Access Token de teste do Mercado Pago
 MERCADO_PAGO_WEBHOOK_SECRET = assinatura secreta do webhook
+MERCADO_PAGO_MODO_TESTE = true
 ```
 
 Não use o prefixo `NEXT_PUBLIC_` nessas três variáveis. Não coloque os valores no GitHub nem envie prints das chaves.
@@ -45,4 +46,4 @@ Use somente os usuários e cartões de teste fornecidos pelo Mercado Pago. Confi
 3. O pedido aparece como `pago` em Minha conta.
 4. O estoque é reduzido uma única vez.
 
-Somente depois dos testes substitua o Access Token de teste pela credencial de produção e atualize o webhook da aplicação de produção.
+Somente depois dos testes substitua o Access Token pela credencial de produção, atualize o webhook da aplicação de produção e troque `MERCADO_PAGO_MODO_TESTE` para `false`.
