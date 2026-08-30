@@ -5,7 +5,6 @@ create table if not exists public.perfil_clientes (
   cpf text,
   telefone text,
   nascimento date,
-  genero text,
   cep text,
   rua text,
   numero text,
