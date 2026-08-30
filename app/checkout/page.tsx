@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import { criarClienteSupabase } from "@/lib/supabase/client";
+import type { PerfilCliente } from "@/components/profile-editor";
 
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -16,15 +17,17 @@ export default function CheckoutPage() {
   const [metodoPagamento, setMetodoPagamento] = useState<"pix" | "cartao">("pix");
   const [pix, setPix] = useState<{ codigo: string; qr_code_base64?: string; link?: string; pedido: number } | null>(null);
   const [verificandoLogin, setVerificandoLogin] = useState(true);
+  const [perfil, setPerfil] = useState<PerfilCliente>({});
 
   useEffect(() => {
     let ativo = true;
-    criarClienteSupabase().auth.getUser().then(({ data }) => {
+    criarClienteSupabase().auth.getUser().then(async ({ data }) => {
       if (!ativo) return;
       if (!data.user) {
         window.location.replace("/login?next=/checkout");
         return;
       }
+      try { const resposta = await fetch("/api/perfil", { cache: "no-store" }); const dados = await resposta.json(); if (resposta.ok) { setPerfil(dados.perfil ?? {}); if (dados.perfil?.cep) setCepFrete(formatarCep(String(dados.perfil.cep))); } } catch { /* checkout continua editável */ }
       setVerificandoLogin(false);
     }).catch(() => window.location.replace("/login?next=/checkout"));
     return () => { ativo = false; };
@@ -92,8 +95,8 @@ export default function CheckoutPage() {
       <div className="checkout-title"><small>COMPRA SEGURA</small><h1>Finalizar compra</h1><p>Confira os dados antes de seguir para o ambiente seguro do Mercado Pago.</p></div>
       <form onSubmit={finalizar} className="checkout-layout">
         <div className="checkout-forms">
-          <section><header><b>1</b><div><h2>Seus dados</h2><small>Necessários para identificar o pagamento e a entrega</small></div></header><div className="form-grid"><label>Nome completo<input name="nome" required /></label><label>E-mail<input name="email" type="email" required /></label><label>Telefone (opcional)<input name="telefone" inputMode="tel" /></label><label>CPF<input name="cpf" inputMode="numeric" required /></label></div></section>
-          <section><header><b>2</b><div><h2>Endereço de entrega</h2><small>Informe onde deseja receber</small></div></header><div className="form-grid"><label className={`cep-field ${frete !== null ? "cep-ok" : ""}`}>CEP<div><input name="cep" inputMode="numeric" value={cepFrete} onChange={(e) => { setCepFrete(formatarCep(e.target.value)); setFrete(null); setMensagem(""); }} placeholder="00000-000" required /><button type="button" className={calculando ? "loading" : ""} onClick={calcularFrete} disabled={calculando}>{calculando ? <><i /> CALCULANDO...</> : frete !== null ? "✓ RECALCULAR" : "CALCULAR FRETE"}</button></div>{frete !== null && <span className="cep-confirmation"><b>✓</b> CEP confirmado e frete calculado</span>}</label><label>Rua<input name="rua" required /></label><label>Número<input name="numero" required /></label><label>Complemento<input name="complemento" /></label><label>Bairro<input name="bairro" required /></label><label>Cidade<input name="cidade" required /></label><label>Estado<input name="estado" maxLength={2} required /></label></div></section>
+          <section><header><b>1</b><div><h2>Seus dados</h2><small>Preenchidos pela sua conta e editáveis antes do pagamento</small></div></header><div className="form-grid"><label>Nome completo<input name="nome" defaultValue={perfil.nome ?? ""} required /></label><label>E-mail<input name="email" type="email" defaultValue={perfil.email ?? ""} required /></label><label>Telefone (opcional)<input name="telefone" inputMode="tel" defaultValue={perfil.telefone ?? ""} /></label><label>CPF<input name="cpf" inputMode="numeric" defaultValue={perfil.cpf ?? ""} required /></label></div></section>
+          <section><header><b>2</b><div><h2>Endereço de entrega</h2><small>Use o endereço salvo ou altere para este pedido</small></div></header><div className="form-grid"><label className={`cep-field ${frete !== null ? "cep-ok" : ""}`}>CEP<div><input name="cep" inputMode="numeric" value={cepFrete} onChange={(e) => { setCepFrete(formatarCep(e.target.value)); setFrete(null); setMensagem(""); }} placeholder="00000-000" required /><button type="button" className={calculando ? "loading" : ""} onClick={calcularFrete} disabled={calculando}>{calculando ? <><i /> CALCULANDO...</> : frete !== null ? "✓ RECALCULAR" : "CALCULAR FRETE"}</button></div>{frete !== null && <span className="cep-confirmation"><b>✓</b> CEP confirmado e frete calculado</span>}</label><label>Rua<input name="rua" defaultValue={perfil.rua ?? ""} required /></label><label>Número<input name="numero" defaultValue={perfil.numero ?? ""} required /></label><label>Complemento<input name="complemento" defaultValue={perfil.complemento ?? ""} /></label><label>Bairro<input name="bairro" defaultValue={perfil.bairro ?? ""} required /></label><label>Cidade<input name="cidade" defaultValue={perfil.cidade ?? ""} required /></label><label>Estado<input name="estado" defaultValue={perfil.estado ?? ""} maxLength={2} required /></label></div></section>
           <section><header><b>3</b><div><h2>Entrega</h2><small>Calculada somente nesta etapa</small></div></header>{frete === null ? <p className="shipping-pending">Informe o CEP acima e clique em “Calcular frete”.</p> : <label className="delivery-option"><input type="radio" name="entrega" value="padrao" defaultChecked /><span><b>Entrega padrão</b><small>3 a 7 dias úteis</small></span><strong>{frete ? moeda(frete) : "GRÁTIS"}</strong></label>}</section>
           <section><header><b>4</b><div><h2>Pagamento</h2><small>Escolha como deseja pagar</small></div></header><div className="payment-choice"><label className={metodoPagamento === "pix" ? "active" : ""}><input type="radio" name="pagamento" value="pix" checked={metodoPagamento === "pix"} onChange={() => setMetodoPagamento("pix")} /><b>PIX</b><small>Gerar QR Code e copia e cola</small></label><label className={metodoPagamento === "cartao" ? "active" : ""}><input type="radio" name="pagamento" value="cartao" checked={metodoPagamento === "cartao"} onChange={() => setMetodoPagamento("cartao")} /><b>Cartão</b><small>Pagamento seguro em até 6x</small></label></div><p className="payment-security">No Pix, você não preencherá dados de cartão. No cartão, o preenchimento acontece no ambiente seguro do Mercado Pago.</p></section>
         </div>

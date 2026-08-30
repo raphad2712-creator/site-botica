@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
+import { ProfileEditor } from "@/components/profile-editor";
 
 export default async function MinhaContaPage() {
   const supabase = await criarClienteServidor();
@@ -18,6 +19,7 @@ export default async function MinhaContaPage() {
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
   ]);
   const pedidos = pedidosResposta?.data ?? [];
+  const { data: perfilSalvo } = await supabase.from("perfil_clientes").select("*").eq("usuario_id", auth.user.id).maybeSingle();
   const nome = auth.user.user_metadata.nome || auth.user.email?.split("@")[0] || "cliente";
   const inicial = nome.trim().charAt(0).toUpperCase();
 
@@ -38,17 +40,7 @@ export default async function MinhaContaPage() {
         </aside>
 
         <div className="account-main">
-          <section className="account-profile" id="dados">
-            <div className="account-profile-avatar">{inicial}</div>
-            <small>SEUS DADOS</small><h2>Meus dados</h2>
-            <dl>
-              <div><dt>Nome</dt><dd>{nome}</dd></div>
-              <div><dt>E-mail</dt><dd>{auth.user.email}</dd></div>
-              <div><dt>Telefone</dt><dd>{auth.user.user_metadata.telefone || "Não informado"}</dd></div>
-              <div><dt>Conta criada em</dt><dd>{new Date(auth.user.created_at).toLocaleDateString("pt-BR")}</dd></div>
-            </dl>
-            <div className="account-verified"><span>✓</span><div><b>Conta protegida</b><small>Seu acesso e seus dados são protegidos pelo Supabase.</small></div></div>
-          </section>
+          <ProfileEditor perfil={{ nome, email: auth.user.email, telefone: auth.user.user_metadata.telefone, ...(perfilSalvo ?? {}) }} inicial={inicial} />
 
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2></div><span>{pedidos.length} {pedidos.length === 1 ? "pedido" : "pedidos"}</span></div>
