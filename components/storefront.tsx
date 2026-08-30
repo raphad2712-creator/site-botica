@@ -42,31 +42,27 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     <>
       <section className="hero">
         <div className="hero-copy">
-          <span>FARMÁCIA DE MANIPULAÇÃO</span>
-          <h1>
-            Cuidado<br />
-            feito<br />
-            para&nbsp;o&nbsp;seu<br />
-            momento.
-          </h1>
+          <span className="hero-eyebrow"><i /> FARMÁCIA DE MANIPULAÇÃO & PRODUTOS NATURAIS</span>
+          <h1>Cuidado feito para o <em>seu momento.</em></h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.
           </p>
           <div className="hero-actions"><a href="#produtos">COMPRAR AGORA</a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
-          <div className="hero-assurances"><span>✓ Compra protegida</span><span>✓ Atendimento farmacêutico</span></div>
+          <div className="hero-assurances"><span>✓ Compra protegida</span><span>✓ Atendimento farmacêutico</span><span>✓ Entrega para todo o Brasil</span></div>
         </div>
         <div className="hero-img">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/botica-hero.png" alt="Produtos naturais e fórmulas da Botica" />
+          <div className="hero-image-note"><b>✦</b><span><strong>Cuidado de verdade</strong><small>Qualidade, confiança e acompanhamento</small></span></div>
         </div>
       </section>
 
       <section className="trust-row scroll-reveal">
-        <article><b>✓</b><span><strong>Compra 100% segura</strong><small>Seus dados protegidos</small></span></article>
-        <article><b>↗</b><span><strong>Frete grátis</strong><small>A partir de R$ 210</small></span></article>
-        <article><b>6x</b><span><strong>Até 6x sem juros</strong><small>Parcela mínima de R$ 30</small></span></article>
-        <article><b>?</b><span><strong>Precisa de ajuda?</strong><small>Fale com a nossa equipe</small></span></article>
+        <article><b><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Zm-3 9 2 2 4-4" /></svg></b><span><strong>Compra 100% segura</strong><small>Seus dados sempre protegidos</small></span></article>
+        <article><b><svg viewBox="0 0 24 24"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7M7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM18 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg></b><span><strong>Frete grátis</strong><small>Nas compras a partir de R$ 210</small></span></article>
+        <article><b><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16M8 15h3" /></svg></b><span><strong>Até 6x sem juros</strong><small>Mais facilidade para cuidar de você</small></span></article>
+        <article><b><svg viewBox="0 0 24 24"><path d="M5 11a7 7 0 0 1 14 0v5M5 13H3v4h4v-4H5ZM19 13h2v4h-4v-4h2ZM17 19c-1 1-2.7 2-5 2" /></svg></b><span><strong>Atendimento humano</strong><small>Conte com a nossa equipe</small></span></article>
       </section>
 
       <section className="objectives scroll-reveal" id="objetivos">
