@@ -17,11 +17,12 @@ function mensagemErro(erro: unknown) {
 }
 
 export async function POST(request: Request) {
-  const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-  if (!accessToken) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
+  const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+  const modoPedidoTeste = process.env.MODO_PEDIDO_TESTE === "true" && !!process.env.ADMIN_EMAIL && auth.user.email?.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
+  if (!accessToken && !modoPedidoTeste) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
   const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido; metodo_pagamento?: "pix" | "cartao" };
   if (!body.itens?.length) return NextResponse.json({ erro: "Carrinho vazio." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
@@ -51,6 +52,17 @@ export async function POST(request: Request) {
     pedidoId = Number(pedido.id);
     const { error: itensError } = await supabase.from("itens_pedido").insert(itensPedido.map(({ nome: _nome, ...item }) => ({ ...item, pedido_id: pedido.id })));
     if (itensError) throw itensError;
+
+    if (!accessToken && modoPedidoTeste) {
+      const { error: testeError } = await admin.from("pedidos").update({
+        status: "pago",
+        pagamento_id: `TESTE-${pedido.id}`,
+        pago_em: new Date().toISOString(),
+        status_entrega: "preparando",
+      }).eq("id", pedido.id);
+      if (testeError) throw testeError;
+      return NextResponse.json({ pedido_id: pedido.id, tipo: "teste", mensagem: "Pedido de teste finalizado sem cobrança." });
+    }
 
     const origem = new URL(request.url).origin;
     const notificationUrl = origem.startsWith("https://") ? `${origem}/api/mercado-pago/webhook` : undefined;

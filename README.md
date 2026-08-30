@@ -15,6 +15,8 @@ Projeto em Next.js com:
 2. Na Vercel, cadastre `ADMIN_EMAIL`, `EMAIL_REMETENTE` e `BREVO_API_KEY`.
 3. Faça um novo deploy para carregar as variáveis.
 
+Para testar o checkout sem Mercado Pago, defina `MODO_PEDIDO_TESTE=true`. Esse modo funciona exclusivamente para a conta cujo e-mail é igual a `ADMIN_EMAIL`: o checkout cria um pedido completo marcado como teste, sem cobrança e sem reduzir o estoque. Antes de publicar para clientes, altere para `false`.
+
 Enquanto nenhuma transportadora estiver integrada, o administrador informa manualmente no painel `/admin` a transportadora, o código, o link e a etapa da entrega. O cliente acompanha tudo em `/minha-conta`. Uma API de transportadora poderá substituir a atualização manual futuramente.
 - Produtos em carrossel horizontal no celular.
 - Produtos carregados do Supabase.

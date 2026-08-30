@@ -8,7 +8,7 @@ import type { PerfilCliente } from "@/components/profile-editor";
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default function CheckoutPage() {
-  const { itens, total } = useCart();
+  const { itens, total, limpar } = useCart();
   const [mensagem, setMensagem] = useState("");
   const [cepFrete, setCepFrete] = useState("");
   const [frete, setFrete] = useState<number | null>(null);
@@ -64,6 +64,12 @@ export default function CheckoutPage() {
         return;
       }
       if (!resposta.ok) return setMensagem(dados.erro ?? "Não foi possível finalizar.");
+      if (dados.tipo === "teste") {
+        limpar();
+        setMensagem("Pedido de teste concluído. Abrindo sua conta...");
+        window.location.assign(`/minha-conta?pedido=${dados.pedido_id}#pedidos`);
+        return;
+      }
       if (dados.tipo === "pix" && dados.pix?.codigo) {
         setPix({ ...dados.pix, pedido: dados.pedido_id });
         setMensagem("");

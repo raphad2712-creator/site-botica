@@ -16,7 +16,8 @@ export function SupportWidget() {
       {aberto && <section className="support-panel" aria-label="Central de ajuda">
         <header><div><small>ATENDIMENTO BOTICA</small><h2>Como podemos ajudar?</h2><p>Escolha uma opção para continuar.</p></div><button onClick={() => setAberto(false)} aria-label="Fechar suporte">×</button></header>
         <div className="support-shortcuts">
-          <Link href="/minha-conta" onClick={() => setAberto(false)}>Acompanhar pedido <span>→</span></Link>
+          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Acompanhar pedido <span>→</span></Link>
+          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Trocas e reembolso <span>→</span></Link>
           <a href="/#receita" onClick={() => setAberto(false)}>Enviar receita <span>→</span></a>
           <a href={`mailto:${email}?subject=${assunto}`}>Falar com atendente <span>→</span></a>
         </div>
@@ -25,6 +26,8 @@ export function SupportWidget() {
           {faq === 1 && <p>O prazo é informado no fechamento do pedido e começa após a confirmação do pagamento.</p>}
           <button onClick={() => setFaq(faq === 2 ? null : 2)}>Como envio minha receita?<b>{faq === 2 ? "−" : "+"}</b></button>
           {faq === 2 && <p>Use a opção “Enviar receita” e anexe uma foto legível ou um arquivo PDF.</p>}
+          <button onClick={() => setFaq(faq === 3 ? null : 3)}>Como solicito um reembolso?<b>{faq === 3 ? "−" : "+"}</b></button>
+          {faq === 3 && <p>Entre na sua conta, abra “Meus pedidos” e selecione “Solicitar troca, devolução ou reembolso”. A solicitação ficará em análise e você receberá as atualizações por e-mail.</p>}
         </div>
         <small className="support-email">Atendimento: {email}</small>
       </section>}

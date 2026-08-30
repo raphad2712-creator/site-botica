@@ -16,7 +16,7 @@ export default async function MinhaContaPage() {
   if (!auth.user) redirect("/login");
 
   const pedidosResposta = await Promise.race([
-    supabase.from("pedidos").select("id,total,status,criado_em,transportadora,codigo_rastreio,link_rastreio,status_entrega,rastreio_atualizado_em").order("criado_em", { ascending: false }),
+    supabase.from("pedidos").select("id,total,status,criado_em,transportadora,codigo_rastreio,link_rastreio,status_entrega,rastreio_atualizado_em,itens_pedido(quantidade,preco_unitario,produto:produtos(id,nome,imagem_url,categoria))").order("criado_em", { ascending: false }),
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
   ]);
   const pedidos = pedidosResposta?.data ?? [];
