@@ -5,6 +5,17 @@ Projeto em Next.js com:
 - O mesmo design comercial da versão anterior da Botica.
 - Front preservado a partir dos arquivos HTML, CSS e JavaScript enviados pelo cliente.
 - Banner, busca, categorias, animações, receita e newsletter.
+- Rastreamento dos pedidos com linha do tempo na área do cliente.
+- Solicitações de troca, devolução e reembolso com análise administrativa.
+- Avisos por e-mail para o administrador e o cliente via Brevo.
+
+## Rastreamento e pós-venda
+
+1. Execute `supabase/pos-venda-rastreamento.sql` no SQL Editor do Supabase.
+2. Na Vercel, cadastre `ADMIN_EMAIL`, `EMAIL_REMETENTE` e `BREVO_API_KEY`.
+3. Faça um novo deploy para carregar as variáveis.
+
+Enquanto nenhuma transportadora estiver integrada, o administrador informa manualmente no painel `/admin` a transportadora, o código, o link e a etapa da entrega. O cliente acompanha tudo em `/minha-conta`. Uma API de transportadora poderá substituir a atualização manual futuramente.
 - Produtos em carrossel horizontal no celular.
 - Produtos carregados do Supabase.
 - Página individual de cada produto.

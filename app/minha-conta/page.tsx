@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { ProfileEditor } from "@/components/profile-editor";
+import { OrderAftercare } from "@/components/order-aftercare";
 
 export default async function MinhaContaPage() {
   const supabase = await criarClienteServidor();
@@ -15,10 +16,11 @@ export default async function MinhaContaPage() {
   if (!auth.user) redirect("/login");
 
   const pedidosResposta = await Promise.race([
-    supabase.from("pedidos").select("id,total,status,criado_em").order("criado_em", { ascending: false }),
+    supabase.from("pedidos").select("id,total,status,criado_em,transportadora,codigo_rastreio,link_rastreio,status_entrega,rastreio_atualizado_em").order("criado_em", { ascending: false }),
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
   ]);
   const pedidos = pedidosResposta?.data ?? [];
+  const { data: solicitacoes } = await supabase.from("solicitacoes_pos_venda").select("id,pedido_id,tipo,status,motivo,resposta_admin,criado_em").order("criado_em", { ascending: false });
   const { data: perfilSalvo } = await supabase.from("perfil_clientes").select("*").eq("usuario_id", auth.user.id).maybeSingle();
   const nome = auth.user.user_metadata.nome || auth.user.email?.split("@")[0] || "cliente";
   const inicial = nome.trim().charAt(0).toUpperCase();
@@ -44,14 +46,7 @@ export default async function MinhaContaPage() {
 
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2></div><span>{pedidos.length} {pedidos.length === 1 ? "pedido" : "pedidos"}</span></div>
-            {pedidos?.length ? <div className="account-orders">{pedidos.map((pedido) => (
-              <article key={pedido.id}>
-                <div className="order-number"><small>PEDIDO</small><b>#{pedido.id}</b></div>
-                <div><small>DATA</small><span>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span></div>
-                <div><small>STATUS</small><span className={`order-status status-${pedido.status}`}>{pedido.status.replaceAll("_", " ")}</span></div>
-                <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
-              </article>
-            ))}</div> : <div className="account-empty"><span>⌑</span><h3>Você ainda não fez nenhum pedido</h3><p>Explore nossos produtos e encontre o cuidado ideal para você.</p><Link href="/#produtos">VER PRODUTOS</Link></div>}
+            <OrderAftercare pedidos={pedidos} solicitacoes={solicitacoes ?? []} />
           </section>
         </div>
       </div>
