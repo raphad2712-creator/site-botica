@@ -10,7 +10,7 @@ const abas = [
   { id: "completed", icone: "✓", nome: "Concluídas" },
 ];
 
-export function AdminTabs({ pendentes }: { pendentes: number }) {
+export function AdminTabs({ numeros }: { numeros: Record<string, number> }) {
   const [ativa, setAtiva] = useState("overview");
   useEffect(() => {
     const painel = document.querySelector<HTMLElement>(".admin-dashboard");
@@ -18,5 +18,5 @@ export function AdminTabs({ pendentes }: { pendentes: number }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [ativa]);
 
-  return <nav className="admin-dashboard-nav" aria-label="Áreas do painel">{abas.map((aba) => <button type="button" key={aba.id} className={ativa === aba.id ? "active" : ""} onClick={() => setAtiva(aba.id)} aria-pressed={ativa === aba.id}><i>{aba.icone}</i><span>{aba.nome}</span>{aba.id === "requests" && pendentes > 0 && <b>{pendentes}</b>}</button>)}</nav>;
+  return <nav className="admin-dashboard-nav" aria-label="Áreas do painel">{abas.map((aba) => <button type="button" key={aba.id} className={ativa === aba.id ? "active" : ""} onClick={() => setAtiva(aba.id)} aria-pressed={ativa === aba.id}><i>{aba.icone}</i><span>{aba.nome}</span>{aba.id !== "overview" && <b>{numeros[aba.id] ?? 0}</b>}</button>)}</nav>;
 }

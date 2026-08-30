@@ -9,10 +9,10 @@ import { AdminTabs } from "./tabs";
 export default async function AdminPage() {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/login");
+  if (!auth.user) redirect("/admin/login");
 
   const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).single();
-  if (perfil?.funcao !== "admin") return <section className="empty-page"><h1>Acesso restrito</h1><p>Sua conta ainda não é administradora.</p></section>;
+  if (perfil?.funcao !== "admin") redirect("/admin/login");
 
   const { data } = await supabase.from("produtos").select("*").order("id");
   const admin = criarClienteAdmin();
@@ -29,7 +29,7 @@ export default async function AdminPage() {
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA ↗</a>
     </header>
-    <AdminTabs pendentes={pendentes} />
+    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length }} />
     <section className="admin-overview" id="visao-geral">
       <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
       <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>

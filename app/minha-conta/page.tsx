@@ -5,6 +5,7 @@ import { LogoutButton } from "./logout-button";
 import { ProfileEditor } from "@/components/profile-editor";
 import { OrderAftercare } from "@/components/order-aftercare";
 import { CustomerRequests } from "@/components/customer-requests";
+import { AccountNavigation } from "./account-navigation";
 
 export default async function MinhaContaPage() {
   const supabase = await criarClienteServidor();
@@ -27,20 +28,13 @@ export default async function MinhaContaPage() {
   const inicial = nome.trim().charAt(0).toUpperCase();
 
   return (
-    <section className="account-page account-dashboard">
+    <section className="account-page account-dashboard" data-account-tab="orders">
       <div className="account-dashboard-title"><div><small>ÁREA DO CLIENTE</small><h1>Minha conta</h1></div><LogoutButton /></div>
       <div className="account-dashboard-grid">
         <aside className="account-side">
           <div className="account-side-welcome"><span>{inicial}</span><div><small>BEM-VINDO(A)</small><b>{nome}</b></div></div>
           <p>O que você está procurando?</p>
-          <nav aria-label="Opções da conta">
-            <a href="#pedidos"><i>▣</i><span>Meus pedidos</span><b>›</b></a>
-            <a href="#solicitacoes"><i>↻</i><span>Minhas solicitações</span><b>›</b></a>
-            <a href="#dados"><i>♙</i><span>Dados pessoais</span><b>›</b></a>
-            <Link href="/#produtos"><i>♡</i><span>Produtos favoritos</span><b>›</b></Link>
-            <Link href="/#receita"><i>＋</i><span>Enviar receita</span><b>›</b></Link>
-            <Link href="/#produtos"><i>⌕</i><span>Continuar comprando</span><b>›</b></Link>
-          </nav>
+          <AccountNavigation pedidos={pedidos.length} solicitacoes={solicitacoes?.length ?? 0} />
         </aside>
 
         <div className="account-main">

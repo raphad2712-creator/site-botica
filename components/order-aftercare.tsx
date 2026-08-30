@@ -16,6 +16,7 @@ const rotulos: Record<string, string> = { preparando: "Em preparação", postado
 
 export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; solicitacoes: Solicitacao[] }) {
   const [aberto, setAberto] = useState<number | null>(null);
+  const [detalhesAbertos, setDetalhesAbertos] = useState<number | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
 
@@ -43,6 +44,8 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         <div><small>PAGAMENTO</small><span className={`order-status status-${pedido.status}`}>{pedido.status.replaceAll("_", " ")}</span></div>
         <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
       </div>
+      <button className="order-details-toggle" type="button" onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "OCULTAR DETALHES" : "VER PRODUTOS E ACOMPANHAR ENTREGA"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
+      {detalhesAbertos === pedido.id && <div className="order-expanded-content">
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image">{produto?.imagem_url ? <img src={produto.imagem_url} alt={produto.nome} /> : <span>BOTICA</span>}</div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>
       <div className="tracking-box">
         <div className="tracking-head"><div><small>ACOMPANHAMENTO DA ENTREGA</small><h3>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</h3></div>{pedido.codigo_rastreio && <button type="button" onClick={() => navigator.clipboard.writeText(pedido.codigo_rastreio!)}>Copiar código</button>}</div>
@@ -60,6 +63,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         {mensagem && <strong className="aftercare-message">{mensagem}</strong>}
         <Link href="/politica-de-trocas-e-devolucoes">Consultar política de trocas, devoluções e reembolso</Link>
       </form>}
+      </div>}
     </article>;
   })}</div>;
 }
