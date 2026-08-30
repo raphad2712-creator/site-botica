@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ItemCarrinho, Produto } from "@/lib/types";
+import { criarClienteSupabase } from "@/lib/supabase/client";
 
 type CartContextValue = {
   itens: ItemCarrinho[];
@@ -31,6 +32,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } finally { setPronto(true); }
   }, []);
   useEffect(() => { if (pronto) localStorage.setItem("botica-carrinho", JSON.stringify(itens)); }, [itens, pronto]);
+  useEffect(() => {
+    const supabase = criarClienteSupabase();
+    const { data } = supabase.auth.onAuthStateChange((evento) => {
+      if (evento === "SIGNED_OUT") {
+        setItens([]);
+        setAberto(false);
+        localStorage.removeItem("botica-carrinho");
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
   useEffect(() => { document.body.style.overflow = aberto ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [aberto]);
 
   function adicionar(produto: Produto, quantidade = 1) {

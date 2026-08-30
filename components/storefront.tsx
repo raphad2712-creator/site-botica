@@ -43,7 +43,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       <section className="hero">
         <div className="hero-copy">
           <span className="hero-eyebrow"><i /> FARMÁCIA DE MANIPULAÇÃO & PRODUTOS NATURAIS</span>
-          <h1>Bem-estar que combina com <em>você.</em></h1>
+          <h1>Seu cuidado, do seu jeito.</h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.

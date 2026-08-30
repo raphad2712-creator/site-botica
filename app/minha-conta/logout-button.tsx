@@ -7,7 +7,9 @@ export function LogoutButton() {
   const router = useRouter();
   return <button className="outline-button" onClick={async () => {
     await criarClienteSupabase().auth.signOut();
-    router.push("/");
-    router.refresh();
+    localStorage.removeItem("botica-carrinho");
+    localStorage.removeItem("botica-favoritos");
+    router.replace("/");
+    window.location.replace("/");
   }}>SAIR</button>;
 }

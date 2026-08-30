@@ -12,6 +12,7 @@ export function SupportWidget() {
 
   return (
     <div className={`support-widget ${aberto ? "open" : ""}`}>
+      {aberto && <button className="support-backdrop" onClick={() => setAberto(false)} aria-label="Fechar central de ajuda" />}
       {aberto && <section className="support-panel" aria-label="Central de ajuda">
         <header><div><small>ATENDIMENTO BOTICA</small><h2>Como podemos ajudar?</h2><p>Escolha uma opção para continuar.</p></div><button onClick={() => setAberto(false)} aria-label="Fechar suporte">×</button></header>
         <div className="support-shortcuts">
