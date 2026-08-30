@@ -8,6 +8,8 @@ import "./front-match.css";
 import "./shop-polish.css";
 import { CartProvider } from "@/components/cart-provider";
 import { Header } from "@/components/header";
+import { FavoritesProvider } from "@/components/favorites-provider";
+import { SupportWidget } from "@/components/support-widget";
 
 export const metadata: Metadata = {
   title: "Botica Bioenergética",
@@ -19,14 +21,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body>
         <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <footer>
+          <FavoritesProvider>
+            <Header />
+            <main>{children}</main>
+            <footer>
             <div className="footer-logo"><ImageFooter /></div>
             <div><b>INSTITUCIONAL</b><a>Sobre a Botica</a><a>Política de privacidade</a><a>Termos de uso</a></div>
-            <div><b>ATENDIMENTO</b><a>Central de ajuda</a><a>Fale conosco</a><a>Meus pedidos</a></div>
+            <div><b>ATENDIMENTO</b><a href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a></div>
             <div><b>FORMAS DE PAGAMENTO</b><p>PIX • VISA • MASTERCARD</p></div>
-          </footer>
+            </footer>
+            <SupportWidget />
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>
