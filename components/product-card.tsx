@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
+import { useFavorites } from "./favorites-provider";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function ProductCard({ produto }: { produto: Produto }) {
   const { adicionar } = useCart();
+  const { estaFavorito, alternarFavorito } = useFavorites();
   const [adicionado, setAdicionado] = useState(false);
 
   function adicionarProduto() {
@@ -22,6 +24,9 @@ export function ProductCard({ produto }: { produto: Produto }) {
     : 0;
   return (
     <article className="card">
+      <button className={`favorite-button ${estaFavorito(produto.id) ? "active" : ""}`} onClick={() => alternarFavorito(produto)} aria-label={estaFavorito(produto.id) ? `Remover ${produto.nome} dos favoritos` : `Adicionar ${produto.nome} aos favoritos`}>
+        <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
+      </button>
       <Link href={`/produto/${produto.id}`} className={`photo p${(produto.id % 5) + 1}`}>
         {!!desconto && <span className="discount-badge">-{desconto}%</span>}
         {produto.imagem_url ? (

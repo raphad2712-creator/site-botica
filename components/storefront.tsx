@@ -43,7 +43,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       <section className="hero">
         <div className="hero-copy">
           <span className="hero-eyebrow"><i /> FARMÁCIA DE MANIPULAÇÃO & PRODUTOS NATURAIS</span>
-          <h1>Cuidado feito para o <em>seu momento.</em></h1>
+          <h1>Bem-estar que combina com <em>você.</em></h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.
@@ -53,8 +53,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         </div>
         <div className="hero-img">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/botica-hero.png" alt="Produtos naturais e fórmulas da Botica" />
-          <div className="hero-image-note"><b>✦</b><span><strong>Cuidado de verdade</strong><small>Qualidade, confiança e acompanhamento</small></span></div>
+          <img src="/botica-hero-v2.png" alt="Frascos, plantas e utensílios de uma farmácia de manipulação" />
         </div>
       </section>
 

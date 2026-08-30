@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "./cart-provider";
 import { criarClienteSupabase } from "@/lib/supabase/client";
+import { useFavorites } from "./favorites-provider";
 
 export function Header() {
   const { totalItens, abrirCarrinho } = useCart();
+  const { favoritos, abrirFavoritos } = useFavorites();
   const [menu, setMenu] = useState(false);
   const [usuario, setUsuario] = useState<{ email?: string } | null>(null);
 
@@ -39,6 +41,10 @@ export function Header() {
         </Link>
         <form className="search" action="/#produtos"><span>⌕</span><input name="busca" placeholder="O que você está buscando?" /></form>
         <div className="head-actions">
+          <button className="favorites-header" onClick={abrirFavoritos} aria-label={`Abrir ${favoritos.length} produtos favoritos`}>
+            <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
+            <span>Favoritos</span>{favoritos.length > 0 && <b>{favoritos.length}</b>}
+          </button>
           <Link href={usuario ? "/minha-conta" : "/login"} className="account-button" aria-label={usuario ? "Abrir minha conta" : "Entrar ou criar conta"}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg>
             <span>{usuario ? "Minha conta" : "Entrar"}<small>{usuario ? usuario.email?.split("@")[0] : "ou criar conta"}</small></span>
@@ -55,7 +61,8 @@ export function Header() {
       <nav className="mobile-bottom-nav" aria-label="Navegação rápida">
         <Link href="/" aria-label="Início"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" /></svg><span>Início</span></Link>
         <Link href="/#produtos" aria-label="Produtos"><svg viewBox="0 0 24 24"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M9 11h6" /></svg><span>Produtos</span></Link>
-        <Link href={usuario ? "/minha-conta" : "/login"} aria-label="Minha conta"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg><span>{usuario ? "Minha conta" : "Entrar"}</span></Link>
+        <button onClick={abrirFavoritos} aria-label="Favoritos"><svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg><span>Favoritos</span>{favoritos.length > 0 && <b>{favoritos.length}</b>}</button>
+        <Link href={usuario ? "/minha-conta" : "/login"} aria-label="Minha conta"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg><span>{usuario ? "Conta" : "Entrar"}</span></Link>
         <button onClick={abrirCarrinho} aria-label={`Carrinho com ${totalItens} itens`}><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M18 20h.01" /></svg><span>Carrinho</span>{totalItens > 0 && <b>{totalItens}</b>}</button>
       </nav>
     </>
