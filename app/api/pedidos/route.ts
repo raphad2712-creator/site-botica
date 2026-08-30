@@ -12,6 +12,7 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "DADOS_PIX_INVALIDOS") return "Informe nome, e-mail e um CPF válido para gerar o Pix.";
   if (detalhe === "PIX_RECUSADO") return "Não foi possível gerar o Pix. Confira a credencial de teste do Mercado Pago.";
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento ainda não foi configurado na Vercel.";
+  if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Configure a variável SUPABASE_SERVICE_ROLE_KEY na Vercel e faça um novo deploy.";
   if (codigo === "42P01" || codigo === "PGRST205") return "O banco de pedidos ainda precisa ser configurado no Supabase.";
   return "Não foi possível iniciar o pagamento. Tente novamente.";
 }
@@ -30,7 +31,9 @@ export async function POST(request: Request) {
   if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
 
   let pedidoId: number | null = null;
+  let etapa = "validar pedido";
   try {
+    etapa = "acessar o banco administrativo";
     const admin = criarClienteAdmin();
     let subtotal = 0;
     const itensPedido = body.itens.map((item) => {
@@ -44,16 +47,22 @@ export async function POST(request: Request) {
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
 
+    etapa = "salvar o endereço";
     const { data: endereco, error: enderecoError } = await supabase.from("enderecos").insert({ usuario_id: auth.user.id, cep: cliente.cep, rua: cliente.rua, numero: cliente.numero, complemento: cliente.complemento || null, bairro: cliente.bairro, cidade: cliente.cidade, estado: cliente.estado.toUpperCase() }).select("id").single();
     if (enderecoError) throw enderecoError;
     const total = Number((subtotal + frete).toFixed(2));
+    etapa = "criar o pedido";
     const { data: pedido, error: pedidoError } = await supabase.from("pedidos").insert({ usuario_id: auth.user.id, endereco_id: endereco.id, total, frete, status: "aguardando_pagamento" }).select("id").single();
     if (pedidoError) throw pedidoError;
     pedidoId = Number(pedido.id);
+    etapa = "salvar os produtos do pedido";
     const { error: itensError } = await supabase.from("itens_pedido").insert(itensPedido.map(({ nome: _nome, ...item }) => ({ ...item, pedido_id: pedido.id })));
     if (itensError) throw itensError;
 
-    if (!accessToken && modoPedidoTeste) {
+    // O modo de teste do administrador sempre tem prioridade, mesmo quando já
+    // existe uma credencial do Mercado Pago configurada na Vercel.
+    if (modoPedidoTeste) {
+      etapa = "confirmar o pedido de teste";
       const { error: testeError } = await admin.from("pedidos").update({
         status: "pago",
         pagamento_id: `TESTE-${pedido.id}`,
@@ -111,7 +120,16 @@ export async function POST(request: Request) {
     const checkoutUrl = process.env.MERCADO_PAGO_MODO_TESTE === "false" ? preferencia.init_point : preferencia.sandbox_init_point;
     return NextResponse.json({ pedido_id: pedido.id, checkout_url: checkoutUrl });
   } catch (erro) {
+    console.error("ERRO_CRIAR_PEDIDO", { etapa, pedidoId, erro });
     if (pedidoId) { try { await criarClienteAdmin().from("pedidos").update({ status: "cancelado" }).eq("id", pedidoId); } catch { /* mantém o erro original */ } }
-    return NextResponse.json({ erro: mensagemErro(erro) }, { status: 400 });
+    const detalhe = erro instanceof Error
+      ? erro.message
+      : typeof erro === "object" && erro && "message" in erro
+        ? String(erro.message)
+        : "erro desconhecido";
+    const mensagem = modoPedidoTeste
+      ? `Teste — falha ao ${etapa}: ${detalhe}`
+      : mensagemErro(erro);
+    return NextResponse.json({ erro: mensagem }, { status: 400 });
   }
 }
