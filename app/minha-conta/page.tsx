@@ -19,22 +19,32 @@ export default async function MinhaContaPage() {
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
   ]);
   const pedidos = pedidosResposta?.data ?? [];
+  const nome = auth.user.user_metadata.nome || auth.user.email?.split("@")[0] || "cliente";
+  const inicial = nome.trim().charAt(0).toUpperCase();
 
   return (
     <section className="account-page">
-      <div className="account-head">
-        <div className="account-identity"><Image src="/botica-logo-nova.jpeg" alt="Botica Bioenergética" width={190} height={57} /><div><small>MINHA CONTA</small><h1>Olá, {auth.user.user_metadata.nome || auth.user.email}</h1><p>{auth.user.email}</p></div></div>
-        <LogoutButton />
+      <div className="account-welcome">
+        <div className="account-head">
+          <div className="account-identity"><span className="account-avatar">{inicial}</span><div><small>ÁREA DO CLIENTE</small><h1>Olá, {nome}</h1><p>{auth.user.email}</p></div></div>
+          <LogoutButton />
+        </div>
+        <div className="account-welcome-brand"><Image src="/botica-logo-nova.jpeg" alt="Botica Bioenergética" width={190} height={57} /><p>Que bom ter você por aqui.</p></div>
       </div>
-      <h2>Meus pedidos</h2>
-      {pedidos?.length ? pedidos.map((pedido) => (
+      <nav className="account-shortcuts" aria-label="Atalhos da conta">
+        <Link href="/#produtos"><span>⌕</span><div><b>Comprar produtos</b><small>Conheça o catálogo</small></div><i>→</i></Link>
+        <Link href="/#receita"><span>＋</span><div><b>Enviar receita</b><small>Solicite um orçamento</small></div><i>→</i></Link>
+        <Link href="/#produtos"><span>♡</span><div><b>Meus favoritos</b><small>Continue suas escolhas</small></div><i>→</i></Link>
+      </nav>
+      <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2></div><span>{pedidos.length} {pedidos.length === 1 ? "pedido" : "pedidos"}</span></div>
+      {pedidos?.length ? <div className="account-orders">{pedidos.map((pedido) => (
         <article key={pedido.id}>
-          <b>Pedido #{pedido.id}</b>
-          <span>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span>
-          <span>{pedido.status.replaceAll("_", " ")}</span>
-          <strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong>
+          <div className="order-number"><small>PEDIDO</small><b>#{pedido.id}</b></div>
+          <div><small>DATA</small><span>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span></div>
+          <div><small>STATUS</small><span className={`order-status status-${pedido.status}`}>{pedido.status.replaceAll("_", " ")}</span></div>
+          <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
         </article>
-      )) : <div className="notice">Você ainda não possui pedidos. <Link href="/">Ver produtos</Link></div>}
+      ))}</div> : <div className="account-empty"><span>⌑</span><h3>Você ainda não fez nenhum pedido</h3><p>Explore nossos produtos e encontre o cuidado ideal para você.</p><Link href="/#produtos">VER PRODUTOS</Link></div>}
     </section>
   );
 }
