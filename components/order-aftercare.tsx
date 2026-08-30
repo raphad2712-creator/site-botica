@@ -33,7 +33,6 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
 
   return <div className="account-orders order-list-modern">{pedidosComProdutos.map((pedido) => {
     const indice = Math.max(0, etapas.indexOf(pedido.status_entrega || "preparando"));
-    const pedidosSolicitacoes = solicitacoes.filter((item) => item.pedido_id === pedido.id);
     const codigoPedido = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`;
     const podeSolicitar = ["pago", "aprovado", "preparando", "enviado", "entregue"].includes(pedido.status);
     return <article className="order-card" key={pedido.id}>
@@ -50,7 +49,6 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         <div className="tracking-steps">{etapas.map((etapa, i) => <div className={i <= indice && pedido.status_entrega !== "atrasado" ? "done" : ""} key={etapa}><i>{i < indice ? "✓" : i + 1}</i><span>{rotulos[etapa]}</span></div>)}</div>
         <div className="tracking-details"><span><small>TRANSPORTADORA</small>{pedido.transportadora || "Será informada após a postagem"}</span><span><small>CÓDIGO</small>{pedido.codigo_rastreio || "Aguardando postagem"}</span>{pedido.link_rastreio && <a href={pedido.link_rastreio} target="_blank" rel="noreferrer">ACOMPANHAR NO SITE DA TRANSPORTADORA ↗</a>}</div>
       </div>
-      {pedidosSolicitacoes.map((item) => <div className="aftercare-status" key={item.id}><div><small>SOLICITAÇÃO #{item.id}</small><b>{item.tipo.replaceAll("_", " ")}</b><span>{item.motivo}</span></div><strong>{item.status.replaceAll("_", " ")}</strong>{item.resposta_admin && <p>{item.resposta_admin}</p>}</div>)}
       {podeSolicitar ? <button className="aftercare-open" type="button" onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR" : "SOLICITAR TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Trocas e reembolsos ficam disponíveis após a confirmação do pagamento.</p>}
       {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
         <label className="aftercare-order-code">Código do pedido<input name="codigo_pedido" required autoComplete="off" placeholder={codigoPedido} aria-describedby={`ajuda-codigo-${pedido.id}`} /><small id={`ajuda-codigo-${pedido.id}`}>Digite exatamente o código mostrado no topo deste pedido.</small></label>

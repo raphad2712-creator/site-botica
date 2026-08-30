@@ -4,6 +4,7 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { ProfileEditor } from "@/components/profile-editor";
 import { OrderAftercare } from "@/components/order-aftercare";
+import { CustomerRequests } from "@/components/customer-requests";
 
 export default async function MinhaContaPage() {
   const supabase = await criarClienteServidor();
@@ -34,6 +35,7 @@ export default async function MinhaContaPage() {
           <p>O que você está procurando?</p>
           <nav aria-label="Opções da conta">
             <a href="#pedidos"><i>▣</i><span>Meus pedidos</span><b>›</b></a>
+            <a href="#solicitacoes"><i>↻</i><span>Minhas solicitações</span><b>›</b></a>
             <a href="#dados"><i>♙</i><span>Dados pessoais</span><b>›</b></a>
             <Link href="/#produtos"><i>♡</i><span>Produtos favoritos</span><b>›</b></Link>
             <Link href="/#receita"><i>＋</i><span>Enviar receita</span><b>›</b></Link>
@@ -47,6 +49,10 @@ export default async function MinhaContaPage() {
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2></div><span>{pedidos.length} {pedidos.length === 1 ? "pedido" : "pedidos"}</span></div>
             <OrderAftercare pedidos={pedidos} solicitacoes={solicitacoes ?? []} />
+          </section>
+          <section className="account-history account-requests" id="solicitacoes">
+            <div className="account-orders-head"><div><small>ATENDIMENTO E PÓS-VENDA</small><h2>Minhas solicitações</h2></div><span>{solicitacoes?.length ?? 0} {(solicitacoes?.length ?? 0) === 1 ? "solicitação" : "solicitações"}</span></div>
+            <CustomerRequests solicitacoes={solicitacoes ?? []} pedidos={pedidos} />
           </section>
         </div>
       </div>

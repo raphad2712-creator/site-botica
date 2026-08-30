@@ -4,6 +4,7 @@ import { AdminProducts } from "./products";
 import type { Produto } from "@/lib/types";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { AdminAftercare } from "./aftercare";
+import { AdminTabs } from "./tabs";
 
 export default async function AdminPage() {
   const supabase = await criarClienteServidor();
@@ -22,12 +23,13 @@ export default async function AdminPage() {
   const produtos = (data ?? []) as Produto[];
   const pedidosLista = pedidos ?? [];
   const solicitacoesLista = solicitacoes ?? [];
-  return <main className="admin-dashboard">
+  const pendentes = solicitacoesLista.filter((item) => item.status !== "concluida").length;
+  return <main className="admin-dashboard" data-admin-tab="overview">
     <header className="admin-dashboard-hero">
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA ↗</a>
     </header>
-    <nav className="admin-dashboard-nav" aria-label="Seções do painel"><a href="#visao-geral">Visão geral</a><a href="#produtos-admin">Produtos</a><a href="#entregas-admin">Entregas</a><a href="#pos-venda-admin">Pós-venda</a></nav>
+    <AdminTabs pendentes={pendentes} />
     <section className="admin-overview" id="visao-geral">
       <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
       <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
