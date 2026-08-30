@@ -144,3 +144,32 @@ footer{margin-top:0!important;background:linear-gradient(135deg,#082f25,#124d3b)
 }
 @media(max-width:430px){.hero-img,.hero-img img{height:270px!important}.hero-copy{padding:34px 20px 38px!important}.hero h1{font-size:40px!important}}
 @keyframes support-mobile-in{from{transform:translateY(100%)}to{transform:none}}
+
+/* Correção final do mobile: replica a composição aprovada do desktop */
+@media(max-width:760px){
+  .hero{position:relative!important;display:block!important;height:620px!important;min-height:620px!important;background:#e8f0e2!important;overflow:hidden!important}
+  .hero-img{position:absolute!important;z-index:0!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;order:initial!important}
+  .hero-img img{display:block!important;width:100%!important;height:100%!important;min-height:0!important;object-fit:cover!important;object-position:64% center!important}
+  .hero-img:after{content:""!important;position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(238,244,232,.98) 0%,rgba(238,244,232,.93) 42%,rgba(238,244,232,.64) 65%,rgba(238,244,232,.22) 100%)!important}
+  .hero-copy{position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;justify-content:center!important;width:100%!important;max-width:540px!important;height:100%!important;min-height:620px!important;padding:54px 24px 48px!important;order:initial!important;background:transparent!important}
+  .hero-eyebrow{max-width:290px!important;font-size:8px!important;line-height:1.5!important;letter-spacing:.14em!important}
+  .hero h1{max-width:390px!important;margin:16px 0!important;font-size:47px!important;line-height:1.01!important;letter-spacing:-.035em!important}
+  .hero p{max-width:370px!important;font-size:13px!important;line-height:1.6!important}
+  .hero-copy>.hero-actions{display:flex!important;flex-direction:column!important;align-items:flex-start!important;width:min(260px,100%)!important;margin-top:23px!important}
+  .hero-copy>.hero-actions>a{width:100%!important;min-height:48px!important}
+  .hero-copy>.hero-actions>.hero-secondary{background:rgba(255,255,255,.72)!important}
+  .hero-assurances{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;margin-top:18px!important;font-size:9px!important}
+
+  .support-panel>header{position:relative!important;top:auto!important;z-index:auto!important;width:100%!important;height:auto!important;min-height:142px!important;display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:16px!important;padding:24px 22px!important;border:0!important;background:linear-gradient(135deg,#0b3d2f,#176149)!important;color:#fff!important;overflow:visible!important}
+  .support-panel>header>div{display:block!important;min-width:0!important;flex:1!important}
+  .support-panel>header small{display:block!important;margin:0 0 7px!important;color:#bad5aa!important;font-size:8px!important;line-height:1.4!important;letter-spacing:.13em!important}
+  .support-panel>header h2{display:block!important;margin:0 0 7px!important;color:#fff!important;font:700 25px/1.1 Georgia!important}
+  .support-panel>header p{display:block!important;margin:0!important;color:#d5e1dc!important;font-size:11px!important;line-height:1.45!important}
+  .support-panel>header>button{position:static!important;flex:0 0 34px!important;width:34px!important;height:34px!important;margin:0!important;padding:0!important;display:grid!important;place-items:center!important}
+  .support-shortcuts{position:relative!important;z-index:1!important;padding-top:12px!important;background:#fff!important}
+  .support-shortcuts a{min-height:54px!important;align-items:center!important;padding:14px 4px!important}
+  .support-faq{background:#fff!important}.support-email{background:#fff!important;padding-bottom:24px!important}
+}
+@media(max-width:390px){
+  .hero{height:590px!important;min-height:590px!important}.hero-copy{min-height:590px!important;padding-inline:20px!important}.hero h1{font-size:43px!important;max-width:350px!important}.hero-img img{object-position:67% center!important}
+}
