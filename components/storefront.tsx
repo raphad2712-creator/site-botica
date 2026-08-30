@@ -18,6 +18,8 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   const [categoria, setCategoria] = useState("Todos");
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("relevancia");
+  const [newsletterMensagem, setNewsletterMensagem] = useState("");
+  const [newsletterEnviando, setNewsletterEnviando] = useState(false);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const inicial = params.get("categoria");
@@ -37,6 +39,25 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     const texto = `${produto.nome} ${produto.descricao} ${produto.categoria}`.toLowerCase();
     return correspondeCategoria && texto.includes(busca.toLowerCase());
   }).sort((a, b) => ordem === "menor" ? Number(a.preco) - Number(b.preco) : ordem === "maior" ? Number(b.preco) - Number(a.preco) : ordem === "nome" ? a.nome.localeCompare(b.nome) : a.id - b.id), [produtos, categoria, busca, ordem]);
+
+  async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (newsletterEnviando) return;
+    const formulario = event.currentTarget;
+    const email = String(new FormData(formulario).get("email") ?? "");
+    setNewsletterEnviando(true);
+    setNewsletterMensagem("");
+    try {
+      const resposta = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const dados = await resposta.json();
+      setNewsletterMensagem(dados.mensagem ?? dados.erro ?? "Não foi possível cadastrar.");
+      if (resposta.ok) formulario.reset();
+    } catch {
+      setNewsletterMensagem("Não foi possível cadastrar agora. Tente novamente.");
+    } finally {
+      setNewsletterEnviando(false);
+    }
+  }
 
   return (
     <>
@@ -94,7 +115,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>
       <section className="rx scroll-reveal" id="receita"><div><small>MANIPULAÇÃO PERSONALIZADA</small><h2>Tem uma receita?</h2><p>Envie sua prescrição. Nossa equipe analisa e entra em contato com o orçamento.</p><ol><li><b>1</b> Envie a receita</li><li><b>2</b> Receba o orçamento</li><li><b>3</b> Aprove seu pedido</li></ol></div><form className="rx-form" onSubmit={(e) => { e.preventDefault(); alert("Receita recebida para demonstração."); }}><span>⇧</span><h3>Envie sua receita</h3><p>PDF, JPG ou PNG • até 10 MB</p><label>SELECIONAR ARQUIVO<input type="file" accept="image/*,.pdf" required /></label><button>SOLICITAR ORÇAMENTO</button></form></section>
-      <section className="newsletter scroll-reveal"><div><small>NOVIDADES DA BOTICA</small><h2>Cuide-se com informação.</h2></div><form onSubmit={(e) => { e.preventDefault(); alert("E-mail cadastrado com sucesso."); }}><input type="email" placeholder="Seu melhor e-mail" required /><button>CADASTRAR</button></form></section>
+      <section className="newsletter scroll-reveal"><div><small>NOVIDADES DA BOTICA</small><h2>Cuide-se com informação.</h2><p>Receba novidades, conteúdos e ofertas da Botica no seu e-mail.</p></div><form onSubmit={cadastrarNewsletter}><input name="email" type="email" placeholder="Seu melhor e-mail" required disabled={newsletterEnviando} /><button disabled={newsletterEnviando}>{newsletterEnviando ? "CADASTRANDO..." : "QUERO RECEBER"}</button>{newsletterMensagem && <p className="newsletter-message" role="status">{newsletterMensagem}</p>}<small>Ao cadastrar, você concorda em receber comunicações da Botica. É possível cancelar quando quiser.</small></form></section>
     </>
   );
 }

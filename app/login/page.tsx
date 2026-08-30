@@ -34,6 +34,11 @@ export default function LoginPage() {
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
 
+  function destinoDepoisDoLogin() {
+    const solicitado = new URLSearchParams(window.location.search).get("next");
+    return solicitado?.startsWith("/") && !solicitado.startsWith("//") ? solicitado : "/minha-conta";
+  }
+
   async function enviar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (carregando) return;
@@ -62,7 +67,7 @@ export default function LoginPage() {
         setMensagem("Conta criada. Abra o e-mail de confirmação para ativar seu acesso.");
         return;
       }
-      window.location.assign("/minha-conta");
+      window.location.assign(destinoDepoisDoLogin());
     } catch (erro) {
       const mensagemErro = erro instanceof DOMException && erro.name === "AbortError" ? "timeout" : erro instanceof Error ? erro.message : "";
       setMensagem(traduzirErro(mensagemErro));
@@ -80,7 +85,7 @@ export default function LoginPage() {
       const { error } = await comTempoLimite(supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/minha-conta`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destinoDepoisDoLogin())}`,
           ...(provider === "azure" ? { scopes: "email" } : {}),
         },
       }));

@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useCart } from "@/components/cart-provider";
+import { criarClienteSupabase } from "@/lib/supabase/client";
 
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -14,6 +15,20 @@ export default function CheckoutPage() {
   const [processando, setProcessando] = useState(false);
   const [metodoPagamento, setMetodoPagamento] = useState<"pix" | "cartao">("pix");
   const [pix, setPix] = useState<{ codigo: string; qr_code_base64?: string; link?: string; pedido: number } | null>(null);
+  const [verificandoLogin, setVerificandoLogin] = useState(true);
+
+  useEffect(() => {
+    let ativo = true;
+    criarClienteSupabase().auth.getUser().then(({ data }) => {
+      if (!ativo) return;
+      if (!data.user) {
+        window.location.replace("/login?next=/checkout");
+        return;
+      }
+      setVerificandoLogin(false);
+    }).catch(() => window.location.replace("/login?next=/checkout"));
+    return () => { ativo = false; };
+  }, []);
 
   async function calcularFrete() {
     const cep = cepFrete.replace(/\D/g, "");
@@ -41,7 +56,10 @@ export default function CheckoutPage() {
     try {
       const resposta = await fetch("/api/pedidos", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ cliente: form, itens: itens.map(({ id, quantidade }) => ({ produto_id: id, quantidade })), frete, metodo_pagamento: metodoPagamento }) });
       const dados = await resposta.json();
-      if (resposta.status === 401) return setMensagem("Entre na sua conta antes de confirmar. Seu carrinho continuará salvo.");
+      if (resposta.status === 401) {
+        window.location.assign("/login?next=/checkout");
+        return;
+      }
       if (!resposta.ok) return setMensagem(dados.erro ?? "Não foi possível finalizar.");
       if (dados.tipo === "pix" && dados.pix?.codigo) {
         setPix({ ...dados.pix, pedido: dados.pedido_id });
@@ -64,6 +82,7 @@ export default function CheckoutPage() {
     setMensagem("Código Pix copiado. Abra o aplicativo do seu banco para pagar.");
   }
 
+  if (verificandoLogin) return <section className="checkout-auth-loading"><span className="auth-spinner" /><h1>Verificando sua conta</h1><p>Aguarde um instante para continuar com segurança.</p></section>;
   if (pix) return <section className="pix-page"><small>PEDIDO #{pix.pedido}</small><h1>Pague com Pix</h1><p>Escaneie o QR Code ou copie o código abaixo. A confirmação do pedido será automática.</p>{pix.qr_code_base64 && <img src={`data:image/png;base64,${pix.qr_code_base64}`} alt="QR Code Pix do pedido" />}<div className="pix-code"><code>{pix.codigo}</code><button type="button" onClick={copiarPix}>COPIAR CÓDIGO PIX</button></div>{pix.link && <a href={pix.link} target="_blank" rel="noreferrer">ABRIR PÁGINA DO PIX</a>}<p className="pix-message">{mensagem}</p><a className="pix-account" href="/minha-conta">ACOMPANHAR PEDIDO</a></section>;
 
   if (!itens.length) return <section className="empty-page"><h1>Seu carrinho está vazio</h1><p>Adicione pelo menos um produto para iniciar a finalização.</p><a href="/">VER PRODUTOS</a></section>;
