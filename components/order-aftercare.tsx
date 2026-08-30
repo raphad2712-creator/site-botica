@@ -22,7 +22,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
   async function solicitar(event: FormEvent<HTMLFormElement>, pedidoId: number) {
     event.preventDefault(); setEnviando(true); setMensagem("");
     const form = new FormData(event.currentTarget);
-    const resposta = await fetch("/api/pos-venda", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pedido_id: pedidoId, tipo: form.get("tipo"), motivo: form.get("motivo"), detalhes: form.get("detalhes") }) });
+    const resposta = await fetch("/api/pos-venda", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pedido_id: pedidoId, codigo_pedido: form.get("codigo_pedido"), tipo: form.get("tipo"), motivo: form.get("motivo"), detalhes: form.get("detalhes") }) });
     const data = await resposta.json();
     setMensagem(data.mensagem || data.erro || "Não foi possível enviar."); setEnviando(false);
     if (resposta.ok) setTimeout(() => window.location.reload(), 900);
@@ -53,6 +53,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
       {pedidosSolicitacoes.map((item) => <div className="aftercare-status" key={item.id}><div><small>SOLICITAÇÃO #{item.id}</small><b>{item.tipo.replaceAll("_", " ")}</b><span>{item.motivo}</span></div><strong>{item.status.replaceAll("_", " ")}</strong>{item.resposta_admin && <p>{item.resposta_admin}</p>}</div>)}
       {podeSolicitar ? <button className="aftercare-open" type="button" onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR" : "SOLICITAR TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Trocas e reembolsos ficam disponíveis após a confirmação do pagamento.</p>}
       {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
+        <label className="aftercare-order-code">Código do pedido<input name="codigo_pedido" required autoComplete="off" placeholder={codigoPedido} aria-describedby={`ajuda-codigo-${pedido.id}`} /><small id={`ajuda-codigo-${pedido.id}`}>Digite exatamente o código mostrado no topo deste pedido.</small></label>
         <label>O que você precisa?<select name="tipo" required><option value="arrependimento">Desistir da compra (direito de arrependimento)</option><option value="troca">Trocar produto</option><option value="devolucao">Devolver produto</option><option value="defeito">Produto com defeito ou avaria</option><option value="reembolso">Solicitar reembolso</option></select></label>
         <label>Motivo<input name="motivo" minLength={5} maxLength={160} required placeholder="Conte resumidamente o motivo" /></label>
         <label>Detalhes<textarea name="detalhes" maxLength={2000} placeholder="Informe o produto, o problema e outras informações importantes" /></label>
