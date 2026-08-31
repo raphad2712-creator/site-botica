@@ -47,6 +47,23 @@ export async function POST(request: Request) {
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
 
+    etapa = "salvar os dados do comprador";
+    const { error: perfilError } = await admin.from("perfil_clientes").upsert({
+      usuario_id: auth.user.id,
+      nome: String(cliente.nome ?? "").trim() || null,
+      cpf: String(cliente.cpf ?? "").replace(/\D/g, "").slice(0, 11) || null,
+      telefone: String(cliente.telefone ?? "").trim() || null,
+      cep: String(cliente.cep).replace(/\D/g, "").slice(0, 8),
+      rua: String(cliente.rua).trim(),
+      numero: String(cliente.numero).trim(),
+      complemento: String(cliente.complemento ?? "").trim() || null,
+      bairro: String(cliente.bairro).trim(),
+      cidade: String(cliente.cidade).trim(),
+      estado: String(cliente.estado).trim().toUpperCase().slice(0, 2),
+      atualizado_em: new Date().toISOString(),
+    }, { onConflict: "usuario_id" });
+    if (perfilError) throw perfilError;
+
     etapa = "salvar o endereço";
     const { data: endereco, error: enderecoError } = await supabase.from("enderecos").insert({ usuario_id: auth.user.id, cep: cliente.cep, rua: cliente.rua, numero: cliente.numero, complemento: cliente.complemento || null, bairro: cliente.bairro, cidade: cliente.cidade, estado: cliente.estado.toUpperCase() }).select("id").single();
     if (enderecoError) throw enderecoError;

@@ -1,0 +1,8 @@
+export default function PoliticaPrivacidadePage() {
+  return <main className="policy-page"><header className="policy-hero"><small>PRIVACIDADE</small><h1>Política de privacidade e cookies</h1><p>Saiba como a Botica utiliza as informações necessárias para oferecer compras, atendimento e comunicações.</p></header><div className="policy-layout"><aside><b>Nesta página</b><a href="#dados">Dados utilizados</a><a href="#cookies">Cookies</a><a href="#comunicacoes">Comunicações</a><a href="#direitos">Seus direitos</a></aside><article>
+    <section id="dados"><span>01</span><div><h2>Dados utilizados</h2><p>Durante o cadastro e a compra, podemos utilizar nome, e-mail, telefone, CPF, endereço e informações do pedido para processar pagamento, entrega, suporte, troca, devolução ou reembolso.</p></div></section>
+    <section id="cookies"><span>02</span><div><h2>Cookies</h2><p>Cookies necessários mantêm login, carrinho, segurança e preferências. Cookies opcionais de análise somente devem ser utilizados após sua autorização. Você pode recusar os opcionais sem impedir as funções essenciais da loja.</p></div></section>
+    <section id="comunicacoes"><span>03</span><div><h2>Comunicações</h2><p>Novidades e ofertas são enviadas somente para endereços cadastrados voluntariamente. O recebimento pode ser cancelado a qualquer momento pelo canal de atendimento.</p></div></section>
+    <section id="direitos"><span>04</span><div><h2>Seus direitos</h2><p>Você pode solicitar acesso, correção ou exclusão de dados, observadas as obrigações legais de conservação. Entre em contato pelo e-mail informado no rodapé do site.</p></div></section>
+  </article></div></main>;
+}

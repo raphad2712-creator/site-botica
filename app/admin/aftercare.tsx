@@ -2,7 +2,11 @@
 
 import { FormEvent, useState } from "react";
 
-type PedidoAdmin = { id: number; total: number; status: string; status_entrega?: string | null; transportadora?: string | null; codigo_rastreio?: string | null; link_rastreio?: string | null; criado_em: string };
+type PedidoAdmin = {
+  id: number; total: number; status: string; status_entrega?: string | null; transportadora?: string | null; codigo_rastreio?: string | null; link_rastreio?: string | null; criado_em: string;
+  cliente?: { nome?: string | null; email?: string | null; cpf?: string | null; telefone?: string | null };
+  endereco?: { cep?: string | null; rua?: string | null; numero?: string | null; complemento?: string | null; bairro?: string | null; cidade?: string | null; estado?: string | null } | null;
+};
 type SolicitacaoAdmin = { id: number; pedido_id: number; tipo: string; motivo: string; detalhes?: string | null; status: string; resposta_admin?: string | null; criado_em: string };
 
 export function AdminAftercare({ pedidos, solicitacoes }: { pedidos: PedidoAdmin[]; solicitacoes: SolicitacaoAdmin[] }) {
@@ -28,6 +32,13 @@ export function AdminAftercare({ pedidos, solicitacoes }: { pedidos: PedidoAdmin
       <div className="admin-cards admin-delivery-cards">{pedidos.length ? pedidos.map((pedido) => { const codigo = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`; return <form key={pedido.id} onSubmit={(e) => salvarRastreio(e, pedido.id)}>
         <header><div><small>CÓDIGO DO PEDIDO</small><h3>{codigo}</h3></div><span className={`delivery-badge delivery-${pedido.status_entrega || "preparando"}`}>{(pedido.status_entrega || "preparando").replaceAll("_", " ")}</span></header>
         <div className="admin-order-meta"><span><small>DATA</small>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span><span><small>TOTAL</small>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><span><small>PAGAMENTO</small>{pedido.status.replaceAll("_", " ")}</span></div>
+        <details className="admin-customer-details">
+          <summary><span>♙</span><b>Dados do comprador e entrega</b><small>CLIQUE PARA VER</small></summary>
+          <div className="admin-customer-grid">
+            <section><small>COMPRADOR</small><b>{pedido.cliente?.nome || "Nome não informado"}</b><a href={pedido.cliente?.email ? `mailto:${pedido.cliente.email}` : undefined}>{pedido.cliente?.email || "E-mail não encontrado"}</a>{pedido.cliente?.telefone && <a href={`tel:${pedido.cliente.telefone}`}>{pedido.cliente.telefone}</a>}{pedido.cliente?.cpf && <span>CPF: {pedido.cliente.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}</span>}</section>
+            <section><small>ENDEREÇO DE ENTREGA</small>{pedido.endereco ? <><b>{pedido.endereco.rua}, {pedido.endereco.numero}</b>{pedido.endereco.complemento && <span>{pedido.endereco.complemento}</span>}<span>{pedido.endereco.bairro} — {pedido.endereco.cidade}/{pedido.endereco.estado}</span><span>CEP: {String(pedido.endereco.cep || "").replace(/(\d{5})(\d{3})/, "$1-$2")}</span></> : <span>Endereço não encontrado para este pedido.</span>}</section>
+          </div>
+        </details>
         <label>Etapa atual<select name="status_entrega" defaultValue={pedido.status_entrega || "preparando"}><option value="preparando">1. Em preparação</option><option value="postado">2. Postado</option><option value="em_transito">3. Em trânsito</option><option value="saiu_para_entrega">4. Saiu para entrega</option><option value="entregue">5. Entregue</option><option value="atrasado">Atrasado</option></select></label>
         <div className="admin-form-grid"><label>Transportadora<input name="transportadora" defaultValue={pedido.transportadora || ""} placeholder="Ex.: Correios" /></label><label>Código de rastreamento<input name="codigo_rastreio" defaultValue={pedido.codigo_rastreio || ""} placeholder="Ex.: AA123456789BR" /></label></div>
         <label>Link para acompanhar<input name="link_rastreio" type="url" defaultValue={pedido.link_rastreio || ""} placeholder="https://..." /></label>

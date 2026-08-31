@@ -8,6 +8,17 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
   const [mensagem, setMensagem] = useState("");
   const [salvando, setSalvando] = useState(false);
 
+  async function lerResposta(resposta: Response) {
+    const texto = await resposta.text();
+    try {
+      return texto ? JSON.parse(texto) : {};
+    } catch {
+      if (resposta.status === 404) return { erro: "A rota de cadastro não foi encontrada. Faça um novo deploy da versão atualizada na Vercel." };
+      if (resposta.status >= 500) return { erro: "Erro interno na Vercel. Confira as variáveis do Supabase e os logs do deploy." };
+      return { erro: `O servidor respondeu de forma inesperada (status ${resposta.status}).` };
+    }
+  }
+
   async function cadastrar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -24,8 +35,8 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
     setSalvando(true);
     setMensagem("");
     try {
-      const resposta = await fetch("/api/admin/produtos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(novo) });
-      const resultado = await resposta.json();
+      const resposta = await fetch("/api/admin/produtos", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(novo) });
+      const resultado = await lerResposta(resposta);
       if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível cadastrar o produto.");
       setProdutos((atuais) => [...atuais, resultado.produto as Produto]);
       event.currentTarget.reset();
@@ -38,8 +49,8 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
   }
 
   async function alternar(produto: Produto) {
-    const resposta = await fetch("/api/admin/produtos", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: produto.id, ativo: !produto.ativo }) });
-    const resultado = await resposta.json();
+    const resposta = await fetch("/api/admin/produtos", { method: "PATCH", credentials: "same-origin", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify({ id: produto.id, ativo: !produto.ativo }) });
+    const resultado = await lerResposta(resposta);
     if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível alterar o produto.");
     setProdutos((atuais) => atuais.map((p) => p.id === produto.id ? resultado.produto as Produto : p));
     setMensagem("Produto atualizado.");

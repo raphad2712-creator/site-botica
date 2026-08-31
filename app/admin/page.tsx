@@ -5,6 +5,7 @@ import type { Produto } from "@/lib/types";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { AdminAftercare } from "./aftercare";
 import { AdminTabs } from "./tabs";
+import { AdminNewsletter } from "./newsletter";
 
 export default async function AdminPage() {
   const supabase = await criarClienteServidor();
@@ -16,12 +17,28 @@ export default async function AdminPage() {
 
   const { data } = await supabase.from("produtos").select("*").order("id");
   const admin = criarClienteAdmin();
-  const [{ data: pedidos }, { data: solicitacoes }] = await Promise.all([
-    admin.from("pedidos").select("id,total,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em").order("criado_em", { ascending: false }).limit(50),
+  const [{ data: pedidos }, { data: solicitacoes }, { count: totalInscritos }] = await Promise.all([
+    admin.from("pedidos").select("id,usuario_id,endereco_id,total,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em,endereco:enderecos(cep,rua,numero,complemento,bairro,cidade,estado)").order("criado_em", { ascending: false }).limit(50),
     admin.from("solicitacoes_pos_venda").select("id,pedido_id,tipo,motivo,detalhes,status,resposta_admin,criado_em").order("criado_em", { ascending: false }).limit(50),
+    admin.from("newsletter_inscritos").select("id", { count: "exact", head: true }).eq("ativo", true),
   ]);
   const produtos = (data ?? []) as Produto[];
-  const pedidosLista = pedidos ?? [];
+  const pedidosBase = pedidos ?? [];
+  const usuariosIds = [...new Set(pedidosBase.map((pedido) => pedido.usuario_id).filter(Boolean))];
+  const { data: perfisClientes } = usuariosIds.length
+    ? await admin.from("perfil_clientes").select("usuario_id,nome,cpf,telefone").in("usuario_id", usuariosIds)
+    : { data: [] };
+  const perfisPorUsuario = new Map((perfisClientes ?? []).map((perfil) => [perfil.usuario_id, perfil]));
+  const emails = await Promise.all(usuariosIds.map(async (id) => {
+    const { data: usuario } = await admin.auth.admin.getUserById(id);
+    return [id, usuario.user?.email ?? ""] as const;
+  }));
+  const emailsPorUsuario = new Map(emails);
+  const pedidosLista = pedidosBase.map((pedido) => ({
+    ...pedido,
+    endereco: Array.isArray(pedido.endereco) ? (pedido.endereco[0] ?? null) : pedido.endereco,
+    cliente: { ...perfisPorUsuario.get(pedido.usuario_id), email: emailsPorUsuario.get(pedido.usuario_id) || "" },
+  }));
   const solicitacoesLista = solicitacoes ?? [];
   const pendentes = solicitacoesLista.filter((item) => item.status !== "concluida").length;
   return <main className="admin-dashboard" data-admin-tab="overview">
@@ -29,7 +46,7 @@ export default async function AdminPage() {
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA ↗</a>
     </header>
-    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length }} />
+    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length, newsletter: totalInscritos ?? 0 }} />
     <section className="admin-overview" id="visao-geral">
       <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
       <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
@@ -38,5 +55,6 @@ export default async function AdminPage() {
     </section>
     <AdminProducts produtosIniciais={produtos} />
     <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} />
+    <AdminNewsletter total={totalInscritos ?? 0} />
   </main>;
 }
