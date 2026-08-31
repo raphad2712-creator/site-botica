@@ -565,14 +565,14 @@ html[data-theme="dark"] body header .logo-clean::after{
   display:none!important;
 }
 html[data-theme="dark"] body header .logo-clean img{
-  width:calc(100% + 4px)!important;
-  height:calc(100% + 4px)!important;
-  max-width:none!important;
-  max-height:none!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
   object-fit:contain!important;
   object-position:center!important;
-  transform:translate(-2px,-2px)!important;
-  clip-path:inset(1px)!important;
+  transform:none!important;
+  clip-path:inset(8px 0 9px 0)!important;
 }
 
 /* Organized footer and remaining dark-mode surfaces. */
