@@ -9,13 +9,14 @@ export function AdminNewsletter({ total }: { total: number }) {
   async function enviar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!total || enviando) return;
+    const formulario = event.currentTarget;
     setEnviando(true); setMensagem("");
     try {
-      const form = Object.fromEntries(new FormData(event.currentTarget));
+      const form = Object.fromEntries(new FormData(formulario));
       const resposta = await fetch("/api/admin/newsletter", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       const dados = await resposta.json();
       setMensagem(dados.mensagem || dados.erro || "Não foi possível enviar.");
-      if (resposta.ok) event.currentTarget.reset();
+      if (resposta.ok) formulario.reset();
     } catch { setMensagem("Não foi possível conectar ao serviço de envio."); }
     finally { setEnviando(false); }
   }

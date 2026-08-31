@@ -21,7 +21,8 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
 
   async function cadastrar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formulario = event.currentTarget;
+    const form = new FormData(formulario);
     const novo = {
       nome: String(form.get("nome")),
       descricao: String(form.get("descricao")),
@@ -39,7 +40,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
       const resultado = await lerResposta(resposta);
       if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível cadastrar o produto.");
       setProdutos((atuais) => [...atuais, resultado.produto as Produto]);
-      event.currentTarget.reset();
+      formulario.reset();
       setMensagem("Produto cadastrado com sucesso.");
     } catch {
       setMensagem("Falha de conexão. Tente novamente.");
