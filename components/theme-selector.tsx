@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 type Tema = "light" | "dark" | "auto";
 
 function aplicar(tema: Tema) {
-  const escuro = tema === "dark" || (tema === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  // O automático usa o visual claro como padrão da loja. O escuro só é
+  // ativado quando a pessoa o escolhe explicitamente.
+  const escuro = tema === "dark";
   document.documentElement.dataset.theme = escuro ? "dark" : "light";
   document.documentElement.dataset.themePreference = tema;
 }
@@ -16,13 +18,6 @@ export function ThemeSelector() {
   useEffect(() => {
     const salvo = (localStorage.getItem("botica-theme") as Tema | null) ?? "auto";
     setTema(salvo); aplicar(salvo);
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const acompanharSistema = () => {
-      const atual = (localStorage.getItem("botica-theme") as Tema | null) ?? "auto";
-      if (atual === "auto") aplicar("auto");
-    };
-    media.addEventListener("change", acompanharSistema);
-    return () => media.removeEventListener("change", acompanharSistema);
   }, []);
 
   function alterar(valor: Tema) {

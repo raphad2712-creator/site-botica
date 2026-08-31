@@ -20,6 +20,9 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   const [ordem, setOrdem] = useState("relevancia");
   const [newsletterMensagem, setNewsletterMensagem] = useState("");
   const [newsletterEnviando, setNewsletterEnviando] = useState(false);
+  const [receitaArquivo, setReceitaArquivo] = useState("");
+  const [receitaMensagem, setReceitaMensagem] = useState("");
+  const [receitaEnviando, setReceitaEnviando] = useState(false);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const inicial = params.get("categoria");
@@ -57,6 +60,23 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     } finally {
       setNewsletterEnviando(false);
     }
+  }
+
+  async function enviarReceita(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (receitaEnviando) return;
+    const formulario = event.currentTarget; const dados = new FormData(formulario);
+    const arquivo = dados.get("arquivo") as File | null;
+    if (!arquivo?.size) return setReceitaMensagem("Selecione sua receita em PDF, JPG ou PNG.");
+    if (arquivo.size > 10 * 1024 * 1024) return setReceitaMensagem("O arquivo deve ter no máximo 10 MB.");
+    setReceitaEnviando(true); setReceitaMensagem("Enviando sua receita com segurança...");
+    try {
+      const resposta = await fetch("/api/receitas", { method: "POST", credentials: "same-origin", body: dados });
+      const retorno = await resposta.json();
+      if (resposta.status === 401) { window.location.assign("/login?next=/#receita"); return; }
+      setReceitaMensagem(retorno.mensagem || retorno.erro || "Não foi possível enviar.");
+      if (resposta.ok) { formulario.reset(); setReceitaArquivo(""); }
+    } catch { setReceitaMensagem("Não foi possível conectar. Tente novamente."); }
+    finally { setReceitaEnviando(false); }
   }
 
   return (
@@ -114,7 +134,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       </section>
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>
-      <section className="rx scroll-reveal" id="receita"><div><small>MANIPULAÇÃO PERSONALIZADA</small><h2>Tem uma receita?</h2><p>Envie sua prescrição. Nossa equipe analisa e entra em contato com o orçamento.</p><ol><li><b>1</b> Envie a receita</li><li><b>2</b> Receba o orçamento</li><li><b>3</b> Aprove seu pedido</li></ol></div><form className="rx-form" onSubmit={(e) => { e.preventDefault(); alert("Receita recebida para demonstração."); }}><span>⇧</span><h3>Envie sua receita</h3><p>PDF, JPG ou PNG • até 10 MB</p><label>SELECIONAR ARQUIVO<input type="file" accept="image/*,.pdf" required /></label><button>SOLICITAR ORÇAMENTO</button></form></section>
+      <section className="rx scroll-reveal" id="receita"><div><small>MANIPULAÇÃO PERSONALIZADA</small><h2>Tem uma receita?</h2><p>Envie sua prescrição. Nossa equipe analisa e entra em contato com o orçamento.</p><ol><li><b>1</b> Envie a receita</li><li><b>2</b> Receba o orçamento</li><li><b>3</b> Aprove seu pedido</li></ol></div><form className="rx-form" onSubmit={enviarReceita}><span>⇧</span><h3>Envie sua receita</h3><p>PDF, JPG ou PNG • até 10 MB</p><label className={receitaArquivo ? "rx-file selected" : "rx-file"}>{receitaArquivo ? `✓ ${receitaArquivo}` : "SELECIONAR ARQUIVO"}<input name="arquivo" type="file" accept="application/pdf,image/jpeg,image/png" onChange={(e) => { setReceitaArquivo(e.target.files?.[0]?.name || ""); setReceitaMensagem(""); }} required /></label><textarea name="observacao" maxLength={600} placeholder="Observação ou informação para o orçamento (opcional)" /><button disabled={receitaEnviando}>{receitaEnviando ? "ENVIANDO..." : "SOLICITAR ORÇAMENTO"}</button>{receitaMensagem && <strong className="rx-message" role="status">{receitaMensagem}</strong>}</form></section>
       <section className="newsletter scroll-reveal"><div><small>NOVIDADES DA BOTICA</small><h2>Cuide-se com informação.</h2><p>Receba novidades, conteúdos e ofertas da Botica no seu e-mail.</p></div><form onSubmit={cadastrarNewsletter}><input name="email" type="email" placeholder="Seu melhor e-mail" required disabled={newsletterEnviando} /><button disabled={newsletterEnviando}>{newsletterEnviando ? "CADASTRANDO..." : "QUERO RECEBER"}</button>{newsletterMensagem && <p className="newsletter-message" role="status">{newsletterMensagem}</p>}<small>Ao cadastrar, você concorda em receber comunicações da Botica. É possível cancelar quando quiser.</small></form></section>
     </>
   );

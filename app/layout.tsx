@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <head><script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('botica-theme')||'auto';var d=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light';document.documentElement.dataset.themePreference=t}catch(e){}})()` }} /></head>
+      <head><script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('botica-theme')||'auto';document.documentElement.dataset.theme=t==='dark'?'dark':'light';document.documentElement.dataset.themePreference=t}catch(e){}})()` }} /></head>
       <body>
         <CartProvider>
           <FavoritesProvider>

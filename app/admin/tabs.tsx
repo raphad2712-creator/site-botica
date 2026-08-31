@@ -9,6 +9,7 @@ const abas = [
   { id: "requests", icone: "!", nome: "Solicitações" },
   { id: "completed", icone: "✓", nome: "Concluídas" },
   { id: "newsletter", icone: "✉", nome: "Comunicados" },
+  { id: "recipes", icone: "＋", nome: "Receitas" },
 ];
 
 export function AdminTabs({ numeros }: { numeros: Record<string, number> }) {
