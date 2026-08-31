@@ -499,3 +499,55 @@ html[data-theme="dark"] .favorites-drawer,html[data-theme="dark"] .cart-drawer,h
 .rx-form .rx-file{width:100%;min-height:58px;display:flex;align-items:center;justify-content:center;padding:12px;border:1px dashed #a9bcb0;color:#14503c;text-align:center;font-size:9px;font-weight:900;overflow-wrap:anywhere;cursor:pointer}.rx-file input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.rx-form .rx-file.selected{border-style:solid;border-color:#78a45e;background:#edf5e8}.rx-form textarea{width:100%;min-height:72px;padding:12px;border:1px solid #d2ded6;resize:vertical}.rx-form button:disabled{opacity:.65;cursor:wait}.rx-message{display:block;color:#46723d;font-size:9px;line-height:1.45;text-align:center}.admin-recipes{display:none;max-width:1280px;margin:44px auto 0}.admin-recipe-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.admin-recipe-list article{overflow:hidden;border:1px solid #dce6df;border-radius:16px;background:#fff;box-shadow:0 12px 35px #153f2e0a}.admin-recipe-list header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px;background:#f5f8f5;border-bottom:1px solid #e2e9e4}.admin-recipe-list header small,.admin-recipe-customer small{display:block;color:#819087;font-size:7px;font-weight:900;letter-spacing:.12em}.admin-recipe-list h3{margin:5px 0 0;color:#14503c;font:700 18px Georgia}.admin-recipe-list header>span{padding:7px 10px;border-radius:14px;background:#e8efdf;color:#567542;font-size:7px;font-weight:900;text-transform:uppercase}.admin-recipe-customer{display:grid;gap:5px;padding:16px 20px}.admin-recipe-customer b{color:#304c3e}.admin-recipe-customer span,.admin-recipe-customer em{color:#6d7d74;font-size:9px;font-style:normal}.admin-recipe-list article>p{margin:0 20px 15px;padding:12px;border-left:3px solid #86a958;background:#f4f7f1;color:#5c6e64;font-size:9px}.admin-recipe-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 20px 20px}.admin-recipe-actions button,.admin-recipe-actions select{min-height:42px;border:1px solid #cbd8d0;border-radius:22px;background:#fff;color:#14503c;padding:0 13px;font-size:8px;font-weight:900}.admin-recipe-actions button{border-color:#14503c;background:#14503c;color:#fff}.admin-dashboard[data-admin-tab="recipes"] .admin-overview,.admin-dashboard[data-admin-tab="recipes"] .admin-page,.admin-dashboard[data-admin-tab="recipes"] .admin-aftercare,.admin-dashboard[data-admin-tab="recipes"] .admin-newsletter{display:none}.admin-dashboard[data-admin-tab="recipes"] .admin-recipes{display:block}
 html[data-theme="dark"] .rx-form .rx-file,html[data-theme="dark"] .rx-form textarea{background:#111a15!important;border-color:#405247!important;color:#dce7e0!important}html[data-theme="dark"] .rx-form .rx-file.selected{background:#243428!important;border-color:#73995f!important}html[data-theme="dark"] .rx-message{color:#add091!important}html[data-theme="dark"] .admin-recipe-list article,html[data-theme="dark"] .admin-recipe-list header{background:#19231e!important;border-color:#35473d!important;color:#dce7e0!important}html[data-theme="dark"] .admin-recipe-list h3,html[data-theme="dark"] .admin-recipe-customer b{color:#c6dfb9!important}html[data-theme="dark"] .admin-recipe-list article>p{background:#223027!important;color:#b4c1b9!important}html[data-theme="dark"] .admin-recipe-actions select{background:#111a15!important;border-color:#405247!important;color:#dce7e0!important}
 @media(max-width:760px){.admin-recipes{margin-top:22px}.admin-recipe-list{grid-template-columns:1fr}.admin-recipe-actions{grid-template-columns:1fr}.rx-form textarea{font-size:16px}}
+
+/* Highest-priority dark surfaces: checkout and order status. */
+html[data-theme="dark"] body .checkout-forms>section,
+html[data-theme="dark"] body .checkout-forms section>header,
+html[data-theme="dark"] body .checkout-forms section>header>div{
+  background:#19231e!important;
+  border-color:#405348!important;
+  color:#edf5ef!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] body .checkout-forms section>header{
+  padding:4px 0!important;
+}
+html[data-theme="dark"] body .checkout-forms section>header>b{
+  background:#2d4938!important;
+  border:1px solid #52705c!important;
+  color:#eff8f1!important;
+}
+html[data-theme="dark"] body .checkout-forms h2{
+  color:#d5ebca!important;
+}
+html[data-theme="dark"] body .checkout-forms header small{
+  color:#b8c6bd!important;
+}
+html[data-theme="dark"] body .order-status,
+html[data-theme="dark"] body .status-pago,
+html[data-theme="dark"] body .status-aprovado{
+  background:#2a4937!important;
+  border-color:#4e7059!important;
+  color:#d7efcc!important;
+}
+html[data-theme="dark"] body .order-details-toggle,
+html[data-theme="dark"] body .order-expanded-content{
+  background:#223128!important;
+  border-color:#405448!important;
+  color:#edf5ef!important;
+}
+html[data-theme="dark"] body header .logo-clean{
+  overflow:hidden!important;
+  background:#050a07!important;
+}
+html[data-theme="dark"] body header .logo-clean::before,
+html[data-theme="dark"] body header .logo-clean::after{
+  content:none!important;
+  display:none!important;
+}
+html[data-theme="dark"] body header .logo-clean img{
+  background:#050a07!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}

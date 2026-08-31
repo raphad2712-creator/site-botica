@@ -20,8 +20,8 @@
 /* Correção definitiva dos estilos antigos que comprimiam o banner */
 .hero{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;display:grid!important;overflow:hidden!important}.hero>div{width:auto!important;max-width:none!important}.hero-img{align-self:stretch!important}.hero-img img{width:100%!important;max-width:none!important;display:block!important}
 
-/* Máscaras independentes para esconder somente as linhas verticais da logo */
-.logo-clean:before,.logo-clean:after{content:""!important;display:block!important;position:absolute;top:0;bottom:0;width:10px;background:#fff;z-index:3;pointer-events:none}.logo-clean:before{left:0}.logo-clean:after{right:0}
+/* A logo é exibida inteira, sem máscaras ou faixas artificiais nas laterais. */
+.logo-clean:before,.logo-clean:after{content:none!important;display:none!important}
 .cep-field>div{border-radius:5px;overflow:hidden;transition:box-shadow .3s}.cep-field.cep-ok>div{box-shadow:0 0 0 3px #8ebc5438}.cep-field button{min-width:160px;transition:background .25s,transform .25s}.cep-field button.loading{background:#527063}.cep-field button i{display:inline-block;width:12px;height:12px;border:2px solid #ffffff70;border-top-color:#fff;border-radius:50%;vertical-align:-2px;margin-right:6px;animation:cepSpin .65s linear infinite}.cep-confirmation{display:flex;align-items:center;gap:7px;margin-top:10px;color:#46723d;font-size:10px;font-weight:700;animation:cepSuccess .45s ease both}.cep-confirmation b{width:21px;height:21px;display:grid;place-items:center;border-radius:50%;background:#8ebc54;color:#fff;animation:cepPop .45s ease both}.delivery-option{animation:cepSuccess .45s ease both}@keyframes cepSpin{to{transform:rotate(360deg)}}@keyframes cepSuccess{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}@keyframes cepPop{0%{transform:scale(.4)}70%{transform:scale(1.18)}100%{transform:scale(1)}}
 
 /* Logo oficial atualizada: imagem inteira, sem recortes ou máscaras laterais */
