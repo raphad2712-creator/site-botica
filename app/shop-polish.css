@@ -552,26 +552,28 @@ html[data-theme="dark"] body header .logo-clean img{
   box-shadow:none!important;
 }
 
-/* Black edge masks remove the light pixels embedded at the logo boundaries. */
+/* Dark logo: preserve the full lettering and crop only the outermost image pixels. */
 html[data-theme="dark"] body header .logo-clean{
   position:relative!important;
   isolation:isolate!important;
+  overflow:hidden!important;
+  background:#050a07!important;
 }
 html[data-theme="dark"] body header .logo-clean::before,
 html[data-theme="dark"] body header .logo-clean::after{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  top:-2px!important;
-  bottom:-2px!important;
-  width:13px!important;
-  background:#050a07!important;
-  opacity:1!important;
-  z-index:5!important;
-  pointer-events:none!important;
+  content:none!important;
+  display:none!important;
 }
-html[data-theme="dark"] body header .logo-clean::before{left:-1px!important}
-html[data-theme="dark"] body header .logo-clean::after{right:-1px!important}
+html[data-theme="dark"] body header .logo-clean img{
+  width:calc(100% + 4px)!important;
+  height:calc(100% + 4px)!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:translate(-2px,-2px)!important;
+  clip-path:inset(1px)!important;
+}
 
 /* Organized footer and remaining dark-mode surfaces. */
 footer{
