@@ -1,12 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { criarClienteSupabase } from "@/lib/supabase/client";
 import type { Produto } from "@/lib/types";
 
 export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[] }) {
   const [produtos, setProdutos] = useState(produtosIniciais);
   const [mensagem, setMensagem] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   async function cadastrar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,17 +21,28 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
       imagem_url: String(form.get("imagem_url") || "") || null,
       ativo: true,
     };
-    const { data, error } = await criarClienteSupabase().from("produtos").insert(novo).select().single();
-    if (error) return setMensagem(error.message);
-    setProdutos((atuais) => [...atuais, data as Produto]);
-    event.currentTarget.reset();
-    setMensagem("Produto cadastrado.");
+    setSalvando(true);
+    setMensagem("");
+    try {
+      const resposta = await fetch("/api/admin/produtos", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(novo) });
+      const resultado = await resposta.json();
+      if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível cadastrar o produto.");
+      setProdutos((atuais) => [...atuais, resultado.produto as Produto]);
+      event.currentTarget.reset();
+      setMensagem("Produto cadastrado com sucesso.");
+    } catch {
+      setMensagem("Falha de conexão. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
   }
 
   async function alternar(produto: Produto) {
-    const { error } = await criarClienteSupabase().from("produtos").update({ ativo: !produto.ativo }).eq("id", produto.id);
-    if (error) return setMensagem(error.message);
-    setProdutos((atuais) => atuais.map((p) => p.id === produto.id ? { ...p, ativo: !p.ativo } : p));
+    const resposta = await fetch("/api/admin/produtos", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: produto.id, ativo: !produto.ativo }) });
+    const resultado = await resposta.json();
+    if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível alterar o produto.");
+    setProdutos((atuais) => atuais.map((p) => p.id === produto.id ? resultado.produto as Produto : p));
+    setMensagem("Produto atualizado.");
   }
 
   return (
@@ -45,7 +56,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         <label>Preço anterior<input name="preco_antigo" type="number" step="0.01" placeholder="Opcional" /></label>
         <label>Quantidade em estoque<input name="estoque" type="number" min="0" placeholder="0" required /></label>
         <label>Imagem do produto<input name="imagem_url" type="url" placeholder="Cole a URL da imagem (opcional)" /></label>
-        <button>+ CADASTRAR PRODUTO</button>
+        <button disabled={salvando}>{salvando ? "CADASTRANDO..." : "+ CADASTRAR PRODUTO"}</button>
       </form>
       <p className="form-message">{mensagem}</p>
       <div className="admin-list admin-product-list">
