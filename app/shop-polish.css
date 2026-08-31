@@ -572,7 +572,7 @@ html[data-theme="dark"] body header .logo-clean img{
   object-fit:contain!important;
   object-position:center!important;
   transform:none!important;
-  clip-path:inset(8px 0 9px 0)!important;
+  clip-path:none!important;
 }
 
 /* Organized footer and remaining dark-mode surfaces. */
@@ -648,4 +648,34 @@ html[data-theme="dark"] body .payment-choice b{
 @media(max-width:560px){
   footer{grid-template-columns:1fr!important;gap:28px!important;padding:38px 24px 92px!important;text-align:left!important}
   footer .footer-logo{max-width:260px!important}
+}
+
+/* Separate assets prevent filters, clipping and zoom artifacts on the logo. */
+.logo-clean .logo-dark-image{display:none!important}
+.logo-clean .logo-light-image{display:block!important}
+html[data-theme="dark"] body header .logo-clean .logo-light-image{display:none!important}
+html[data-theme="dark"] body header .logo-clean .logo-dark-image{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#050a07!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+  clip-path:none!important;
+}
+html[data-theme="dark"] body footer .footer-logo img{
+  background:#050a07!important;
+  filter:none!important;
+  transform:none!important;
+  clip-path:none!important;
 }

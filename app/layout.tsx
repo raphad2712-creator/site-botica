@@ -42,5 +42,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 function ImageFooter() {
-  return <img src="/botica-logo-nova.jpeg" alt="Botica Bioenergética" />;
+  return <img src="/botica-logo-dark.png" alt="Botica Bioenergética" />;
 }
