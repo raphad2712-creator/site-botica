@@ -401,6 +401,96 @@ html[data-theme="dark"] .account-profile,
 html[data-theme="dark"] .account-history{
   border-color:#405348!important;
 }
+
+/* Final dark-theme sweep: remove every remaining bright panel. */
+html[data-theme="dark"] .logo-clean::before,
+html[data-theme="dark"] .logo-clean::after,
+html[data-theme="dark"] header .logo-clean::before,
+html[data-theme="dark"] header .logo-clean::after{
+  content:none!important;
+  display:none!important;
+  opacity:0!important;
+  width:0!important;
+  background:transparent!important;
+}
+html[data-theme="dark"] header .logo-clean,
+html[data-theme="dark"] header .logo-clean img{
+  background:#07110d!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] header .logo-clean img{
+  filter:invert(1) hue-rotate(180deg) brightness(1.08) contrast(1.12)!important;
+}
+html[data-theme="dark"] .order-details-toggle{
+  background:#223128!important;
+  border-color:#405448!important;
+  color:#e1eee5!important;
+}
+html[data-theme="dark"] .order-details-toggle:hover{
+  background:#2a3c31!important;
+}
+html[data-theme="dark"] .order-details-toggle b{
+  background:#36513f!important;
+  color:#d8efcd!important;
+}
+html[data-theme="dark"] .cart-drawer,
+html[data-theme="dark"] .drawer-head,
+html[data-theme="dark"] .drawer-items,
+html[data-theme="dark"] .drawer-footer,
+html[data-theme="dark"] .drawer-item{
+  background:#151f19!important;
+  border-color:#35483d!important;
+  color:#edf4ef!important;
+}
+html[data-theme="dark"] .drawer-head button,
+html[data-theme="dark"] .drawer-quantity,
+html[data-theme="dark"] .drawer-quantity button{
+  background:#223128!important;
+  border-color:#43594b!important;
+  color:#edf5ef!important;
+}
+html[data-theme="dark"] .free-shipping,
+html[data-theme="dark"] .drawer-image,
+html[data-theme="dark"] .summary-image,
+html[data-theme="dark"] .order-product-image{
+  background:#25352b!important;
+  border-color:#405448!important;
+  color:#e1ece5!important;
+}
+html[data-theme="dark"] .free-shipping i{
+  background:linear-gradient(90deg,#82b65e 0 57%,#405148 57%)!important;
+}
+html[data-theme="dark"] .drawer-head h2,
+html[data-theme="dark"] .drawer-item-copy>b,
+html[data-theme="dark"] .drawer-item-copy a>b,
+html[data-theme="dark"] .drawer-footer>div,
+html[data-theme="dark"] .drawer-footer strong{
+  color:#edf5ef!important;
+}
+html[data-theme="dark"] .drawer-head small,
+html[data-theme="dark"] .drawer-item-copy small,
+html[data-theme="dark"] .drawer-item-copy button,
+html[data-theme="dark"] .drawer-footer>small{
+  color:#b4c2b9!important;
+}
+html[data-theme="dark"] .drawer-item-copy strong{
+  color:#a9d58f!important;
+}
+html[data-theme="dark"] .drawer-image img,
+html[data-theme="dark"] .summary-image img,
+html[data-theme="dark"] .order-product-image img{
+  background:#25352b!important;
+}
+html[data-theme="dark"] .checkout-forms section>header>b,
+html[data-theme="dark"] .delivery-option,
+html[data-theme="dark"] .payment-options label,
+html[data-theme="dark"] .shipping-pending,
+html[data-theme="dark"] .free-shipping>span{
+  background:#223128!important;
+  border-color:#45604e!important;
+  color:#e1ece5!important;
+}
 html[data-theme="dark"] .support-panel{background:#151f1a!important;border-color:#405247!important;color:#e4ece7!important;box-shadow:0 28px 85px #0009!important}html[data-theme="dark"] .support-panel>header{background:linear-gradient(135deg,#09281f,#0f4b38)!important;border-bottom:1px solid #365448!important}html[data-theme="dark"] .support-shortcuts,html[data-theme="dark"] .support-faq{background:#151f1a!important}html[data-theme="dark"] .support-shortcuts a{border-color:#304138!important;color:#dce7e0!important}html[data-theme="dark"] .support-shortcuts a:hover,html[data-theme="dark"] .support-faq button:hover{background:#1e2c25!important}html[data-theme="dark"] .support-shortcuts span,html[data-theme="dark"] .support-faq button b{color:#9dc57f!important}html[data-theme="dark"] .support-faq button{color:#c7d3cc!important}html[data-theme="dark"] .support-faq p{border-color:#304138!important;color:#aebbb3!important}html[data-theme="dark"] .support-email{color:#93a299!important}html[data-theme="dark"] .support-backdrop{background:#020705d9!important}
 html[data-theme="dark"] .rx,html[data-theme="dark"] .newsletter,html[data-theme="dark"] .shipping,html[data-theme="dark"] .campaign{background:#101914!important;border-color:#31433a!important;color:#dce7e0!important}html[data-theme="dark"] .rx>div,html[data-theme="dark"] .rx>form,html[data-theme="dark"] .newsletter>div,html[data-theme="dark"] .newsletter>form,html[data-theme="dark"] .shipping>div,html[data-theme="dark"] .shipping>form{background:#19231e!important;border-color:#35473d!important;color:#dce7e0!important}html[data-theme="dark"] .rx h2,html[data-theme="dark"] .rx h3,html[data-theme="dark"] .newsletter h2,html[data-theme="dark"] .shipping h2{color:#c6dfb9!important}html[data-theme="dark"] .rx p,html[data-theme="dark"] .rx li,html[data-theme="dark"] .newsletter p,html[data-theme="dark"] .newsletter small,html[data-theme="dark"] .shipping p{color:#aebbb3!important}html[data-theme="dark"] .rx input,html[data-theme="dark"] .rx textarea,html[data-theme="dark"] .newsletter input,html[data-theme="dark"] .shipping input{background:#111a15!important;border-color:#405247!important;color:#edf4ef!important}
 html[data-theme="dark"] .favorites-drawer,html[data-theme="dark"] .cart-drawer,html[data-theme="dark"] .drawer-head,html[data-theme="dark"] .drawer-footer,html[data-theme="dark"] .drawer-items{background:#151f1a!important;border-color:#34463b!important;color:#dce7e0!important}html[data-theme="dark"] .drawer-item{border-color:#304138!important}html[data-theme="dark"] .drawer-item-copy b,html[data-theme="dark"] .drawer-head h2{color:#dce7e0!important}html[data-theme="dark"] .drawer-quantity,html[data-theme="dark"] .drawer-quantity button{background:#1d2a23!important;border-color:#3a4c41!important;color:#e5eee8!important}html[data-theme="dark"] .product-page,html[data-theme="dark"] .cart-page,html[data-theme="dark"] .auth-card,html[data-theme="dark"] .pix-page,html[data-theme="dark"] .checkout-success{background:#111a15!important;color:#dce7e0!important}html[data-theme="dark"] .product-info h1,html[data-theme="dark"] .cart-page h1,html[data-theme="dark"] .auth-card h1,html[data-theme="dark"] .pix-page h1,html[data-theme="dark"] .checkout-success h1{color:#c6dfb9!important}html[data-theme="dark"] .product-page-visual,html[data-theme="dark"] .care-note,html[data-theme="dark"] .payment-options label,html[data-theme="dark"] .delivery-option{background:#19231e!important;border-color:#35473d!important;color:#dce7e0!important}html[data-theme="dark"] .profile-form-section,html[data-theme="dark"] .account-verified,html[data-theme="dark"] .profile-edit-button{background:#202d25!important;border-color:#3a4d41!important;color:#dce7e0!important}
