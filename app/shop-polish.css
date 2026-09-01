@@ -679,3 +679,98 @@ html[data-theme="dark"] body footer .footer-logo img{
   transform:none!important;
   clip-path:none!important;
 }
+
+/* Correct logo for each theme. */
+.footer-logo .footer-logo-light{display:block!important}
+.footer-logo .footer-logo-dark{display:none!important}
+html[data-theme="dark"] .footer-logo .footer-logo-light{display:none!important}
+html[data-theme="dark"] .footer-logo .footer-logo-dark{display:block!important}
+html:not([data-theme="dark"]) .logo-clean .logo-light-image,
+html:not([data-theme="dark"]) .footer-logo .footer-logo-light{
+  background:#fff!important;
+  filter:none!important;
+  transform:none!important;
+  clip-path:none!important;
+}
+
+/* Remove the last white surfaces from the storefront dark theme. */
+html[data-theme="dark"] body .trust-row,
+html[data-theme="dark"] body .trust-row article,
+html[data-theme="dark"] body .trust-row article:hover,
+html[data-theme="dark"] body .trust-row article:nth-child(n){
+  background:#19251f!important;
+  border-color:#3b5044!important;
+  color:#e8f1eb!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] body .trust-row article>b{
+  background:#294033!important;
+  border-color:#54705d!important;
+  color:#bde1aa!important;
+}
+html[data-theme="dark"] body .trust-row strong{color:#edf5ef!important}
+html[data-theme="dark"] body .trust-row small{color:#b3c1b8!important}
+
+/* Complete administrative dark theme. */
+html[data-theme="dark"] body .admin-dashboard-nav,
+html[data-theme="dark"] body .admin-dashboard-nav button,
+html[data-theme="dark"] body .admin-dashboard-nav button:hover,
+html[data-theme="dark"] body .admin-overview article,
+html[data-theme="dark"] body .admin-product-form,
+html[data-theme="dark"] body .admin-product-list article,
+html[data-theme="dark"] body .admin-cards form,
+html[data-theme="dark"] body .admin-recipes,
+html[data-theme="dark"] body .admin-recipe-list,
+html[data-theme="dark"] body .admin-recipe-list article,
+html[data-theme="dark"] body .admin-recipe-list header,
+html[data-theme="dark"] body .admin-none{
+  background:#18241e!important;
+  border-color:#3d5146!important;
+  color:#e6efe9!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] body .admin-dashboard-nav button.active{
+  background:#155a43!important;
+  border-color:#39745d!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] body .admin-dashboard-nav button i,
+html[data-theme="dark"] body .admin-overview article>span,
+html[data-theme="dark"] body .admin-panel-heading>span,
+html[data-theme="dark"] body .admin-recipe-list header>span{
+  background:#294237!important;
+  border-color:#4d6758!important;
+  color:#d5ebca!important;
+}
+html[data-theme="dark"] body .admin-dashboard-nav button.active i{
+  background:#ffffff16!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] body .admin-overview strong,
+html[data-theme="dark"] body .admin-panel-heading h2,
+html[data-theme="dark"] body .admin-recipe-list h3,
+html[data-theme="dark"] body .admin-recipe-customer b{
+  color:#d5eaca!important;
+}
+html[data-theme="dark"] body .admin-overview p,
+html[data-theme="dark"] body .admin-panel-heading p,
+html[data-theme="dark"] body .admin-recipe-customer span,
+html[data-theme="dark"] body .admin-recipe-customer em,
+html[data-theme="dark"] body .admin-none{
+  color:#b9c7be!important;
+}
+.admin-recipe-warning{
+  margin:16px 0!important;
+  padding:14px 16px!important;
+  border:1px solid #d5a84e!important;
+  border-radius:10px!important;
+  background:#fff5db!important;
+  color:#704e0d!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+html[data-theme="dark"] body .admin-recipe-warning{
+  background:#3a2e18!important;
+  border-color:#80652c!important;
+  color:#f4d993!important;
+}

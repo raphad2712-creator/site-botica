@@ -29,7 +29,13 @@ export async function POST(request: Request) {
     const { error: uploadError } = await admin.storage.from(bucket).upload(caminho, arquivo, { contentType: arquivo.type, upsert: false });
     if (uploadError) throw uploadError;
     const { data: receita, error: bancoError } = await admin.from("receitas").insert({ usuario_id: auth.user.id, arquivo_url: caminho, observacao: observacao || null, status: "em_analise" }).select("id").single();
-    if (bancoError) { await admin.storage.from(bucket).remove([caminho]); throw bancoError; }
+    if (bancoError) {
+      await admin.storage.from(bucket).remove([caminho]);
+      if (bancoError.code === "42P01" || bancoError.message.toLowerCase().includes("receitas")) {
+        return NextResponse.json({ erro: "O recebimento de receitas ainda precisa ser ativado no Supabase. Execute o arquivo supabase/receitas.sql e tente novamente." }, { status: 503 });
+      }
+      throw bancoError;
+    }
 
     const emailAdmin = process.env.ADMIN_EMAIL;
     if (emailAdmin) await enviarEmail({ para: emailAdmin, assunto: `Nova receita #${receita.id} para análise`, html: `<h2>Nova receita recebida</h2><p><b>Cliente:</b> ${escaparHtml(auth.user.email)}</p><p><b>Observação:</b> ${escaparHtml(observacao || "Não informada")}</p><p>Acesse a aba Receitas no painel administrativo para visualizar o arquivo e responder.</p>` });
