@@ -14,8 +14,12 @@ alter table public.receitas enable row level security;
 drop policy if exists "Usuário gerencia receitas" on public.receitas;
 create policy "Usuário gerencia receitas"
 on public.receitas for all
-using (usuario_id = auth.uid() or public.usuario_e_admin())
-with check (usuario_id = auth.uid() or public.usuario_e_admin());
+using (usuario_id = auth.uid())
+with check (usuario_id = auth.uid());
+
+-- O painel administrativo acessa as receitas pelo servidor usando a
+-- service_role do Supabase, que ignora o RLS com segurança. Por isso esta
+-- instalação não depende da função usuario_e_admin() do banco completo.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
