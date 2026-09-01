@@ -26,11 +26,20 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const admin = await adminAutenticado();
   if (!admin) return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
   const id = Number((await params).id); const body = await request.json();
-  const status = String(body.status ?? ""); const permitidos = new Set(["em_analise", "orcamento_enviado", "aprovada", "recusada"]);
+  const status = String(body.status ?? "");
+  const mensagem = String(body.mensagem ?? "").trim();
+  const permitidos = new Set(["em_analise", "orcamento_enviado", "aprovada", "recusada"]);
   if (!permitidos.has(status)) return NextResponse.json({ erro: "Status inválido." }, { status: 400 });
-  const { data: receita, error } = await admin.from("receitas").update({ status }).eq("id", id).select("id,usuario_id,status").single();
+  if (!mensagem) return NextResponse.json({ erro: "Escreva uma mensagem para o cliente." }, { status: 400 });
+  const { data: receita, error } = await admin.from("receitas").update({ status, resposta_admin: mensagem }).eq("id", id).select("id,usuario_id,status,resposta_admin").single();
   if (error) return NextResponse.json({ erro: "Não foi possível atualizar." }, { status: 500 });
   const { data: usuario } = await admin.auth.admin.getUserById(receita.usuario_id);
-  if (usuario.user?.email) await enviarEmail({ para: usuario.user.email, assunto: `Atualização da receita #${id}`, html: `<h2>Sua receita foi atualizada</h2><p>Novo status: <b>${escaparHtml(status.replaceAll("_", " "))}</b>.</p><p>A equipe da Botica entrará em contato quando necessário.</p>` });
-  return NextResponse.json({ mensagem: "Receita atualizada e cliente avisado." });
+  if (!usuario.user?.email) return NextResponse.json({ mensagem: "Resposta salva, mas o cliente não possui e-mail cadastrado.", enviado: false });
+  const envio = await enviarEmail({
+    para: usuario.user.email,
+    assunto: `Resposta sobre sua receita #${id}`,
+    html: `<h2>Resposta da Botica Bioenergética</h2><p>Olá! Sua receita foi atualizada para: <b>${escaparHtml(status.replaceAll("_", " "))}</b>.</p><div style="margin:20px 0;padding:16px;border-left:4px solid #14503c;background:#f2f6f3"><b>Mensagem da Botica:</b><br>${escaparHtml(mensagem).replaceAll("\n", "<br>")}</div><p>Acesse sua conta na loja caso precise consultar outras informações.</p>`,
+  });
+  if (!envio.enviado) return NextResponse.json({ mensagem: envio.motivo === "EMAIL_NAO_CONFIGURADO" ? "Resposta salva, mas o envio de e-mail ainda não está configurado no servidor." : "Resposta salva, mas o serviço de e-mail não conseguiu realizar o envio.", enviado: false });
+  return NextResponse.json({ mensagem: `Resposta salva e enviada para ${usuario.user.email}.`, enviado: true });
 }

@@ -4,10 +4,14 @@ create table if not exists public.receitas (
   usuario_id uuid not null references auth.users(id) on delete cascade,
   arquivo_url text not null,
   observacao text,
+  resposta_admin text,
   status text not null default 'em_analise'
     check (status in ('em_analise','orcamento_enviado','aprovada','recusada')),
   criado_em timestamptz not null default now()
 );
+
+alter table public.receitas
+  add column if not exists resposta_admin text;
 
 alter table public.receitas enable row level security;
 
