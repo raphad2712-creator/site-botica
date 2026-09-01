@@ -10,6 +10,14 @@ export async function POST(request: Request) {
     const supabase = await criarClienteServidor();
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta para enviar a receita." }, { status: 401 });
+    const admin = criarClienteAdmin();
+    const { data: perfil } = await admin.from("perfil_clientes").select("nome,cpf,telefone,cep,rua,numero,bairro,cidade,estado").eq("usuario_id", auth.user.id).maybeSingle();
+    const camposObrigatorios = [
+      ["nome", "nome completo"], ["cpf", "CPF"], ["telefone", "telefone"], ["cep", "CEP"],
+      ["rua", "rua"], ["numero", "número"], ["bairro", "bairro"], ["cidade", "cidade"], ["estado", "estado"],
+    ] as const;
+    const faltando = camposObrigatorios.filter(([campo]) => !String(perfil?.[campo] ?? "").trim()).map(([, rotulo]) => rotulo);
+    if (faltando.length) return NextResponse.json({ erro: `Antes de enviar, preencha em Minha conta: ${faltando.join(", ")}.`, cadastro_incompleto: true }, { status: 400 });
     const form = await request.formData();
     const arquivo = form.get("arquivo");
     const observacao = String(form.get("observacao") ?? "").trim().slice(0, 600);
@@ -17,7 +25,6 @@ export async function POST(request: Request) {
     if (!tiposPermitidos.has(arquivo.type)) return NextResponse.json({ erro: "Envie um arquivo PDF, JPG ou PNG." }, { status: 400 });
     if (arquivo.size > 10 * 1024 * 1024) return NextResponse.json({ erro: "O arquivo deve ter no máximo 10 MB." }, { status: 400 });
 
-    const admin = criarClienteAdmin();
     const bucket = "receitas-privadas";
     const { data: bucketAtual } = await admin.storage.getBucket(bucket);
     if (!bucketAtual) {

@@ -22,14 +22,14 @@ export default async function AdminPage() {
     admin.from("pedidos").select("id,usuario_id,endereco_id,total,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em,endereco:enderecos(cep,rua,numero,complemento,bairro,cidade,estado)").order("criado_em", { ascending: false }).limit(50),
     admin.from("solicitacoes_pos_venda").select("id,pedido_id,tipo,motivo,detalhes,status,resposta_admin,criado_em").order("criado_em", { ascending: false }).limit(50),
     admin.from("newsletter_inscritos").select("id", { count: "exact", head: true }).eq("ativo", true),
-    admin.from("receitas").select("id,usuario_id,observacao,resposta_admin,status,criado_em").order("criado_em", { ascending: false }).limit(50),
+    admin.from("receitas").select("id,usuario_id,observacao,resposta_admin,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em").order("criado_em", { ascending: false }).limit(50),
   ]);
   const produtos = (data ?? []) as Produto[];
   const pedidosBase = pedidos ?? [];
   const receitasBase = receitas ?? [];
   const usuariosIds = [...new Set([...pedidosBase.map((pedido) => pedido.usuario_id), ...receitasBase.map((receita) => receita.usuario_id)].filter(Boolean))];
   const { data: perfisClientes } = usuariosIds.length
-    ? await admin.from("perfil_clientes").select("usuario_id,nome,cpf,telefone").in("usuario_id", usuariosIds)
+    ? await admin.from("perfil_clientes").select("usuario_id,nome,cpf,telefone,cep,rua,numero,complemento,bairro,cidade,estado").in("usuario_id", usuariosIds)
     : { data: [] };
   const perfisPorUsuario = new Map((perfisClientes ?? []).map((perfil) => [perfil.usuario_id, perfil]));
   const emails = await Promise.all(usuariosIds.map(async (id) => {
@@ -58,7 +58,7 @@ export default async function AdminPage() {
       <article><span>!</span><div><small>EM ANÁLISE</small><strong>{solicitacoesLista.filter((item) => item.status === "em_analise").length}</strong><p>Solicitações de pós-venda</p></div></article>
     </section>
     <AdminProducts produtosIniciais={produtos} />
-    <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} />
+    <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} receitasAprovadas={receitasLista.filter((item) => item.status === "aprovada")} />
     <AdminNewsletter total={totalInscritos ?? 0} />
     <AdminRecipes receitas={receitasLista} erroConfiguracao={receitasError ? "O banco ainda não está preparado para receber receitas. Execute supabase/receitas.sql no SQL Editor do Supabase." : undefined} />
   </main>;

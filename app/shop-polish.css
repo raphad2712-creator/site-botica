@@ -501,6 +501,7 @@ html[data-theme="dark"] .rx-form .rx-file,html[data-theme="dark"] .rx-form texta
 @media(max-width:760px){.admin-recipes{margin-top:22px}.admin-recipe-list{grid-template-columns:1fr}.admin-recipe-actions{grid-template-columns:1fr}.rx-form textarea{font-size:16px}}
 
 .admin-recipe-response{display:grid;gap:12px;padding:0 20px 20px}.admin-recipe-response label{display:grid;gap:6px;color:#50645a;font-size:8px;font-weight:900;letter-spacing:.04em}.admin-recipe-response select,.admin-recipe-response textarea{width:100%;border:1px solid #cbd8d0;border-radius:12px;background:#fff;color:#203d30;padding:12px;font:inherit}.admin-recipe-response select{min-height:44px}.admin-recipe-response textarea{min-height:92px;resize:vertical;font-size:11px;line-height:1.55}.admin-recipe-response .admin-recipe-actions{padding:0}.admin-recipe-response .admin-recipe-actions button{min-height:44px}.admin-recipe-response .admin-recipe-actions button:disabled{opacity:.6;cursor:wait}html[data-theme="dark"] .admin-recipe-response label{color:#b8c8bf}html[data-theme="dark"] .admin-recipe-response select,html[data-theme="dark"] .admin-recipe-response textarea{background:#111a15;border-color:#405247;color:#eef6f1}@media(max-width:760px){.admin-recipe-response textarea{font-size:16px}}
+.admin-approved-heading{margin-top:42px}.admin-approved-deliveries{margin-bottom:35px}
 
 /* Highest-priority dark surfaces: checkout and order status. */
 html[data-theme="dark"] body .checkout-forms>section,

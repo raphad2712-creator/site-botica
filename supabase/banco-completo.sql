@@ -83,9 +83,20 @@ create table if not exists public.receitas (
   usuario_id uuid not null references auth.users(id) on delete cascade,
   arquivo_url text not null,
   observacao text,
+  resposta_admin text,
+  status_entrega text not null default 'preparando',
+  transportadora text,
+  codigo_rastreio text,
+  link_rastreio text,
   status text not null default 'em_analise' check (status in ('em_analise','orcamento_enviado','aprovada','recusada')),
   criado_em timestamptz not null default now()
 );
+
+alter table public.receitas add column if not exists resposta_admin text;
+alter table public.receitas add column if not exists status_entrega text not null default 'preparando';
+alter table public.receitas add column if not exists transportadora text;
+alter table public.receitas add column if not exists codigo_rastreio text;
+alter table public.receitas add column if not exists link_rastreio text;
 
 create or replace function public.criar_perfil_novo_usuario()
 returns trigger language plpgsql security definer set search_path = public as $$

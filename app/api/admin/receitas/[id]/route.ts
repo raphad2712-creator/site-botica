@@ -26,6 +26,25 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const admin = await adminAutenticado();
   if (!admin) return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
   const id = Number((await params).id); const body = await request.json();
+  if (body.acao === "rastreio") {
+    const statusEntrega = String(body.status_entrega ?? "preparando");
+    const etapas = new Set(["preparando", "postado", "em_transito", "saiu_para_entrega", "entregue", "atrasado"]);
+    if (!etapas.has(statusEntrega)) return NextResponse.json({ erro: "Etapa de entrega inválida." }, { status: 400 });
+    const alteracao = {
+      status_entrega: statusEntrega,
+      transportadora: String(body.transportadora ?? "").trim() || null,
+      codigo_rastreio: String(body.codigo_rastreio ?? "").trim() || null,
+      link_rastreio: String(body.link_rastreio ?? "").trim() || null,
+    };
+    if (["postado", "em_transito", "saiu_para_entrega"].includes(statusEntrega) && !alteracao.codigo_rastreio) return NextResponse.json({ erro: "Informe o código de rastreamento antes de avisar o cliente." }, { status: 400 });
+    const { data: receita, error } = await admin.from("receitas").update(alteracao).eq("id", id).eq("status", "aprovada").select("id,usuario_id").single();
+    if (error) return NextResponse.json({ erro: "Não foi possível atualizar a entrega da receita." }, { status: 500 });
+    const { data: usuario } = await admin.auth.admin.getUserById(receita.usuario_id);
+    if (!usuario.user?.email) return NextResponse.json({ mensagem: "Entrega atualizada, mas o cliente não possui e-mail cadastrado.", enviado: false });
+    const etapa = statusEntrega.replaceAll("_", " ");
+    const envio = await enviarEmail({ para: usuario.user.email, assunto: `Entrega da receita #${id}: ${etapa}`, html: `<h2>Atualização da sua encomenda</h2><p>A encomenda da receita #${id} está: <b>${escaparHtml(etapa)}</b>.</p>${alteracao.transportadora ? `<p><b>Transportadora:</b> ${escaparHtml(alteracao.transportadora)}</p>` : ""}${alteracao.codigo_rastreio ? `<p><b>Código de rastreamento:</b> ${escaparHtml(alteracao.codigo_rastreio)}</p>` : ""}${alteracao.link_rastreio ? `<p><a href="${escaparHtml(alteracao.link_rastreio)}">Acompanhar entrega</a></p>` : ""}` });
+    return NextResponse.json({ mensagem: envio.enviado ? "Entrega atualizada e cliente avisado." : "Entrega atualizada, mas o e-mail não pôde ser enviado.", enviado: envio.enviado });
+  }
   const status = String(body.status ?? "");
   const mensagem = String(body.mensagem ?? "").trim();
   const permitidos = new Set(["em_analise", "orcamento_enviado", "aprovada", "recusada"]);
