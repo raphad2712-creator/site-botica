@@ -15,6 +15,8 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
   const [salvando, setSalvando] = useState<string | null>(null);
   const solicitacoesPendentes = solicitacoes.filter((item) => item.status !== "concluida");
   const solicitacoesConcluidas = solicitacoes.filter((item) => item.status === "concluida");
+  const pedidosAtivos = pedidos.filter((pedido) => pedido.status_entrega !== "entregue");
+  const pedidosEntregues = pedidos.filter((pedido) => pedido.status_entrega === "entregue");
 
   async function salvarRastreio(event: FormEvent<HTMLFormElement>, id: number) {
     event.preventDefault(); setSalvando(`pedido-${id}`); setMensagem(""); const form = new FormData(event.currentTarget);
@@ -31,11 +33,17 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
     const resposta = await fetch(`/api/admin/receitas/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acao: "rastreio", ...Object.fromEntries(form) }) });
     const data = await resposta.json(); setMensagem(data.mensagem || data.erro); setSalvando(null); if (resposta.ok) setTimeout(() => location.reload(), 800);
   }
+  async function excluirPedido(id: number) {
+    if (!window.confirm(`Excluir definitivamente o pedido #${id}? Esta ação não poderá ser desfeita.`)) return;
+    setSalvando(`excluir-${id}`); setMensagem("");
+    const resposta = await fetch(`/api/admin/pedidos/${id}/rastreio`, { method: "DELETE" });
+    const data = await resposta.json(); setMensagem(data.mensagem || data.erro); setSalvando(null); if (resposta.ok) setTimeout(() => location.reload(), 700);
+  }
 
   return <div className="admin-aftercare">
     {mensagem && <p className="admin-toast" role="status">{mensagem}</p>}
-    <section id="entregas-admin"><div className="admin-panel-heading"><div><small>LOGÍSTICA</small><h2>Entregas e rastreamento</h2><p>Escolha a etapa, informe o código e o cliente receberá a atualização por e-mail.</p></div><span>{pedidos.length} PEDIDOS</span></div>
-      <div className="admin-cards admin-delivery-cards">{pedidos.length ? pedidos.map((pedido) => { const codigo = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`; return <form key={pedido.id} onSubmit={(e) => salvarRastreio(e, pedido.id)}>
+    <section id="entregas-admin"><div className="admin-panel-heading"><div><small>LOGÍSTICA</small><h2>Entregas e rastreamento</h2><p>Escolha a etapa, informe o código e o cliente receberá a atualização por e-mail.</p></div><span>{pedidosAtivos.length} PEDIDOS</span></div>
+      <div className="admin-cards admin-delivery-cards">{pedidosAtivos.length ? pedidosAtivos.map((pedido) => { const codigo = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`; return <form key={pedido.id} onSubmit={(e) => salvarRastreio(e, pedido.id)}>
         <header><div><small>CÓDIGO DO PEDIDO</small><h3>{codigo}</h3></div><span className={`delivery-badge delivery-${pedido.status_entrega || "preparando"}`}>{(pedido.status_entrega || "preparando").replaceAll("_", " ")}</span></header>
         <div className="admin-order-meta"><span><small>DATA</small>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span><span><small>TOTAL</small>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><span><small>PAGAMENTO</small>{pedido.status.replaceAll("_", " ")}</span></div>
         <details className="admin-customer-details">
@@ -50,7 +58,10 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
         <label>Link para acompanhar<input name="link_rastreio" type="url" defaultValue={pedido.link_rastreio || ""} placeholder="https://..." /></label>
         <div className="admin-email-note"><span>✉</span><p><b>Notificação automática</b><br />Ao salvar, o comprador receberá a nova etapa e o código no e-mail cadastrado.</p></div>
         <button disabled={salvando === `pedido-${pedido.id}`}>{salvando === `pedido-${pedido.id}` ? "SALVANDO..." : "SALVAR E AVISAR CLIENTE"}</button>
+        <button type="button" className="admin-delete-order" disabled={salvando === `excluir-${pedido.id}`} onClick={() => excluirPedido(pedido.id)}>{salvando === `excluir-${pedido.id}` ? "EXCLUINDO..." : "EXCLUIR PEDIDO"}</button>
       </form>; }) : <div className="admin-none">Nenhum pedido encontrado.</div>}</div>
+    </section>
+    <section id="aprovadas-admin">
       <div className="admin-panel-heading admin-approved-heading"><div><small>MANIPULAÇÃO APROVADA</small><h2>Receitas em preparação e entrega</h2><p>As receitas aprovadas aparecem aqui para você organizar o envio e avisar o cliente.</p></div><span>{receitasAprovadas.length} RECEITAS</span></div>
       <div className="admin-cards admin-delivery-cards admin-approved-deliveries">{receitasAprovadas.length ? receitasAprovadas.map((receita) => <form key={receita.id} onSubmit={(e) => salvarRastreioReceita(e, receita.id)}>
         <header><div><small>CÓDIGO DA RECEITA</small><h3>RCT-{new Date(receita.criado_em).getFullYear()}-{String(receita.id).padStart(6, "0")}</h3></div><span className={`delivery-badge delivery-${receita.status_entrega || "preparando"}`}>{(receita.status_entrega || "preparando").replaceAll("_", " ")}</span></header>
@@ -59,6 +70,9 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
         <div className="admin-form-grid"><label>Transportadora<input name="transportadora" defaultValue={receita.transportadora || ""} placeholder="Ex.: Correios" /></label><label>Código de rastreamento<input name="codigo_rastreio" defaultValue={receita.codigo_rastreio || ""} placeholder="Ex.: AA123456789BR" /></label></div>
         <label>Link para acompanhar<input name="link_rastreio" type="url" defaultValue={receita.link_rastreio || ""} placeholder="https://..." /></label><div className="admin-email-note"><span>✉</span><p><b>Notificação automática</b><br />Ao salvar, o cliente receberá a nova etapa e o rastreamento por e-mail.</p></div><button disabled={salvando === `receita-${receita.id}`}>{salvando === `receita-${receita.id}` ? "SALVANDO..." : "SALVAR E AVISAR CLIENTE"}</button>
       </form>) : <div className="admin-none">Nenhuma receita aprovada aguardando entrega.</div>}</div>
+    </section>
+    <section id="entregues-admin"><div className="admin-panel-heading"><div><small>HISTÓRICO DE ENTREGA</small><h2>Pedidos entregues</h2><p>Pedidos finalizados saem das entregas ativas e ficam arquivados aqui.</p></div><span>{pedidosEntregues.length} ENTREGUES</span></div>
+      <div className="admin-delivered-list">{pedidosEntregues.length ? pedidosEntregues.map((pedido) => <article key={pedido.id}><div className="completed-icon">✓</div><div className="completed-main"><small>PEDIDO ENTREGUE</small><h3>BOT-{new Date(pedido.criado_em).getFullYear()}-{String(pedido.id).padStart(6, "0")}</h3><p>{pedido.cliente?.nome || "Cliente não informado"} • {Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>{pedido.codigo_rastreio && <blockquote>Rastreio: {pedido.codigo_rastreio}</blockquote>}</div><div className="completed-meta"><strong>ENTREGUE</strong><span>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span><button type="button" className="admin-delete-order" disabled={salvando === `excluir-${pedido.id}`} onClick={() => excluirPedido(pedido.id)}>{salvando === `excluir-${pedido.id}` ? "EXCLUINDO..." : "EXCLUIR"}</button></div></article>) : <div className="admin-none">Nenhum pedido entregue ainda.</div>}</div>
     </section>
     <section id="pos-venda-admin"><div className="admin-panel-heading"><div><small>PÓS-VENDA</small><h2>Solicitações pendentes</h2><p>Aqui ficam somente os atendimentos que ainda precisam de análise ou alguma ação.</p></div><span>{solicitacoesPendentes.length} PENDENTES</span></div>
       <div className="admin-cards admin-refund-cards">{solicitacoesPendentes.length ? solicitacoesPendentes.map((item) => <form key={item.id} onSubmit={(e) => analisar(e, item.id)}><header><div><small>PROTOCOLO</small><h3>Solicitação #{item.id}</h3></div><span className={`refund-badge refund-${item.status}`}>{item.status.replaceAll("_", " ")}</span></header><div className="refund-order-code">Pedido BOT-{new Date(item.criado_em).getFullYear()}-{String(item.pedido_id).padStart(6, "0")} • {item.tipo.replaceAll("_", " ")}</div><div className="refund-reason"><small>MOTIVO INFORMADO</small><b>{item.motivo}</b><p>{item.detalhes || "Nenhum detalhe adicional."}</p></div><label>Decisão da análise<select name="status" defaultValue={item.status}><option value="em_analise">Em análise</option><option value="aprovada">Aprovada</option><option value="recusada">Recusada</option><option value="aguardando_envio">Aguardando envio do produto</option><option value="produto_recebido">Produto recebido</option><option value="reembolso_processado">Reembolso processado</option><option value="concluida">Concluída</option></select></label><label>Mensagem para o cliente<textarea name="resposta_admin" defaultValue={item.resposta_admin || ""} placeholder="Explique a decisão e informe os próximos passos" /></label><button disabled={salvando === `solicitacao-${item.id}`}>{salvando === `solicitacao-${item.id}` ? "SALVANDO..." : "SALVAR E AVISAR CLIENTE"}</button></form>) : <div className="admin-none">Nenhuma solicitação pendente. Está tudo em dia!</div>}</div>

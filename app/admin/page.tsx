@@ -50,7 +50,7 @@ export default async function AdminPage() {
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA ↗</a>
     </header>
-    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length, newsletter: totalInscritos ?? 0, recipes: receitasLista.filter((item) => item.status === "em_analise").length }} />
+    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, approved: receitasLista.filter((item) => item.status === "aprovada").length, delivered: pedidosLista.filter((pedido) => pedido.status_entrega === "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length, newsletter: totalInscritos ?? 0, recipes: receitasLista.filter((item) => item.status === "em_analise").length }} />
     <section className="admin-overview" id="visao-geral">
       <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
       <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
@@ -60,6 +60,6 @@ export default async function AdminPage() {
     <AdminProducts produtosIniciais={produtos} />
     <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} receitasAprovadas={receitasLista.filter((item) => item.status === "aprovada")} />
     <AdminNewsletter total={totalInscritos ?? 0} />
-    <AdminRecipes receitas={receitasLista} erroConfiguracao={receitasError ? "O banco ainda não está preparado para receber receitas. Execute supabase/receitas.sql no SQL Editor do Supabase." : undefined} />
+    <AdminRecipes receitas={receitasLista.filter((item) => item.status !== "aprovada")} erroConfiguracao={receitasError ? "O banco ainda não está preparado para receber receitas. Execute supabase/receitas.sql no SQL Editor do Supabase." : undefined} />
   </main>;
 }

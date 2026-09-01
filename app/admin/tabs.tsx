@@ -6,6 +6,8 @@ const abas = [
   { id: "overview", icone: "⌂", nome: "Visão geral" },
   { id: "products", icone: "▦", nome: "Produtos" },
   { id: "deliveries", icone: "▤", nome: "Entregas" },
+  { id: "approved", icone: "☑", nome: "Receitas aprovadas" },
+  { id: "delivered", icone: "✓", nome: "Entregues" },
   { id: "requests", icone: "!", nome: "Solicitações" },
   { id: "completed", icone: "✓", nome: "Concluídas" },
   { id: "newsletter", icone: "✉", nome: "Comunicados" },
