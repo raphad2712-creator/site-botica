@@ -31,6 +31,7 @@ function traduzirErro(mensagem = "") {
 
 export default function LoginPage() {
   const [cadastro, setCadastro] = useState(false);
+  const [recuperacao, setRecuperacao] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
 
@@ -96,27 +97,42 @@ export default function LoginPage() {
     }
   }
 
+  async function enviarRecuperacao(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (carregando) return;
+    setCarregando(true); setMensagem("");
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "").trim().toLowerCase();
+    try {
+      const supabase = criarClienteSupabase();
+      const { error } = await comTempoLimite(supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/auth/callback?next=/redefinir-senha` }));
+      if (error) throw error;
+      setMensagem("Enviamos um link para redefinir sua senha. Verifique também a caixa de spam.");
+    } catch (erro) { setMensagem(traduzirErro(erro instanceof Error ? erro.message : "")); }
+    finally { setCarregando(false); }
+  }
+
   return (
     <section className="auth-card" aria-busy={carregando}>
       <small>ÁREA DO CLIENTE</small>
-      <h1>{cadastro ? "Criar conta" : "Entrar"}</h1>
-      <p className="auth-subtitle">{cadastro ? "Crie sua conta para acompanhar os pedidos" : "Acesse com segurança para continuar"}</p>
-      <div className="social-login" aria-label="Entrar com uma rede social">
+      <h1>{recuperacao ? "Recuperar senha" : cadastro ? "Criar conta" : "Entrar"}</h1>
+      <p className="auth-subtitle">{recuperacao ? "Informe seu e-mail para receber o link de redefinição" : cadastro ? "Crie sua conta para acompanhar os pedidos" : "Acesse com segurança para continuar"}</p>
+      {!recuperacao && <><div className="social-login" aria-label="Entrar com uma rede social">
         <button type="button" onClick={() => entrarCom("google")} disabled={carregando} aria-label="Entrar com Google" title="Entrar com Google"><GoogleIcon /></button>
         <button type="button" onClick={() => entrarCom("azure")} disabled={carregando} aria-label="Entrar com Microsoft" title="Entrar com Microsoft"><MicrosoftIcon /></button>
         <button type="button" onClick={() => entrarCom("apple")} disabled={carregando} aria-label="Entrar com Apple" title="Entrar com Apple"><AppleIcon /></button>
-      </div>
-      <div className="auth-divider"><span>ou use seu e-mail</span></div>
-      <form onSubmit={enviar}>
+      </div><div className="auth-divider"><span>ou use seu e-mail</span></div></>}
+      <form onSubmit={recuperacao ? enviarRecuperacao : enviar}>
         {cadastro && <input name="nome" autoComplete="name" placeholder="Nome completo" minLength={3} required disabled={carregando} />}
         <input name="email" type="email" inputMode="email" autoComplete="email" placeholder="E-mail" required disabled={carregando} />
-        <input name="password" type="password" autoComplete={cadastro ? "new-password" : "current-password"} minLength={cadastro ? 8 : 6} placeholder="Senha" required disabled={carregando} />
-        <button type="submit" disabled={carregando}>{carregando ? <><span className="auth-spinner" aria-hidden="true" /> AGUARDE...</> : cadastro ? "CADASTRAR" : "ENTRAR"}</button>
+        {!recuperacao && <input name="password" type="password" autoComplete={cadastro ? "new-password" : "current-password"} minLength={cadastro ? 8 : 6} placeholder="Senha" required disabled={carregando} />}
+        <button type="submit" disabled={carregando}>{carregando ? <><span className="auth-spinner" aria-hidden="true" /> AGUARDE...</> : recuperacao ? "ENVIAR LINK DE RECUPERAÇÃO" : cadastro ? "CADASTRAR" : "ENTRAR"}</button>
       </form>
       {mensagem && <p className="form-message" role="status">{mensagem}</p>}
-      <button type="button" className="text-button" disabled={carregando} onClick={() => { setCadastro(!cadastro); setMensagem(""); }}>
+      {!cadastro && !recuperacao && <button type="button" className="text-button auth-forgot" disabled={carregando} onClick={() => { setRecuperacao(true); setMensagem(""); }}>Esqueci minha senha</button>}
+      {!recuperacao && <button type="button" className="text-button" disabled={carregando} onClick={() => { setCadastro(!cadastro); setMensagem(""); }}>
         {cadastro ? "Já tenho uma conta" : "Ainda não tenho uma conta"}
-      </button>
+      </button>}
+      {recuperacao && <button type="button" className="text-button" disabled={carregando} onClick={() => { setRecuperacao(false); setMensagem(""); }}>← Voltar para o login</button>}
     </section>
   );
 }
