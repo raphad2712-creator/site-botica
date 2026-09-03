@@ -752,6 +752,42 @@ html[data-theme="dark"] body .trust-row article:nth-child(n){
   color:#e8f1eb!important;
   box-shadow:none!important;
 }
+
+/* Final layout corrections: policy hero, product backgrounds and legal footer. */
+body .policy-hero{
+  position:relative!important;top:auto!important;height:auto!important;min-height:330px!important;
+  padding:70px max(6vw,40px)!important;display:grid!important;
+  grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr)!important;
+  align-items:center!important;gap:70px!important;
+}
+body .policy-hero>div{min-width:0}
+body .policy-hero h1{max-width:760px!important;margin:14px 0 0!important;font-size:clamp(42px,5.4vw,72px)!important;line-height:.98!important}
+body .policy-hero p{max-width:560px!important;margin:0!important;font-size:16px!important;line-height:1.7!important}
+
+.catalog-product-image{background:#fff!important}
+.card .photo:has(.catalog-product-image),.product-page-visual:has(.catalog-product-image){background:#fff!important}
+.product-image-dark{display:none!important}
+html[data-theme="dark"] .product-image-light{display:none!important}
+html[data-theme="dark"] .product-image-dark{display:block!important;background:#101713!important}
+html[data-theme="dark"] .card .photo:has(.catalog-product-image),html[data-theme="dark"] .product-page-visual:has(.catalog-product-image){background:#101713!important}
+html[data-theme="dark"] .card .photo,
+html[data-theme="dark"] .product-page-visual{background:#101713!important}
+
+footer .footer-legal{
+  grid-column:1/-1;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:18px!important;padding-top:28px!important;border-top:1px solid rgba(220,232,225,.22);
+  color:#dce8e1;text-align:left!important;font-size:12px!important;line-height:1.6!important;
+}
+footer .footer-legal>div{display:flex;flex-direction:column;gap:3px}
+footer .footer-legal address{margin:0;font-style:normal}
+footer .footer-legal strong{color:#b9d99a;font-size:10px;letter-spacing:.08em;margin-bottom:4px}
+@media(max-width:900px){footer .footer-legal{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+  body .policy-hero{min-height:0!important;padding:48px 22px!important;grid-template-columns:1fr!important;gap:22px!important}
+  body .policy-hero h1{font-size:44px!important}
+  body .policy-hero p{font-size:15px!important}
+}
+@media(max-width:560px){footer .footer-legal{grid-template-columns:1fr!important}}
 html[data-theme="dark"] body .trust-row article>b{
   background:#294033!important;
   border-color:#54705d!important;

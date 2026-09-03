@@ -10,6 +10,16 @@ const imagensCatalogo: Array<[RegExp, string]> = [
   [/serum.*vitamina c/, "/produtos/serum-vitamina-c-30ml.png"],
 ];
 
+const imagensCatalogoEscuras: Array<[RegExp, string]> = [
+  [/creatina monohidratada/, "/produtos/dark/creatina-monohidratada-300g.png"],
+  [/melatonina.*gotas/, "/produtos/dark/melatonina-gotas-20ml.png"],
+  [/floral rescue/, "/produtos/dark/floral-rescue-30ml.png"],
+  [/vitamina b12/, "/produtos/dark/vitamina-b12-1000mcg.png"],
+  [/vitamina d3/, "/produtos/dark/vitamina-d3-2000ui.png"],
+  [/psyllium/, "/produtos/dark/psyllium-200g.png"],
+  [/serum.*vitamina c/, "/produtos/dark/serum-vitamina-c-30ml.png"],
+];
+
 function normalizar(texto: string) {
   return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
@@ -17,6 +27,11 @@ function normalizar(texto: string) {
 export function imagemCatalogo(nome: string, imagemAtual?: string | null) {
   const nomeNormalizado = normalizar(nome);
   return imagensCatalogo.find(([padrao]) => padrao.test(nomeNormalizado))?.[1] ?? imagemAtual ?? null;
+}
+
+export function imagemCatalogoEscura(nome: string) {
+  const nomeNormalizado = normalizar(nome);
+  return imagensCatalogoEscuras.find(([padrao]) => padrao.test(nomeNormalizado))?.[1] ?? null;
 }
 
 export function comImagemCatalogo(produto: Produto): Produto {

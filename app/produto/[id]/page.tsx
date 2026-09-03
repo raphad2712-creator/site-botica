@@ -3,7 +3,7 @@ import { AddProduct } from "@/components/add-product";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Produto } from "@/lib/types";
 import Link from "next/link";
-import { comImagemCatalogo } from "@/lib/product-images";
+import { comImagemCatalogo, imagemCatalogoEscura } from "@/lib/product-images";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -14,13 +14,17 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
   const { data } = await supabase.from("produtos").select("*").eq("id", id).single();
   if (!data) notFound();
   const produto = comImagemCatalogo(data as Produto);
+  const imagemEscura = imagemCatalogoEscura(produto.nome);
 
   return (
     <><nav className="product-breadcrumb" aria-label="Navegação estrutural"><Link href="/">Início</Link><span>›</span><Link href={`/?categoria=${encodeURIComponent(produto.categoria)}#produtos`}>{produto.categoria}</Link><span>›</span><b>{produto.nome}</b></nav><section className="product-page">
       <div className="product-page-visual">
         {produto.imagem_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={produto.imagem_url} alt={produto.nome} />
+          <>
+            <img className={imagemEscura ? "product-image-light catalog-product-image" : "catalog-product-image"} src={produto.imagem_url} alt={produto.nome} />
+            {imagemEscura && <img className="product-image-dark catalog-product-image" src={imagemEscura} alt="" aria-hidden="true" />}
+          </>
         ) : (
           <div className="bottle large"><i /><b>BOTICA</b><small>{produto.categoria}</small></div>
         )}

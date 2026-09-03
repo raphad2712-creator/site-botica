@@ -32,10 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div><b>ATENDIMENTO</b><a href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a><a href="/politica-de-trocas-e-devolucoes">Trocas e devoluções</a></div>
             <div><b>FORMAS DE PAGAMENTO</b><p>PIX • VISA • MASTERCARD</p></div>
             <div className="footer-legal" aria-label="Informações legais da Botica Bioenergética">
-              <p><strong>FARMACÊUTICO RESPONSÁVEL</strong> Dr. Flávio Luís Alves — CRF-SP 42216</p>
-              <p><strong>CEVS:</strong> 355030801-477-008234-1-4 <span aria-hidden="true">•</span> <strong>Autorização MS:</strong> 7.40921.9 <span aria-hidden="true">•</span> <strong>Autorização CRF-SP:</strong> 57419</p>
-              <p><strong>CNPJ:</strong> 13.013.360/0001-70</p>
-              <address>Rua Sol da Meia-Noite, 990 — Jardim Maia — São Miguel Paulista — São Paulo/SP — CEP 08180-050</address>
+              <div><strong>FARMACÊUTICO RESPONSÁVEL</strong><span>Dr. Flávio Luís Alves</span><span>CRF-SP 42216</span></div>
+              <div><strong>LICENÇAS E AUTORIZAÇÕES</strong><span>CEVS: 355030801-477-008234-1-4</span><span>MS: 7.40921.9 • CRF-SP: 57419</span></div>
+              <div><strong>DADOS DA EMPRESA</strong><span>CNPJ: 13.013.360/0001-70</span></div>
+              <div><strong>ENDEREÇO</strong><address>Rua Sol da Meia-Noite, 990<br />Jardim Maia — São Miguel Paulista<br />São Paulo/SP — CEP 08180-050</address></div>
             </div>
             </footer>
             <SupportWidget />
