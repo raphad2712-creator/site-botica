@@ -859,3 +859,34 @@ html[data-theme="dark"] body .admin-recipe-warning{
   border-color:#80652c!important;
   color:#f4d993!important;
 }
+
+/* Logo escura real, sem retângulo branco ou filtro de inversão. */
+html[data-theme="dark"] body .logo-dark-image,
+html[data-theme="dark"] body .footer-logo-dark{
+  display:block!important;
+  background:#050a07!important;
+  filter:none!important;
+  object-fit:contain!important;
+}
+html[data-theme="dark"] body .logo-light-image,
+html[data-theme="dark"] body .footer-logo-light{display:none!important}
+
+/* Mantém a foto contida e reserva o nome fora dela no catálogo móvel. */
+.card .photo{
+  display:grid!important;
+  overflow:hidden!important;
+  isolation:isolate;
+}
+.card .photo .catalog-product-image{
+  grid-area:1/1!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+}
+.card>a:not(.photo){position:relative;z-index:2;background:inherit}
+.card>a h3{min-height:2.7em;line-height:1.35!important;overflow:visible!important}
+@media(max-width:560px){
+  .card .photo{height:270px!important;min-height:270px!important;max-height:270px!important}
+  .card>a h3{min-height:2.7em!important;margin-top:10px!important}
+}
