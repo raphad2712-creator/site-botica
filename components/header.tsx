@@ -38,8 +38,8 @@ export function Header() {
           )}
         </button>
         <Link className="official-logo logo-clean" href="/">
-          <Image className="logo-light-image" src="/botica-logo-sem-frase.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
-          <Image className="logo-dark-image" src="/botica-logo-dark-clean.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
+          <Image className="logo-light-image" src="/botica-logo-transparente.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
+          <Image className="logo-dark-image" src="/botica-logo-transparente.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
         </Link>
         <form className="search" action="/#produtos"><span>⌕</span><input name="busca" placeholder="O que você está buscando?" /></form>
         <div className="head-actions">

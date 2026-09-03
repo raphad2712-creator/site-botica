@@ -103,9 +103,13 @@ export default function LoginPage() {
     const form = new FormData(event.currentTarget);
     const email = String(form.get("email") ?? "").trim().toLowerCase();
     try {
-      const supabase = criarClienteSupabase();
-      const { error } = await comTempoLimite(supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/redefinir-senha` }));
-      if (error) throw error;
+      const resposta = await comTempoLimite(fetch("/api/auth/recuperar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }));
+      const dados = await resposta.json().catch(() => ({}));
+      if (!resposta.ok) throw new Error(dados.erro ?? "Não foi possível enviar o link.");
       setMensagem("Enviamos um link para redefinir sua senha. Verifique também a caixa de spam.");
     } catch (erro) { setMensagem(traduzirErro(erro instanceof Error ? erro.message : "")); }
     finally { setCarregando(false); }

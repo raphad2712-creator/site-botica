@@ -655,6 +655,23 @@ html[data-theme="dark"] body .payment-choice b{
   footer .footer-logo{max-width:260px!important}
 }
 
+/* A marca fica solta sobre o cabeçalho/rodapé, sem placa ou moldura. */
+body .logo-clean,
+body .logo-clean img,
+body footer .footer-logo,
+body footer .footer-logo img,
+html[data-theme="dark"] body .logo-clean,
+html[data-theme="dark"] body .logo-clean img,
+html[data-theme="dark"] body footer .footer-logo,
+html[data-theme="dark"] body footer .footer-logo img{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  outline:0!important;
+  filter:none!important;
+}
+
 /* Separate assets prevent filters, clipping and zoom artifacts on the logo. */
 .logo-clean .logo-dark-image{display:none!important}
 .logo-clean .logo-light-image{display:block!important}
