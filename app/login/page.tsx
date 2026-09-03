@@ -104,7 +104,7 @@ export default function LoginPage() {
     const email = String(form.get("email") ?? "").trim().toLowerCase();
     try {
       const supabase = criarClienteSupabase();
-      const { error } = await comTempoLimite(supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/auth/callback?next=/redefinir-senha` }));
+      const { error } = await comTempoLimite(supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/redefinir-senha` }));
       if (error) throw error;
       setMensagem("Enviamos um link para redefinir sua senha. Verifique também a caixa de spam.");
     } catch (erro) { setMensagem(traduzirErro(erro instanceof Error ? erro.message : "")); }

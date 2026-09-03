@@ -5,7 +5,8 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const requestedNext = url.searchParams.get("next") ?? "/minha-conta";
-  const next = requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/minha-conta";
+  const recuperacao = url.searchParams.get("type") === "recovery" || url.searchParams.get("modo") === "recovery";
+  const next = recuperacao ? "/redefinir-senha" : requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/minha-conta";
   if (code) {
     const supabase = await criarClienteServidor();
     const { error } = await supabase.auth.exchangeCodeForSession(code);

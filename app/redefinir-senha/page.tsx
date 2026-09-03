@@ -1,14 +1,40 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { criarClienteSupabase } from "@/lib/supabase/client";
 
 export default function RedefinirSenhaPage() {
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [validando, setValidando] = useState(true);
+
+  useEffect(() => {
+    async function prepararRecuperacao() {
+      const supabase = criarClienteSupabase();
+      const parametros = new URLSearchParams(window.location.search);
+      const code = parametros.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) { setMensagem("O link expirou ou já foi utilizado. Solicite um novo link."); setValidando(false); return; }
+        window.history.replaceState({}, "", "/redefinir-senha");
+      }
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const accessToken = hash.get("access_token");
+      const refreshToken = hash.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        if (error) { setMensagem("O link de recuperação não é mais válido."); setValidando(false); return; }
+        window.history.replaceState({}, "", "/redefinir-senha");
+      }
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) setMensagem("Abra esta página pelo link enviado ao seu e-mail. Se ele expirou, solicite outro link.");
+      setValidando(false);
+    }
+    prepararRecuperacao();
+  }, []);
 
   async function salvar(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); if (carregando) return;
+    event.preventDefault(); if (carregando || validando) return;
     const form = new FormData(event.currentTarget);
     const senha = String(form.get("senha") ?? "");
     const confirmar = String(form.get("confirmar") ?? "");
@@ -23,5 +49,5 @@ export default function RedefinirSenhaPage() {
     window.setTimeout(() => window.location.assign("/login"), 1800);
   }
 
-  return <section className="auth-card"><small>ÁREA DO CLIENTE</small><h1>Nova senha</h1><p className="auth-subtitle">Crie uma senha segura com pelo menos 8 caracteres</p><form onSubmit={salvar}><input name="senha" type="password" autoComplete="new-password" minLength={8} placeholder="Nova senha" required disabled={carregando} /><input name="confirmar" type="password" autoComplete="new-password" minLength={8} placeholder="Confirmar nova senha" required disabled={carregando} /><button type="submit" disabled={carregando}>{carregando ? "SALVANDO..." : "ALTERAR SENHA"}</button></form>{mensagem && <p className="form-message" role="status">{mensagem}</p>}<a className="auth-back-link" href="/login">← Voltar para o login</a></section>;
+  return <section className="auth-card"><small>ÁREA DO CLIENTE</small><h1>Nova senha</h1><p className="auth-subtitle">{validando ? "Validando seu link de recuperação..." : "Crie uma senha segura com pelo menos 8 caracteres"}</p><form onSubmit={salvar}><input name="senha" type="password" autoComplete="new-password" minLength={8} placeholder="Nova senha" required disabled={carregando || validando} /><input name="confirmar" type="password" autoComplete="new-password" minLength={8} placeholder="Confirmar nova senha" required disabled={carregando || validando} /><button type="submit" disabled={carregando || validando}>{validando ? "VALIDANDO LINK..." : carregando ? "SALVANDO..." : "ALTERAR SENHA"}</button></form>{mensagem && <p className="form-message" role="status">{mensagem}</p>}<a className="auth-back-link" href="/login">← Voltar para o login</a></section>;
 }
