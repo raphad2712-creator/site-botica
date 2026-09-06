@@ -4,7 +4,7 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import type { Produto } from "@/lib/types";
 import Link from "next/link";
 import { comImagemCatalogo } from "@/lib/product-images";
-import { ProductLogo } from "@/components/product-logo";
+import { ProductImage } from "@/components/product-image";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -19,7 +19,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
   return (
     <><nav className="product-breadcrumb" aria-label="Navegação estrutural"><Link href="/">Início</Link><span>›</span><Link href={`/?categoria=${encodeURIComponent(produto.categoria)}#produtos`}>{produto.categoria}</Link><span>›</span><b>{produto.nome}</b></nav><section className="product-page">
       <div className="product-page-visual">
-        <ProductLogo nome={produto.nome} />
+        <ProductImage nome={produto.nome} />
       </div>
       <div className="product-info">
         <small>{produto.categoria}</small>

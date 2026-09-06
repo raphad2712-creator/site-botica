@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
 import { useFavorites } from "./favorites-provider";
-import { ProductLogo } from "./product-logo";
+import { ProductImage } from "./product-image";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -30,7 +30,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
       </button>
       <Link href={`/produto/${produto.id}`} className={`photo p${(produto.id % 5) + 1}`}>
         {!!desconto && <span className="discount-badge">-{desconto}%</span>}
-        <ProductLogo nome={produto.nome} />
+        <ProductImage nome={produto.nome} />
       </Link>
       <p>{produto.categoria}</p>
       <Link href={`/produto/${produto.id}`}><h3>{produto.nome}</h3></Link>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
-import { ProductLogo } from "@/components/product-logo";
+import { ProductImage } from "@/components/product-image";
 
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -16,7 +16,7 @@ export default function CarrinhoPage() {
       <h1>Meu carrinho</h1>
       {itens.map((item) => (
         <article key={item.id}>
-          <div className="cart-page-product-image"><ProductLogo nome={item.nome} /></div>
+          <div className="cart-page-product-image"><ProductImage nome={item.nome} /></div>
           <div><b>{item.nome}</b><small>{moeda(Number(item.preco))} cada</small></div>
           <div className="quantity">
             <button onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button>
