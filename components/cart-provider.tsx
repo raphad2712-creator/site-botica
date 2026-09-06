@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ItemCarrinho, Produto } from "@/lib/types";
 import { criarClienteSupabase } from "@/lib/supabase/client";
+import { ProductLogo } from "./product-logo";
 
 type CartContextValue = {
   itens: ItemCarrinho[];
@@ -78,7 +79,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           {itens.map((item) => (
             <article className="drawer-item" key={item.id}>
               <Link href={`/produto/${item.id}`} onClick={() => setAberto(false)} className="drawer-image">
-                {item.imagem_url ? <img src={item.imagem_url} alt={item.nome} /> : <div className="mini-jar"><i /><b>BOTICA</b><small>{item.categoria}</small></div>}
+                <ProductLogo nome={item.nome} />
               </Link>
               <div className="drawer-item-copy"><Link href={`/produto/${item.id}`} onClick={() => setAberto(false)}><b>{item.nome}</b></Link><small>{item.categoria}</small><strong>{moeda(Number(item.preco))}</strong><button onClick={() => remover(item.id)}>Remover</button></div>
               <div className="drawer-quantity"><button onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>

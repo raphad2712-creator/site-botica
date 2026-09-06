@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
 import { useFavorites } from "./favorites-provider";
-import { imagemCatalogoEscura } from "@/lib/product-images";
+import { ProductLogo } from "./product-logo";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -14,7 +14,6 @@ export function ProductCard({ produto }: { produto: Produto }) {
   const { adicionar } = useCart();
   const { estaFavorito, alternarFavorito } = useFavorites();
   const [adicionado, setAdicionado] = useState(false);
-  const imagemEscura = imagemCatalogoEscura(produto.nome);
 
   function adicionarProduto() {
     adicionar(produto);
@@ -31,15 +30,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
       </button>
       <Link href={`/produto/${produto.id}`} className={`photo p${(produto.id % 5) + 1}`}>
         {!!desconto && <span className="discount-badge">-{desconto}%</span>}
-        {produto.imagem_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <>
-            <img className={imagemEscura ? "product-image-light catalog-product-image" : "catalog-product-image"} src={produto.imagem_url} alt={produto.nome} />
-            {imagemEscura && <img className="product-image-dark catalog-product-image" src={imagemEscura} alt="" aria-hidden="true" />}
-          </>
-        ) : (
-          <div className="jar"><i /><b>BOTICA</b><small>{produto.categoria}</small></div>
-        )}
+        <ProductLogo nome={produto.nome} />
       </Link>
       <p>{produto.categoria}</p>
       <Link href={`/produto/${produto.id}`}><h3>{produto.nome}</h3></Link>

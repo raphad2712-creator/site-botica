@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import type { Produto } from "@/lib/types";
+import { ProductLogo } from "@/components/product-logo";
 
 export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[] }) {
   const [produtos, setProdutos] = useState(produtosIniciais);
@@ -74,7 +75,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
       <div className="admin-list admin-product-list">
         {produtos.map((produto) => (
           <article key={produto.id}>
-            <div className="admin-product-thumb">{produto.imagem_url ? <img src={produto.imagem_url} alt="" /> : <span>BOTICA</span>}</div>
+            <div className="admin-product-thumb"><ProductLogo nome={produto.nome} /></div>
             <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque} unidades</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em></div>
             <strong>R$ {Number(produto.preco).toFixed(2).replace(".", ",")}</strong>
             <button onClick={() => alternar(produto)}>{produto.ativo ? "DESATIVAR" : "ATIVAR"}</button>

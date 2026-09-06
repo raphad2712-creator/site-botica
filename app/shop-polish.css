@@ -881,12 +881,52 @@ html[data-theme="dark"] body .admin-recipe-warning{
 html[data-theme="dark"] body .logo-dark-image,
 html[data-theme="dark"] body .footer-logo-dark{
   display:block!important;
-  background:#050a07!important;
+  background:transparent!important;
   filter:none!important;
   object-fit:contain!important;
 }
 html[data-theme="dark"] body .logo-light-image,
 html[data-theme="dark"] body .footer-logo-light{display:none!important}
+
+/* Logo completa, sem placas, bordas ou recorte, em todas as vitrines. */
+body header .logo-clean,
+body header .logo-clean img,
+body footer .footer-logo img{
+  overflow:visible!important;
+  background:transparent!important;
+}
+.catalog-product-image{
+  object-fit:contain!important;
+  padding:clamp(8px,2vw,24px)!important;
+  background:transparent!important;
+}
+.drawer-image .catalog-product-image,
+.summary-image .catalog-product-image,
+.favorites-list .catalog-product-image,
+.order-product-image .catalog-product-image,
+.cart-page-product-image .catalog-product-image{
+  width:100%!important;
+  height:100%!important;
+  padding:5px!important;
+}
+.cart-page>article{
+  grid-template-columns:76px minmax(0,1fr) auto auto auto!important;
+}
+.cart-page-product-image{
+  width:76px;
+  height:76px;
+  display:grid;
+  overflow:hidden;
+  border-radius:10px;
+  background:#f2f6f2;
+}
+html[data-theme="dark"] .cart-page-product-image{background:#202d25}
+@media(max-width:760px){
+  .cart-page>article{grid-template-columns:62px minmax(0,1fr) auto!important}
+  .cart-page-product-image{width:62px;height:62px}
+  .cart-page>article>.quantity{grid-column:2}
+  .cart-page>article>strong,.cart-page>article>.remove{grid-column:3}
+}
 
 /* Mantém a foto contida e reserva o nome fora dela no catálogo móvel. */
 .card .photo{

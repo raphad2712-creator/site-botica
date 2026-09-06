@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
+import { ProductLogo } from "./product-logo";
 
 type FavoritesContextValue = {
   favoritos: Produto[];
@@ -50,7 +51,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
         {favoritos.length ? <div className="favorites-list">{favoritos.map((produto) => (
           <article key={produto.id}>
             <Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>
-              {produto.imagem_url ? <img src={produto.imagem_url} alt="" /> : <span>BOTICA</span>}
+              <ProductLogo nome={produto.nome} />
             </Link>
             <div><small>{produto.categoria}</small><Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>{produto.nome}</Link><b>{Number(produto.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</b></div>
             <button onClick={() => alternarFavorito(produto)} aria-label={`Remover ${produto.nome} dos favoritos`}>×</button>
