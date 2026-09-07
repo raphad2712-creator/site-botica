@@ -978,6 +978,46 @@ html[data-theme="dark"] .about-botica-points strong,html[data-theme="dark"] .car
   .cart-page-modern{padding:38px 14px 90px!important}.cart-page-head{align-items:flex-start;flex-direction:column}.cart-page-head>a{order:-1}.cart-page-items>article{grid-template-columns:72px minmax(0,1fr) auto!important;gap:12px;padding:14px}.cart-page-items .cart-page-product-image{width:72px;height:72px}.cart-page-items>article>.quantity{grid-column:2}.cart-page-items>article>strong,.cart-page-items>article>.remove{grid-column:3}.cart-shipping-card{padding:14px}.checkout-progress span{font-size:0}.checkout-progress span b{font-size:9px}.checkout-progress i{margin-inline:6px}
 }
 
+/* Movimento premium, botões mais vivos e perfil com foto. */
+.hero-copy>*{animation:botica-rise .7s cubic-bezier(.2,.75,.25,1) both}
+.hero-copy>h1{animation-delay:.08s}.hero-copy>p{animation-delay:.15s}.hero-copy>.hero-actions{animation-delay:.22s}.hero-copy>.hero-assurances{animation-delay:.3s}
+.hero-img img{animation:botica-hero-in 1s cubic-bezier(.2,.75,.25,1) both}
+.card{transition:transform .35s cubic-bezier(.2,.75,.25,1),box-shadow .35s,border-color .35s!important}
+.card:hover{transform:translateY(-9px)!important;border-color:#b8cdbf!important;box-shadow:0 22px 50px #123b2720!important}
+.card .photo img{transition:transform .55s cubic-bezier(.2,.75,.25,1),filter .35s!important}.card:hover .photo img{transform:scale(1.055)!important;filter:saturate(1.04)}
+.buy,.hero-actions a,.campaign a,.about-botica-copy>a,.drawer-footer>a,.checkout,.order-summary>button,.newsletter button,.rx-form button,.profile-form-actions button,.profile-photo-area button{position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s!important}
+.buy::after,.hero-actions a::after,.campaign a::after,.about-botica-copy>a::after,.drawer-footer>a:first-of-type::after,.checkout::after,.order-summary>button::after,.newsletter button::after,.rx-form button::after,.profile-form-actions button:last-child::after{content:"";position:absolute;top:-30%;bottom:-30%;left:-45%;width:28%;background:linear-gradient(90deg,transparent,#fff6,transparent);transform:skewX(-18deg);transition:left .55s ease}
+.buy:hover::after,.hero-actions a:hover::after,.campaign a:hover::after,.about-botica-copy>a:hover::after,.drawer-footer>a:first-of-type:hover::after,.checkout:hover::after,.order-summary>button:hover::after,.newsletter button:hover::after,.rx-form button:hover::after,.profile-form-actions button:last-child:hover::after{left:120%}
+.buy:hover,.hero-actions a:hover,.campaign a:hover,.about-botica-copy>a:hover,.drawer-footer>a:first-of-type:hover,.checkout:hover,.order-summary>button:hover,.newsletter button:hover,.rx-form button:hover{transform:translateY(-3px)!important;box-shadow:0 13px 28px #123f3030!important}
+.buy:active,.hero-actions a:active,.campaign a:active,.about-botica-copy>a:active,.drawer-footer>a:active,.checkout:active,.order-summary>button:active,.newsletter button:active,.rx-form button:active{transform:translateY(0) scale(.98)!important}
+.objective-grid button:hover i{animation:botica-icon-bounce .55s ease}.category-tabs button{transition:transform .2s,background .2s,color .2s,border-color .2s!important}.category-tabs button:hover{transform:translateY(-2px)}
+.nav>a{position:relative}.nav>a::after{content:"";position:absolute;left:50%;right:50%;bottom:-7px;height:2px;border-radius:2px;background:#79a255;transition:left .25s,right .25s}.nav>a:hover::after{left:0;right:0}
+
+.account-profile{padding:30px 34px 34px!important}
+.profile-photo-area{display:flex;align-items:center;gap:18px;margin-bottom:26px;padding-bottom:25px;border-bottom:1px solid #e8eeea}
+.profile-photo-area .account-profile-avatar{position:relative!important;top:auto!important;left:auto!important;flex:0 0 104px;width:104px!important;height:104px!important;padding:0;border:5px solid #eaf1eb!important;transform:none!important;cursor:pointer;overflow:visible!important}
+.account-profile-avatar>img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover}.account-profile-avatar>span{display:grid;width:100%;height:100%;place-items:center}.account-profile-avatar>i{position:absolute;right:-3px;bottom:2px;width:31px;height:31px;display:grid;place-items:center;border:3px solid #fff;border-radius:50%;background:#174b39;color:#fff;font:normal 15px Arial;box-shadow:0 4px 12px #173f3030}
+.profile-photo-area>div{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.profile-photo-area>div button{min-height:38px;padding:0 14px;border:1px solid #174b39;border-radius:20px;background:#174b39;color:#fff;font-size:8px;font-weight:900}.profile-photo-area>div .remove-profile-photo{background:transparent;color:#8b4d45;border-color:#d9bcb7}.profile-photo-area>div small{flex-basis:100%;color:#7f8c84;font-size:8px}.profile-photo-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.header-profile-photo{display:block!important;flex:0 0 36px!important;width:36px!important;height:36px!important;padding:0!important;border:2px solid #fff!important;border-radius:50%!important;object-fit:cover!important;background:#dbe8dc!important;box-shadow:0 3px 10px #173f3020!important}
+
+html[data-theme="dark"] body{background:#0c1410!important;color:#e5eee8!important}
+html[data-theme="dark"] body>header,html[data-theme="dark"] .nav,html[data-theme="dark"] .mobile-bottom-nav{background:#101b15!important;border-color:#2d4035!important;box-shadow:0 8px 30px #0004!important}
+html[data-theme="dark"] .promo{background:#07110d!important}
+html[data-theme="dark"] .head-actions .account-button{background:linear-gradient(135deg,#1a2820,#132019)!important;border:1px solid #344a3d!important;color:#e5eee8!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .account-profile,html[data-theme="dark"] .account-history,html[data-theme="dark"] .cart-page-summary,html[data-theme="dark"] .checkout-forms>section,html[data-theme="dark"] .order-summary{background:#15211a!important;border-color:#30463a!important;box-shadow:0 15px 40px #0004!important}
+html[data-theme="dark"] .card:hover{border-color:#597965!important;box-shadow:0 24px 55px #0007!important}
+html[data-theme="dark"] .catalog{background:#0f1813!important}html[data-theme="dark"] .objectives{background:#0c1410!important}
+html[data-theme="dark"] .category-tabs button,html[data-theme="dark"] .objective-grid button{background:#16231b!important;border-color:#33483c!important;color:#dce7e0!important}
+html[data-theme="dark"] .category-tabs button.active,html[data-theme="dark"] .objective-grid button.active{background:#287354!important;border-color:#4f9474!important;color:#fff!important}
+html[data-theme="dark"] .profile-photo-area{border-color:#304239}html[data-theme="dark"] .profile-photo-area .account-profile-avatar{border-color:#2d4437!important}html[data-theme="dark"] .account-profile-avatar>i{border-color:#15211a}
+html[data-theme="dark"] .form-grid input,html[data-theme="dark"] .profile-form input,html[data-theme="dark"] .profile-form select{background:#0e1812!important;border-color:#3b5144!important;color:#f2f7f4!important}
+html[data-theme="dark"] .form-grid input:focus,html[data-theme="dark"] .profile-form input:focus,html[data-theme="dark"] .profile-form select:focus{outline:2px solid #6c9d7d!important;outline-offset:1px}
+
+@keyframes botica-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes botica-hero-in{from{opacity:0;transform:scale(1.045)}to{opacity:1;transform:none}}
+@keyframes botica-icon-bounce{0%,100%{transform:translateY(0)}45%{transform:translateY(-7px)}70%{transform:translateY(-3px)}}
+@media(max-width:700px){.account-profile{padding:22px 20px!important}.profile-photo-area{align-items:flex-start}.profile-photo-area .account-profile-avatar{flex-basis:86px;width:86px!important;height:86px!important}.profile-photo-area>div{flex:1}.header-profile-photo{width:34px!important;height:34px!important;flex-basis:34px!important}}
+@media(prefers-reduced-motion:reduce){.hero-copy>*,.hero-img img,.objective-grid button:hover i{animation:none!important}.buy::after,.hero-actions a::after,.campaign a::after,.about-botica-copy>a::after,.drawer-footer>a::after,.checkout::after,.order-summary>button::after,.newsletter button::after,.rx-form button::after,.profile-form-actions button::after{display:none!important}}
+
 /* Mantém a foto contida e reserva o nome fora dela no catálogo móvel. */
 .card .photo{
   display:grid!important;

@@ -10,7 +10,7 @@ export async function GET() {
   const { data, error } = await supabase.from("perfil_clientes").select(campos.join(",")).eq("usuario_id", auth.user.id).maybeSingle();
   if (error) return NextResponse.json({ erro: "Não foi possível carregar os dados." }, { status: 500 });
   const perfil = (data ?? {}) as Record<string, string | null>;
-  return NextResponse.json({ perfil: { email: auth.user.email, ...perfil } });
+  return NextResponse.json({ perfil: { email: auth.user.email, foto_url: auth.user.user_metadata.foto_url ?? null, ...perfil } });
 }
 
 export async function PUT(request: Request) {

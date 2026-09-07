@@ -12,13 +12,15 @@ export function Header() {
   const { totalItens, abrirCarrinho } = useCart();
   const { favoritos, abrirFavoritos } = useFavorites();
   const [menu, setMenu] = useState(false);
-  const [usuario, setUsuario] = useState<{ email?: string } | null>(null);
+  const [usuario, setUsuario] = useState<{ email?: string; user_metadata?: { foto_url?: string } } | null>(null);
 
   useEffect(() => {
     const supabase = criarClienteSupabase();
     supabase.auth.getUser().then(({ data }) => setUsuario(data.user));
     const { data } = supabase.auth.onAuthStateChange((_evento, sessao) => setUsuario(sessao?.user ?? null));
-    return () => data.subscription.unsubscribe();
+    const atualizarFoto = (evento: Event) => setUsuario((atual) => atual ? { ...atual, user_metadata: { ...atual.user_metadata, foto_url: (evento as CustomEvent<string>).detail } } : atual);
+    window.addEventListener("botica-profile-photo", atualizarFoto);
+    return () => { data.subscription.unsubscribe(); window.removeEventListener("botica-profile-photo", atualizarFoto); };
   }, []);
 
   return (
@@ -48,7 +50,7 @@ export function Header() {
             <span>Favoritos</span>{favoritos.length > 0 && <b>{favoritos.length}</b>}
           </button>
           <Link href={usuario ? "/minha-conta" : "/login"} className="account-button" aria-label={usuario ? "Abrir minha conta" : "Entrar ou criar conta"}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg>
+            {usuario?.user_metadata?.foto_url ? <img className="header-profile-photo" src={usuario.user_metadata.foto_url} alt="" /> : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 21a7.5 7.5 0 0 1 15 0" /></svg>}
             <span>{usuario ? "Minha conta" : "Entrar"}<small>{usuario ? usuario.email?.split("@")[0] : "ou criar conta"}</small></span>
           </Link>
           <button className="cart-simple" onClick={abrirCarrinho} aria-label="Abrir carrinho">

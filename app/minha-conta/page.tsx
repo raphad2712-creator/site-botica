@@ -38,7 +38,7 @@ export default async function MinhaContaPage() {
         </aside>
 
         <div className="account-main">
-          <ProfileEditor perfil={{ nome, email: auth.user.email, telefone: auth.user.user_metadata.telefone, ...(perfilSalvo ?? {}) }} inicial={inicial} />
+          <ProfileEditor perfil={{ nome, email: auth.user.email, telefone: auth.user.user_metadata.telefone, foto_url: auth.user.user_metadata.foto_url, ...(perfilSalvo ?? {}) }} inicial={inicial} />
 
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2></div><span>{pedidos.length} {pedidos.length === 1 ? "pedido" : "pedidos"}</span></div>
