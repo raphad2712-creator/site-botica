@@ -99,7 +99,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="checkout-page">
-      <div className="checkout-title"><small>COMPRA SEGURA</small><h1>Finalizar compra</h1><p>Confira os dados antes de seguir para o ambiente seguro do Mercado Pago.</p></div>
+      <div className="checkout-title"><small>COMPRA SEGURA</small><h1>Finalizar compra</h1><p>Confira os dados antes de seguir para o ambiente seguro do Mercado Pago.</p><div className="checkout-progress" aria-label="Etapas da finalização"><span className="active"><b>1</b>Identificação</span><i /><span className="active"><b>2</b>Entrega</span><i /><span><b>3</b>Pagamento</span></div></div>
       <form onSubmit={finalizar} className="checkout-layout">
         <div className="checkout-forms">
           <section><header><b>1</b><div><h2>Seus dados</h2><small>Preenchidos pela sua conta e editáveis antes do pagamento</small></div></header><div className="form-grid"><label>Nome completo<input name="nome" defaultValue={perfil.nome ?? ""} required /></label><label>E-mail<input name="email" type="email" defaultValue={perfil.email ?? ""} required /></label><label>Telefone (opcional)<input name="telefone" inputMode="tel" defaultValue={perfil.telefone ?? ""} /></label><label>CPF<input name="cpf" inputMode="numeric" defaultValue={perfil.cpf ?? ""} required /></label></div></section>

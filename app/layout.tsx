@@ -15,6 +15,12 @@ import { CookieConsent, CookieSettingsButton } from "@/components/cookie-consent
 export const metadata: Metadata = {
   title: "Botica Bioenergética",
   description: "Loja de suplementos, cosméticos e produtos naturais.",
+  applicationName: "Botica Bioenergética",
+  openGraph: {
+    title: "Botica Bioenergética",
+    description: "Fórmulas personalizadas, suplementos e produtos naturais.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -28,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main>{children}</main>
             <footer>
             <div className="footer-logo"><ImageFooter /></div>
-            <div><b>INSTITUCIONAL</b><a>Sobre a Botica</a><a href="/politica-de-privacidade">Política de privacidade</a><a>Termos de uso</a><CookieSettingsButton /></div>
+            <div><b>INSTITUCIONAL</b><a href="/#sobre">Sobre a Botica</a><a href="/politica-de-privacidade">Política de privacidade</a><a href="/termos-de-uso">Termos de uso</a><CookieSettingsButton /></div>
             <div><b>ATENDIMENTO</b><a href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a><a href="/politica-de-trocas-e-devolucoes">Trocas e devoluções</a></div>
             <div><b>FORMAS DE PAGAMENTO</b><p>PIX • VISA • MASTERCARD</p></div>
             <div className="footer-legal" aria-label="Informações legais da Botica Bioenergética">

@@ -928,6 +928,56 @@ html[data-theme="dark"] .cart-page-product-image{background:#202d25}
   .cart-page>article>strong,.cart-page>article>.remove{grid-column:3}
 }
 
+/* Refinamento de experiência: institucional, carrinho e checkout. */
+.about-botica{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(380px,.9fr);
+  gap:clamp(45px,7vw,100px);
+  align-items:center;
+  padding:90px max(7vw,30px);
+  background:#f3f7f1;
+}
+.about-botica-copy{max-width:650px}
+.about-botica-copy>small,.cart-page-head small,.cart-page-summary>small{color:#719a47;font-size:10px;font-weight:900;letter-spacing:.17em}
+.about-botica h2{margin:10px 0 20px;color:#174b39;font:700 clamp(36px,4.5vw,58px)/1.05 Georgia}
+.about-botica-copy p{color:#65756c;line-height:1.8}
+.about-botica-copy>a{display:inline-block;margin-top:14px;padding:15px 22px;border-radius:25px;background:#174b39;color:#fff;font-size:10px;font-weight:900}
+.about-botica-points{display:grid;gap:12px}
+.about-botica-points article{display:grid;grid-template-columns:48px 1fr;gap:17px;padding:21px;border:1px solid #dce7dc;border-radius:14px;background:#fff;box-shadow:0 10px 30px #173f3010}
+.about-botica-points article>b{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:#e9f2e3;color:#174b39;font:700 13px Georgia}
+.about-botica-points strong{display:block;margin:2px 0 6px;color:#214c3a}
+.about-botica-points p{margin:0;color:#738078;font-size:11px;line-height:1.55}
+
+.cart-page-modern{max-width:1200px!important;margin:0 auto!important;padding:60px 24px 90px!important}
+.cart-page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:25px;margin-bottom:32px}
+.cart-page-head h1{margin:7px 0 8px!important}
+.cart-page-head p{margin:0;color:#718078}
+.cart-page-head>a{padding:12px 17px;border:1px solid #cbd9d0;border-radius:22px;color:#174b39;font-size:10px;font-weight:900;white-space:nowrap}
+.cart-page-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
+.cart-page-items{min-width:0}
+.cart-page-items>article{display:grid;grid-template-columns:86px minmax(0,1fr) auto auto auto;gap:18px;align-items:center;padding:18px;margin-bottom:10px;border:1px solid #e1e9e4;border-radius:14px;background:#fff;box-shadow:0 7px 24px #173f300a}
+.cart-page-items .cart-page-product-image{width:86px;height:86px}
+.cart-shipping-card{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px;padding:17px 20px;border-radius:13px;background:linear-gradient(120deg,#eef5e9,#f8faf6);border:1px solid #dce8d7}
+.cart-shipping-card b,.cart-shipping-card small{display:block}.cart-shipping-card b{color:#24543f;font-size:12px}.cart-shipping-card small{margin-top:4px;color:#78867e;font-size:9px}.cart-shipping-card>span{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#5e8e43;font-size:10px;font-weight:900;box-shadow:0 5px 18px #173f3012}.cart-shipping-card.complete>span{background:#174b39;color:#fff}
+.cart-clear{border:0;background:none;color:#7b524c;text-decoration:underline;font-size:10px;padding:10px 0}
+.cart-page-summary{position:sticky;top:125px;padding:25px;border:1px solid #dde6e0;border-radius:16px;background:#fff;box-shadow:0 14px 40px #173f3012}
+.cart-page-summary h2{margin:8px 0 22px;color:#174b39;font:700 26px Georgia}
+.cart-page-summary>div{display:flex;justify-content:space-between;gap:15px;padding:11px 0;color:#65746c;font-size:11px}.cart-page-summary>div b{text-align:right;color:#314a3e}.cart-page-summary .cart-total{margin-top:8px;padding-top:18px;border-top:1px solid #dfe7e2;font-size:17px}.cart-page-summary .cart-total b{color:#174b39;font-size:20px}.cart-page-summary .checkout{display:block;margin-top:20px;border-radius:25px;text-align:center}.cart-page-summary p{text-align:center;color:#7c8881;font-size:9px;line-height:1.5}
+
+.checkout-progress{display:flex;align-items:center;max-width:600px;margin-top:25px}.checkout-progress span{display:flex;align-items:center;gap:7px;color:#86928b;font-size:9px;font-weight:900;white-space:nowrap}.checkout-progress span b{width:26px;height:26px;display:grid;place-items:center;border:1px solid #cbd7d0;border-radius:50%;background:#fff}.checkout-progress span.active{color:#174b39}.checkout-progress span.active b{border-color:#174b39;background:#174b39;color:#fff}.checkout-progress i{flex:1;height:1px;margin:0 9px;background:#d5ded8}
+
+html[data-theme="dark"] .about-botica{background:#111a15!important}
+html[data-theme="dark"] .about-botica h2{color:#c6dfb9!important}
+html[data-theme="dark"] .about-botica-copy p{color:#aebbb3!important}
+html[data-theme="dark"] .about-botica-points article,html[data-theme="dark"] .cart-page-items>article,html[data-theme="dark"] .cart-page-summary,html[data-theme="dark"] .cart-shipping-card{background:#19231e!important;border-color:#35473d!important;color:#dce7e0!important}
+html[data-theme="dark"] .about-botica-points strong,html[data-theme="dark"] .cart-page-summary h2{color:#c6dfb9!important}
+
+@media(max-width:900px){.about-botica{grid-template-columns:1fr}.cart-page-layout{grid-template-columns:1fr}.cart-page-summary{position:static}}
+@media(max-width:650px){
+  .about-botica{padding:65px 20px}.about-botica-points{gap:9px}.about-botica-points article{padding:17px}
+  .cart-page-modern{padding:38px 14px 90px!important}.cart-page-head{align-items:flex-start;flex-direction:column}.cart-page-head>a{order:-1}.cart-page-items>article{grid-template-columns:72px minmax(0,1fr) auto!important;gap:12px;padding:14px}.cart-page-items .cart-page-product-image{width:72px;height:72px}.cart-page-items>article>.quantity{grid-column:2}.cart-page-items>article>strong,.cart-page-items>article>.remove{grid-column:3}.cart-shipping-card{padding:14px}.checkout-progress span{font-size:0}.checkout-progress span b{font-size:9px}.checkout-progress i{margin-inline:6px}
+}
+
 /* Mantém a foto contida e reserva o nome fora dela no catálogo móvel. */
 .card .photo{
   display:grid!important;
