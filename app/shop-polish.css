@@ -888,6 +888,96 @@ html[data-theme="dark"] body .footer-logo-dark{
 html[data-theme="dark"] body .logo-light-image,
 html[data-theme="dark"] body .footer-logo-light{display:none!important}
 
+/* Rodapé editorial inspirado nas grandes farmácias digitais. */
+.footer-benefits{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;
+  margin:0;padding:0 max(5vw,28px);background:#f4f7f3;border-top:1px solid #dce6df;
+  color:#173e30;
+}
+.footer-benefits article{
+  min-height:112px;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:24px;border-right:1px solid #dce6df;transition:background .25s ease,transform .25s ease;
+}
+.footer-benefits article:last-child{border-right:0}
+.footer-benefits article:hover{background:#eaf2e6;transform:translateY(-3px)}
+.footer-benefits article>span{
+  flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;border:1px solid #9fbea9;
+  border-radius:50%;color:#6f9a4b;font-size:20px;
+}
+.footer-benefits strong,.footer-benefits small{display:block}
+.footer-benefits strong{font-size:12px;letter-spacing:.02em}
+.footer-benefits small{margin-top:4px;color:#718078;font-size:10px;line-height:1.4}
+
+body footer.official-style-footer{
+  display:block!important;margin:0!important;padding:0!important;background:#0c372b!important;
+  color:#dce9e2!important;text-align:left!important;
+}
+.official-style-footer .footer-primary{
+  display:grid;grid-template-columns:minmax(250px,1.35fr) repeat(2,minmax(155px,.75fr)) minmax(235px,1fr);
+  gap:clamp(30px,4vw,64px);padding:58px max(5vw,28px) 42px;
+}
+.official-style-footer .footer-brand-column{display:block!important;font-size:12px!important}
+.official-style-footer .footer-logo{max-width:285px!important;margin:0 0 18px!important}
+.official-style-footer .footer-logo img{width:100%!important;max-height:92px!important;object-fit:contain!important;object-position:left center!important}
+.official-style-footer .footer-brand-column>p{max-width:350px;margin:0;color:#b9cbc1;line-height:1.65}
+.footer-contact-button{
+  display:inline-flex;align-items:center;gap:24px;margin-top:22px;padding:12px 17px;border:1px solid #72957e;
+  border-radius:24px;color:#fff!important;font-size:10px;font-weight:800;letter-spacing:.04em;transition:.25s ease;
+}
+.footer-contact-button:hover{background:#86ad55;border-color:#86ad55;transform:translateY(-2px)}
+.official-style-footer nav,.official-style-footer .footer-shopping{display:flex!important;flex-direction:column;align-items:flex-start;gap:11px!important}
+.official-style-footer nav>b,.official-style-footer .footer-shopping>b{margin:2px 0 9px;color:#b9d99a;font-size:10px;letter-spacing:.13em}
+.official-style-footer nav a,.official-style-footer nav button{
+  position:relative;border:0!important;background:none!important;padding:1px 0!important;color:#dce9e2!important;
+  font-size:11px!important;text-align:left!important;transition:color .2s ease,transform .2s ease;
+}
+.official-style-footer nav a:hover,.official-style-footer nav button:hover{color:#b9d99a!important;transform:translateX(4px)}
+.payment-flags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:17px}
+.payment-flags span{
+  min-width:52px;padding:7px 8px;border-radius:4px;background:#fff;color:#173e30;text-align:center;
+  font-size:9px;font-weight:900;box-shadow:0 4px 12px #00150d2e;
+}
+.security-stamps{display:flex;flex-wrap:wrap;gap:8px}
+.security-stamps>span{min-width:105px;padding:9px 10px;border:1px solid #547665;border-radius:5px;background:#123f32}
+.security-stamps strong,.security-stamps small{display:block}
+.security-stamps strong{color:#fff;font-size:10px}
+.security-stamps small{margin-top:3px;color:#aebfb6;font-size:8px}
+.official-style-footer .footer-legal{
+  margin:0 max(5vw,28px)!important;padding:29px 0!important;border-top:1px solid rgba(220,232,225,.2)!important;
+  border-bottom:1px solid rgba(220,232,225,.2)!important;
+}
+.official-style-footer .footer-disclaimer{
+  display:flex!important;justify-content:space-between;align-items:center;gap:30px;padding:22px max(5vw,28px) 28px!important;
+  color:#9fb3a8;font-size:9px!important;line-height:1.6!important;
+}
+.official-style-footer .footer-disclaimer p{max-width:760px;margin:0}
+.official-style-footer .footer-disclaimer p:last-child{white-space:nowrap}
+html[data-theme="dark"] .footer-benefits{background:#152019;border-color:#33453a;color:#e5eee8}
+html[data-theme="dark"] .footer-benefits article{border-color:#33453a}
+html[data-theme="dark"] .footer-benefits article:hover{background:#1b2921}
+html[data-theme="dark"] .footer-benefits small{color:#a9b8af}
+html[data-theme="dark"] body footer.official-style-footer{background:#071d16!important}
+
+@media(max-width:1000px){
+  .footer-benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .footer-benefits article:nth-child(2){border-right:0}
+  .footer-benefits article:nth-child(-n+2){border-bottom:1px solid #dce6df}
+  .official-style-footer .footer-primary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .footer-benefits{grid-template-columns:1fr;padding:0 20px}
+  .footer-benefits article{min-height:86px;justify-content:flex-start;border-right:0!important;border-bottom:1px solid #dce6df!important;padding:18px 4px}
+  .footer-benefits article:last-child{border-bottom:0!important}
+  .official-style-footer .footer-primary{grid-template-columns:1fr;gap:32px;padding:42px 22px 32px}
+  .official-style-footer .footer-logo{max-width:260px!important}
+  .official-style-footer nav{padding-top:24px;border-top:1px solid rgba(220,232,225,.16)}
+  .official-style-footer .footer-shopping{padding-top:24px;border-top:1px solid rgba(220,232,225,.16)}
+  .official-style-footer .footer-legal{margin:0 22px!important;padding:28px 0!important}
+  .official-style-footer .footer-disclaimer{display:block!important;padding:22px 22px 90px!important}
+  .official-style-footer .footer-disclaimer p+ p{margin-top:12px}
+  .official-style-footer .footer-disclaimer p:last-child{white-space:normal}
+}
+
 /* Logo completa, sem placas, bordas ou recorte, em todas as vitrines. */
 body header .logo-clean,
 body header .logo-clean img,
@@ -1037,3 +1127,7 @@ html[data-theme="dark"] .form-grid input:focus,html[data-theme="dark"] .profile-
   .card .photo{height:270px!important;min-height:270px!important;max-height:270px!important}
   .card>a h3{min-height:2.7em!important;margin-top:10px!important}
 }
+
+/* O rodapé é sempre escuro, portanto usa a versão transparente da marca. */
+body .official-style-footer .footer-logo-light{display:none!important}
+body .official-style-footer .footer-logo-dark{display:block!important;background:transparent!important}
