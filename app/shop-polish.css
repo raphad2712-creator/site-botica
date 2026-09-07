@@ -1137,3 +1137,26 @@ html[data-theme="dark"] body footer.official-style-footer .footer-logo img{
   filter:none!important;
   box-shadow:none!important;
 }
+
+/* Favoritos sem superfícies brancas no tema escuro. */
+html[data-theme="dark"] body .favorites-drawer,
+html[data-theme="dark"] body .favorites-drawer>header,
+html[data-theme="dark"] body .favorites-list,
+html[data-theme="dark"] body .favorites-empty{
+  background:#111b15!important;
+  border-color:#33463a!important;
+  color:#dce8e0!important;
+}
+html[data-theme="dark"] body .favorites-drawer>header{
+  background:linear-gradient(135deg,#092d23,#134a38)!important;
+}
+html[data-theme="dark"] body .favorites-drawer>header h2{color:#eef6f1!important}
+html[data-theme="dark"] body .favorites-drawer>header>button,
+html[data-theme="dark"] body .favorites-list article,
+html[data-theme="dark"] body .favorites-list article>a,
+html[data-theme="dark"] body .favorites-list article>button{
+  background:#1a2820!important;
+  border-color:#354a3d!important;
+  color:#dce8e0!important;
+}
+html[data-theme="dark"] body .favorites-list article>div a{color:#e8f1eb!important}

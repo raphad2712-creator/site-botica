@@ -10,44 +10,72 @@ export default function RedefinirSenhaPage() {
   const [sessaoValida, setSessaoValida] = useState(false);
 
   useEffect(() => {
+    let ativo = true;
+
     async function prepararRecuperacao() {
       const supabase = criarClienteSupabase();
       const parametros = new URLSearchParams(window.location.search);
       const erroLink = parametros.get("error_description");
-      if (erroLink) {
-        setMensagem("Este link não pôde ser validado. Solicite um novo link abaixo.");
-        setValidando(false);
-        return;
-      }
-      const code = parametros.get("code");
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) { setMensagem("O link expirou ou já foi utilizado. Solicite um novo link."); setValidando(false); return; }
-        setSessaoValida(true);
-        window.history.replaceState({}, "", "/redefinir-senha");
-      }
-      const tokenHash = parametros.get("token_hash");
-      if (tokenHash) {
-        const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
-        if (error) { setMensagem("O link expirou ou já foi utilizado. Solicite um novo link."); setValidando(false); return; }
-        setSessaoValida(true);
-        window.history.replaceState({}, "", "/redefinir-senha");
-      }
       const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const accessToken = hash.get("access_token");
       const refreshToken = hash.get("refresh_token");
+      const code = parametros.get("code");
+      const tokenHash = parametros.get("token_hash");
+
+      async function sessaoAtualValida() {
+        const { data } = await supabase.auth.getUser();
+        return Boolean(data.user);
+      }
+
+      // O Supabase pode processar o link automaticamente. Antes de trocar o
+      // código novamente, aproveitamos a sessão que já foi criada no navegador.
+      if (await sessaoAtualValida()) {
+        if (!ativo) return;
+        setSessaoValida(true);
+        setValidando(false);
+        window.history.replaceState({}, "", "/redefinir-senha");
+        return;
+      }
+
       if (accessToken && refreshToken) {
         const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        if (error) { setMensagem("O link de recuperação não é mais válido."); setValidando(false); return; }
-        setSessaoValida(true);
-        window.history.replaceState({}, "", "/redefinir-senha");
+        if (!error && await sessaoAtualValida()) {
+          if (!ativo) return;
+          setSessaoValida(true);
+          setValidando(false);
+          window.history.replaceState({}, "", "/redefinir-senha");
+          return;
+        }
+      } else if (tokenHash) {
+        const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+        if (!error && await sessaoAtualValida()) {
+          if (!ativo) return;
+          setSessaoValida(true);
+          setValidando(false);
+          window.history.replaceState({}, "", "/redefinir-senha");
+          return;
+        }
+      } else if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        // createBrowserClient também pode ter consumido o código; nesse caso a
+        // sessão existente continua sendo válida e não deve ser rejeitada.
+        if ((!error || await sessaoAtualValida()) && await sessaoAtualValida()) {
+          if (!ativo) return;
+          setSessaoValida(true);
+          setValidando(false);
+          window.history.replaceState({}, "", "/redefinir-senha");
+          return;
+        }
       }
-      const { data } = await supabase.auth.getSession();
-      if (data.session) setSessaoValida(true);
-      else if (!code && !tokenHash && !(accessToken && refreshToken)) setMensagem("Abra esta página pelo link mais recente enviado ao seu e-mail.");
+
+      if (!ativo) return;
+      setMensagem(erroLink
+        ? "Este link expirou ou já foi utilizado. Solicite um novo link."
+        : "Não foi possível validar este link. Solicite um novo link e abra somente o e-mail mais recente.");
       setValidando(false);
     }
     prepararRecuperacao();
+    return () => { ativo = false; };
   }, []);
 
   async function salvar(event: FormEvent<HTMLFormElement>) {
@@ -60,7 +88,16 @@ export default function RedefinirSenhaPage() {
     setCarregando(true); setMensagem("");
     const supabase = criarClienteSupabase();
     const { error } = await supabase.auth.updateUser({ password: senha });
-    if (error) { setMensagem("O link expirou ou não é válido. Solicite um novo link."); setCarregando(false); return; }
+    if (error) {
+      const detalhe = error.message.toLowerCase();
+      setMensagem(detalhe.includes("different") || detalhe.includes("same")
+        ? "Escolha uma senha diferente da senha atual."
+        : detalhe.includes("session") || detalhe.includes("jwt")
+          ? "Sua sessão de recuperação expirou. Solicite um novo link."
+          : "Não foi possível alterar a senha agora. Tente novamente.");
+      setCarregando(false);
+      return;
+    }
     setMensagem("Senha alterada com sucesso. Você já pode entrar na sua conta.");
     setCarregando(false);
     window.setTimeout(() => window.location.assign("/login"), 1800);
