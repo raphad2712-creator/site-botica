@@ -1131,3 +1131,9 @@ html[data-theme="dark"] .form-grid input:focus,html[data-theme="dark"] .profile-
 /* O rodapé é sempre escuro, portanto usa a versão transparente da marca. */
 body .official-style-footer .footer-logo-light{display:none!important}
 body .official-style-footer .footer-logo-dark{display:block!important;background:transparent!important}
+html[data-theme="dark"] body footer.official-style-footer .footer-logo,
+html[data-theme="dark"] body footer.official-style-footer .footer-logo img{
+  background:transparent!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
