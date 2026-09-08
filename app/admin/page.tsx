@@ -45,12 +45,18 @@ export default async function AdminPage() {
   const receitasLista = receitasBase.map((receita) => ({ ...receita, cliente: { ...perfisPorUsuario.get(receita.usuario_id), email: emailsPorUsuario.get(receita.usuario_id) || "" } }));
   const solicitacoesLista = solicitacoes ?? [];
   const pendentes = solicitacoesLista.filter((item) => item.status !== "concluida").length;
+  const pedidosParaPreparar = pedidosLista.filter((pedido) => ["pago", "aprovado"].includes(pedido.status) && pedido.status_entrega !== "entregue").length;
+  const receitasParaAnalisar = receitasLista.filter((item) => item.status === "em_analise").length;
+  const totalPendencias = pedidosParaPreparar + receitasParaAnalisar + pendentes;
   return <main className="admin-dashboard" data-admin-tab="overview">
     <header className="admin-dashboard-hero">
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA ↗</a>
     </header>
-    <AdminTabs numeros={{ products: produtos.length, deliveries: pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length, approved: receitasLista.filter((item) => item.status === "aprovada").length, delivered: pedidosLista.filter((pedido) => pedido.status_entrega === "entregue").length, requests: pendentes, completed: solicitacoesLista.filter((item) => item.status === "concluida").length, newsletter: totalInscritos ?? 0, recipes: receitasLista.filter((item) => item.status === "em_analise").length }} />
+    <AdminTabs numeros={{ deliveries: pedidosParaPreparar, requests: pendentes, recipes: receitasParaAnalisar }} />
+    <section className={`admin-pending-summary ${totalPendencias ? "has-pending" : "is-clear"}`} aria-live="polite">
+      <span>{totalPendencias ? "!" : "✓"}</span><div><strong>{totalPendencias ? `${totalPendencias} ${totalPendencias === 1 ? "ação precisa" : "ações precisam"} da sua atenção` : "Tudo em dia por aqui"}</strong><p>{totalPendencias ? "Use os números vermelhos no menu para encontrar rapidamente o que está pendente." : "Quando chegar um pedido, receita ou solicitação, o aviso aparecerá neste painel."}</p></div>
+    </section>
     <section className="admin-overview" id="visao-geral">
       <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
       <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>

@@ -18,6 +18,7 @@ export async function enviarEmail({ para, assunto, html }: Email) {
       subject: assunto,
       htmlContent: html,
     }),
+    signal: AbortSignal.timeout(12000),
   });
   if (!resposta.ok) return { enviado: false, motivo: `BREVO_${resposta.status}` };
   return { enviado: true };

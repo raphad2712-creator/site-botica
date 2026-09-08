@@ -1160,3 +1160,39 @@ html[data-theme="dark"] body .favorites-list article>button{
   color:#dce8e0!important;
 }
 html[data-theme="dark"] body .favorites-list article>div a{color:#e8f1eb!important}
+
+/* Painel administrativo simplificado: seis áreas e alertas apenas acionáveis. */
+.admin-dashboard-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.admin-pending-summary{
+  max-width:1280px;margin:16px auto 0;padding:15px 18px;display:flex;align-items:center;gap:13px;
+  border:1px solid #dce7df;border-radius:14px;background:#fff;color:#345246;
+}
+.admin-pending-summary>span{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:50%;font-weight:900}
+.admin-pending-summary strong,.admin-pending-summary p{display:block;margin:0}
+.admin-pending-summary strong{font-size:11px}.admin-pending-summary p{margin-top:3px;color:#74837b;font-size:9px}
+.admin-pending-summary.has-pending{border-color:#e5c7c1;background:#fff9f7}.admin-pending-summary.has-pending>span{background:#bd5d4d;color:#fff}
+.admin-pending-summary.is-clear{border-color:#cfe2ca;background:#f5faf3}.admin-pending-summary.is-clear>span{background:#6f9b55;color:#fff}
+.admin-dashboard[data-admin-tab="overview"] .admin-pending-summary{display:flex}
+.admin-dashboard:not([data-admin-tab="overview"]) .admin-pending-summary{display:none}
+
+/* Pedidos reúne os pedidos em andamento e o histórico entregue. */
+.admin-dashboard[data-admin-tab="deliveries"] #entregues-admin{display:block!important}
+/* Receitas reúne análise e receitas já aprovadas para preparação. */
+.admin-dashboard[data-admin-tab="recipes"] .admin-aftercare{display:block!important;margin-top:24px!important}
+.admin-dashboard[data-admin-tab="recipes"] #aprovadas-admin{display:block!important;margin-top:0!important}
+.admin-dashboard[data-admin-tab="recipes"] #entregas-admin,
+.admin-dashboard[data-admin-tab="recipes"] #entregues-admin,
+.admin-dashboard[data-admin-tab="recipes"] #pos-venda-admin,
+.admin-dashboard[data-admin-tab="recipes"] #historico-admin{display:none!important}
+/* Pós-venda mostra pendências e histórico na mesma tela. */
+.admin-dashboard[data-admin-tab="requests"] #historico-admin{display:block!important}
+
+html[data-theme="dark"] body .admin-pending-summary{background:#18241e;border-color:#34483d;color:#e1ebe4}
+html[data-theme="dark"] body .admin-pending-summary p{color:#aebcb3}
+html[data-theme="dark"] body .admin-pending-summary.has-pending{background:#2b211d;border-color:#70473e}
+html[data-theme="dark"] body .admin-pending-summary.is-clear{background:#17251b;border-color:#3b5b40}
+@media(max-width:1100px){.admin-dashboard-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:620px){
+  .admin-dashboard-nav{grid-template-columns:1fr 1fr!important}
+  .admin-pending-summary{align-items:flex-start;padding:14px}.admin-pending-summary p{line-height:1.45}
+}

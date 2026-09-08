@@ -1,9 +1,26 @@
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
+import { enviarEmail, escaparHtml } from "@/lib/email";
 
 type ItemRecebido = { produto_id: number; quantidade: number };
 type ClienteRecebido = { nome?: string; email?: string; cpf?: string; telefone?: string; cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
+
+async function avisarLojaNovoPedido({ pedidoId, cliente, itens, subtotal, frete, total, pagamento }: { pedidoId: number; cliente: ClienteRecebido; itens: Array<{ nome: string; quantidade: number; preco_unitario: number }>; subtotal: number; frete: number; total: number; pagamento: string }) {
+  const emailLoja = process.env.ADMIN_EMAIL || process.env.EMAIL_REMETENTE;
+  if (!emailLoja) return;
+  const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const lista = itens.map((item) => `<tr><td style="padding:8px;border-bottom:1px solid #ddd">${escaparHtml(item.nome)}</td><td style="padding:8px;border-bottom:1px solid #ddd">${item.quantidade}</td><td style="padding:8px;border-bottom:1px solid #ddd">${moeda(item.preco_unitario * item.quantidade)}</td></tr>`).join("");
+  try {
+    await enviarEmail({
+      para: emailLoja,
+      assunto: `Nova compra na Botica — pedido #${pedidoId}`,
+      html: `<h2>Nova compra recebida</h2><p><b>Pedido:</b> BOT-${new Date().getFullYear()}-${String(pedidoId).padStart(6, "0")}</p><p><b>Cliente:</b> ${escaparHtml(cliente.nome || "Não informado")}<br><b>E-mail:</b> ${escaparHtml(cliente.email || "Não informado")}<br><b>Telefone:</b> ${escaparHtml(cliente.telefone || "Não informado")}</p><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px;text-align:left">Produto</th><th style="padding:8px;text-align:left">Qtd.</th><th style="padding:8px;text-align:left">Valor</th></tr></thead><tbody>${lista}</tbody></table><p><b>Subtotal:</b> ${moeda(subtotal)}<br><b>Frete:</b> ${frete ? moeda(frete) : "Grátis"}<br><b>Total:</b> ${moeda(total)}<br><b>Pagamento:</b> ${escaparHtml(pagamento)}</p><p><b>Entrega:</b> ${escaparHtml(cliente.rua)}, ${escaparHtml(cliente.numero)} — ${escaparHtml(cliente.bairro)}, ${escaparHtml(cliente.cidade)}/${escaparHtml(cliente.estado)} — CEP ${escaparHtml(cliente.cep)}</p><p>Acesse o painel administrativo para acompanhar e preparar o pedido.</p>`,
+    });
+  } catch (erro) {
+    console.error("ERRO_EMAIL_NOVO_PEDIDO", { pedidoId, erro });
+  }
+}
 
 function mensagemErro(erro: unknown) {
   const codigo = typeof erro === "object" && erro && "code" in erro ? String(erro.code) : "";
@@ -87,6 +104,7 @@ export async function POST(request: Request) {
         status_entrega: "preparando",
       }).eq("id", pedido.id);
       if (testeError) throw testeError;
+      await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: "Pedido de teste confirmado" });
       return NextResponse.json({ pedido_id: pedido.id, tipo: "teste", mensagem: "Pedido de teste finalizado sem cobrança." });
     }
 
@@ -114,6 +132,7 @@ export async function POST(request: Request) {
       if (!pagamentoResposta.ok || !pagamento.id || !transacao?.qr_code) throw new Error("PIX_RECUSADO");
       const { error: pixUpdateError } = await admin.from("pedidos").update({ pagamento_id: String(pagamento.id) }).eq("id", pedido.id);
       if (pixUpdateError) throw pixUpdateError;
+      await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: "Pix gerado — aguardando pagamento" });
       return NextResponse.json({ pedido_id: pedido.id, tipo: "pix", pix: { codigo: transacao.qr_code, qr_code_base64: transacao.qr_code_base64, link: transacao.ticket_url } });
     }
 
@@ -135,6 +154,7 @@ export async function POST(request: Request) {
     const { error: updateError } = await admin.from("pedidos").update({ mercado_pago_preference_id: preferencia.id }).eq("id", pedido.id);
     if (updateError) throw updateError;
     const checkoutUrl = process.env.MERCADO_PAGO_MODO_TESTE === "false" ? preferencia.init_point : preferencia.sandbox_init_point;
+    await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: "Cartão — aguardando confirmação" });
     return NextResponse.json({ pedido_id: pedido.id, checkout_url: checkoutUrl });
   } catch (erro) {
     console.error("ERRO_CRIAR_PEDIDO", { etapa, pedidoId, erro });

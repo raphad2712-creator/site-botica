@@ -4,14 +4,11 @@ import { useEffect, useState } from "react";
 
 const abas = [
   { id: "overview", icone: "⌂", nome: "Visão geral" },
+  { id: "deliveries", icone: "▤", nome: "Pedidos", notificar: true },
   { id: "products", icone: "▦", nome: "Produtos" },
-  { id: "deliveries", icone: "▤", nome: "Entregas" },
-  { id: "approved", icone: "☑", nome: "Receitas aprovadas" },
-  { id: "delivered", icone: "✓", nome: "Entregues" },
-  { id: "requests", icone: "!", nome: "Solicitações" },
-  { id: "completed", icone: "✓", nome: "Concluídas" },
+  { id: "recipes", icone: "＋", nome: "Receitas", notificar: true },
+  { id: "requests", icone: "!", nome: "Pós-venda", notificar: true },
   { id: "newsletter", icone: "✉", nome: "Comunicados" },
-  { id: "recipes", icone: "＋", nome: "Receitas" },
 ];
 
 export function AdminTabs({ numeros }: { numeros: Record<string, number> }) {
@@ -22,5 +19,5 @@ export function AdminTabs({ numeros }: { numeros: Record<string, number> }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [ativa]);
 
-  return <nav className="admin-dashboard-nav" aria-label="Áreas do painel">{abas.map((aba) => <button type="button" key={aba.id} className={ativa === aba.id ? "active" : ""} onClick={() => setAtiva(aba.id)} aria-pressed={ativa === aba.id}><i>{aba.icone}</i><span>{aba.nome}</span>{aba.id !== "overview" && <b>{numeros[aba.id] ?? 0}</b>}</button>)}</nav>;
+  return <nav className="admin-dashboard-nav" aria-label="Áreas do painel">{abas.map((aba) => { const quantidade = numeros[aba.id] ?? 0; return <button type="button" key={aba.id} className={ativa === aba.id ? "active" : ""} onClick={() => setAtiva(aba.id)} aria-pressed={ativa === aba.id}><i>{aba.icone}</i><span>{aba.nome}</span>{aba.notificar && quantidade > 0 && <b aria-label={`${quantidade} pendências`}>{quantidade}</b>}</button>; })}</nav>;
 }
