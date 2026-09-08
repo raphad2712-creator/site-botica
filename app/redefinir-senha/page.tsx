@@ -27,16 +27,6 @@ export default function RedefinirSenhaPage() {
         return Boolean(data.user);
       }
 
-      // O Supabase pode processar o link automaticamente. Antes de trocar o
-      // código novamente, aproveitamos a sessão que já foi criada no navegador.
-      if (await sessaoAtualValida()) {
-        if (!ativo) return;
-        setSessaoValida(true);
-        setValidando(false);
-        window.history.replaceState({}, "", "/redefinir-senha");
-        return;
-      }
-
       if (accessToken && refreshToken) {
         const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
         if (!error && await sessaoAtualValida()) {
@@ -66,6 +56,13 @@ export default function RedefinirSenhaPage() {
           window.history.replaceState({}, "", "/redefinir-senha");
           return;
         }
+      } else if (await sessaoAtualValida()) {
+        // O callback do servidor já trocou o código e gravou a sessão correta.
+        if (!ativo) return;
+        setSessaoValida(true);
+        setValidando(false);
+        window.history.replaceState({}, "", "/redefinir-senha");
+        return;
       }
 
       if (!ativo) return;
@@ -87,7 +84,15 @@ export default function RedefinirSenhaPage() {
     if (senha !== confirmar) return setMensagem("As duas senhas precisam ser iguais.");
     setCarregando(true); setMensagem("");
     const supabase = criarClienteSupabase();
-    const { error } = await supabase.auth.updateUser({ password: senha });
+    const { data: usuarioAtual, error: erroUsuario } = await supabase.auth.getUser();
+    const email = usuarioAtual.user?.email;
+    if (erroUsuario || !email) {
+      setMensagem("Sua sessão de recuperação expirou. Solicite um novo link.");
+      setCarregando(false);
+      return;
+    }
+
+    const { data: atualizacao, error } = await supabase.auth.updateUser({ password: senha });
     if (error) {
       const detalhe = error.message.toLowerCase();
       setMensagem(detalhe.includes("different") || detalhe.includes("same")
@@ -98,6 +103,23 @@ export default function RedefinirSenhaPage() {
       setCarregando(false);
       return;
     }
+
+    if (!atualizacao.user) {
+      setMensagem("O Supabase não confirmou a alteração. Solicite um novo link e tente novamente.");
+      setCarregando(false);
+      return;
+    }
+
+    // Encerra inclusive sessões antigas e testa a nova senha de verdade antes
+    // de confirmar a alteração na tela.
+    await supabase.auth.signOut({ scope: "global" });
+    const { error: erroConfirmacao } = await supabase.auth.signInWithPassword({ email, password: senha });
+    if (erroConfirmacao) {
+      setMensagem("A alteração não pôde ser confirmada. Solicite um novo link e tente novamente.");
+      setCarregando(false);
+      return;
+    }
+    await supabase.auth.signOut({ scope: "local" });
     setMensagem("Senha alterada com sucesso. Você já pode entrar na sua conta.");
     setCarregando(false);
     window.setTimeout(() => window.location.assign("/login"), 1800);
