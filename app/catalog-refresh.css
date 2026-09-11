@@ -1,0 +1,42 @@
+/* Vitrine com hierarquia legível e proporções consistentes. */
+body .products .pharmacy-card{border-radius:12px!important;box-shadow:0 3px 15px #123b2709!important;padding:0 0 20px!important;gap:0;min-width:0}
+body .products .pharmacy-card:hover{transform:translateY(-4px)!important;box-shadow:0 12px 30px #123b2715!important}
+body .products .pharmacy-card .photo{height:270px!important;min-height:270px!important;max-height:270px!important;margin:0!important;width:100%!important;border-radius:0!important;background:#fff!important}
+body .pharmacy-card .photo .catalog-product-image{padding:18px!important;object-fit:contain!important}
+body .pharmacy-card>p{font-size:11px!important;letter-spacing:.09em!important;margin:16px 20px 8px!important;color:#63834d!important}
+body .pharmacy-card>a:not(.photo){margin:0 20px!important}
+body .pharmacy-card>a h3{font:600 17px/1.4 Arial,sans-serif!important;min-height:48px!important;margin:0 0 8px!important;color:#233b30}
+body .pharmacy-card>.product-brand-line{font-size:12px;color:#7a877f;margin:0 20px 20px}
+body .pharmacy-card>del{font-size:13px!important;margin:0 20px 4px!important;color:#808b85!important}
+body .pharmacy-card>strong{font:700 28px/1.15 Arial,sans-serif!important;letter-spacing:-.8px;margin:0 20px 6px!important}
+body .pharmacy-card>small{font-size:12px!important;line-height:1.5!important;margin:0 20px 16px!important}
+body .pharmacy-card>.buy{margin: auto 20px 0!important;width:calc(100% - 40px)!important;min-height:48px!important;border-radius:8px!important;font-size:11px!important;padding:12px 8px!important;letter-spacing:.02em!important}
+body .pharmacy-card>.buy:disabled{opacity:.5;cursor:not-allowed}
+body .pharmacy-card .discount-badge{font:700 12px Arial!important;padding:8px 10px!important;border-radius:5px!important;top:16px!important;left:16px!important}
+body .pharmacy-card .low-stock{margin:0 20px 12px;font-size:11px}
+.botica-campaign-carousel{max-width:1280px;margin:56px auto 0;padding:0 24px}
+.campaign-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:20px}
+.campaign-track::-webkit-scrollbar{display:none}
+.campaign-slide{flex:0 0 100%;min-width:0;scroll-snap-align:start;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:30px;padding:40px 60px;background:#edf2e7}
+.campaign-slide-1{background:#f3efdf}.campaign-slide-2{background:#f4eae6}
+.campaign-slide-copy{max-width:550px}
+.campaign-slide-copy>small{font:700 11px Arial;letter-spacing:.16em;color:#557443}
+.campaign-slide-copy h2{font:500 clamp(30px,3.7vw,48px)/1.08 Georgia,serif;color:#124c3a;margin:16px 0}
+.campaign-slide-copy p{font-size:15px;line-height:1.7;color:#5b6b60;max-width:440px}
+.campaign-slide-copy>a{display:inline-flex;align-items:center;gap:28px;background:#124c3a;color:#fff;padding:15px 22px;border-radius:8px;font-size:13px;font-weight:700;margin-top:8px}
+.campaign-slide-copy>a:hover{background:#206149}
+.campaign-slide-image{border-radius:50%;background:#fff;width:min(100%,310px);aspect-ratio:1;justify-self:center;overflow:hidden;box-shadow:0 18px 35px #16452c0d}
+.campaign-slide-image img{display:block;width:100%;height:100%;object-fit:contain;padding:22px}
+.campaign-controls{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:16px}
+.campaign-controls>button{width:40px;height:40px;border:1px solid #d2ded5;border-radius:50%;background:#fff;color:#124c3a;font-size:20px}
+.campaign-controls>div{display:flex;gap:4px}.campaign-controls>div button{width:28px;height:36px;border:0;background:none;position:relative}
+.campaign-controls>div button:after{content:"";position:absolute;inset:14px 9px;background:#c8d4cb;border-radius:8px}
+.campaign-controls>div button[aria-current]:after{inset:14px 4px;background:#124c3a}
+.botica-campaign-carousel :focus-visible{outline:3px solid #7baa54;outline-offset:3px}
+html[data-theme="dark"] body .pharmacy-card>a h3{color:#e3ece6!important}
+html[data-theme="dark"] body .pharmacy-card>small,html[data-theme="dark"] body .pharmacy-card>.product-brand-line{color:#aebfb3!important}
+html[data-theme="dark"] .campaign-slide{background:#1d3026}html[data-theme="dark"] .campaign-slide-1{background:#302f22}html[data-theme="dark"] .campaign-slide-2{background:#302725}
+html[data-theme="dark"] .campaign-slide-copy h2{color:#d4e8c6}html[data-theme="dark"] .campaign-slide-copy p{color:#bac9bf}html[data-theme="dark"] .campaign-slide-copy>small{color:#adc88c}
+html[data-theme="dark"] .campaign-controls>button{background:#1b2c22;color:#e0ece3;border-color:#415448}
+@media(max-width:760px){.campaign-slide{padding:28px;gap:16px;grid-template-columns:1fr .7fr}.campaign-slide-copy h2{font-size:32px}.campaign-slide-copy p{font-size:13px}.campaign-slide-copy>a{font-size:12px;padding:13px}.botica-campaign-carousel{margin-top:32px;padding:0 16px}}
+@media(max-width:560px){.campaign-slide{grid-template-columns:1fr;padding:28px 24px}.campaign-slide-copy{max-width:none}.campaign-slide-image{width:180px;grid-row:1}.campaign-slide-copy h2{font-size:30px}.campaign-slide-copy p{margin:10px 0}.campaign-slide-copy>a{width:100%;justify-content:space-between}body .products .pharmacy-card{flex-basis:280px!important}body .products .pharmacy-card .photo{height:245px!important;min-height:245px!important;max-height:245px!important}}

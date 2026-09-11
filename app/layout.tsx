@@ -6,6 +6,7 @@ import "./mobile.css";
 import "./backend.css";
 import "./front-match.css";
 import "./shop-polish.css";
+import "./catalog-refresh.css";
 import { CartProvider } from "@/components/cart-provider";
 import { Header } from "@/components/header";
 import { FavoritesProvider } from "@/components/favorites-provider";

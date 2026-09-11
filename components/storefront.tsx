@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
 import { ProductCard } from "./product-card";
+import { CampaignCarousel } from "./campaign-carousel";
 
 const categorias = ["Todos", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
 const icones: Record<string, string> = {
@@ -105,6 +106,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         <article><b><svg viewBox="0 0 24 24"><path d="M5 11a7 7 0 0 1 14 0v5M5 13H3v4h4v-4H5ZM19 13h2v4h-4v-4h2ZM17 19c-1 1-2.7 2-5 2" /></svg></b><span><strong>Atendimento humano</strong><small>Conte com a nossa equipe</small></span></article>
       </section>
 
+      <CampaignCarousel />
       <section className="objectives scroll-reveal" id="objetivos">
         <div className="title">
           <small>LINHAS DA BOTICA</small>

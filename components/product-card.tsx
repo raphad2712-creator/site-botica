@@ -24,7 +24,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
     ? Math.round((1 - Number(produto.preco) / Number(produto.preco_antigo)) * 100)
     : 0;
   return (
-    <article className="card">
+    <article className="card pharmacy-card">
       <button className={`favorite-button ${estaFavorito(produto.id) ? "active" : ""}`} onClick={() => alternarFavorito(produto)} aria-label={estaFavorito(produto.id) ? `Remover ${produto.nome} dos favoritos` : `Adicionar ${produto.nome} aos favoritos`}>
         <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
       </button>
@@ -34,13 +34,13 @@ export function ProductCard({ produto }: { produto: Produto }) {
       </Link>
       <p>{produto.categoria}</p>
       <Link href={`/produto/${produto.id}`}><h3>{produto.nome}</h3></Link>
-      <span className="card-rating" aria-label="Produto selecionado pela Botica">★★★★★ <small>seleção Botica</small></span>
-      {produto.preco_antigo && <del>{moeda(produto.preco_antigo)}</del>}
+      <span className="product-brand-line">Botica Bioenergética</span>
+      {!!desconto && <del>{moeda(produto.preco_antigo!)}</del>}
       <strong>{moeda(produto.preco)}</strong>
       <small>{produto.estoque > 0 ? `ou 2x de ${moeda(Number(produto.preco) / 2)} sem juros` : "Indisponível"}</small>
       {produto.estoque > 0 && produto.estoque <= 5 && <em className="low-stock">Restam poucas unidades</em>}
       <button className={`buy ${adicionado ? "added" : ""}`} disabled={produto.estoque < 1} onClick={adicionarProduto}>
-        {adicionado ? "✓ ADICIONADO" : "ADICIONAR AO CARRINHO"}
+        {produto.estoque < 1 ? "INDISPONÍVEL" : adicionado ? "✓ ADICIONADO" : "ADICIONAR AO CARRINHO"}
       </button>
     </article>
   );
