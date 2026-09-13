@@ -1,4 +1,6 @@
 import { imagemCatalogo } from "@/lib/product-images";
+import { matchConsultationProduct } from "@/lib/consultation-products";
+import { NaturalProductImage } from "./natural-product-image";
 
 type ProductImageProps = {
   nome: string;
@@ -7,6 +9,8 @@ type ProductImageProps = {
 };
 
 export function ProductImage({ nome, imagemAtual, className = "" }: ProductImageProps) {
+  const natural = matchConsultationProduct(nome);
+  if (natural) return <NaturalProductImage produto={natural} className={className} sizes="(max-width: 560px) 280px, 300px" />;
   const imagem = imagemCatalogo(nome, imagemAtual);
   if (!imagem) return <span>BOTICA</span>;
 

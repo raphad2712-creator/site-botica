@@ -20,7 +20,7 @@ function load(relative) {
   loaded.set(filename, module.exports);
   return module.exports;
 }
-const { consultationProducts, matchConsultationProduct, consultationImage, consultationArtwork } = load('lib/consultation-products.ts');
+const { consultationProducts, matchConsultationProduct, consultationImage, consultationDarkImage, consultationArtwork } = load('lib/consultation-products.ts');
 const { buildCatalog, filterCatalog, isConsultation } = load('lib/catalog.ts');
 const { imagemCatalogo } = load('lib/product-images.ts');
 const registered = {
@@ -37,6 +37,7 @@ test('oito rótulos com fotos, artes e preços demonstrativos, sem estoque ou ID
     assert.ok(product.precoDemonstrativo > 0);
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationArtwork(product))));
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationImage(product))));
+    assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationDarkImage(product))));
     for (const key of ['preco', 'estoque', 'id']) assert.ok(!(key in product));
   }
 });

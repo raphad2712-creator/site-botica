@@ -3,10 +3,10 @@
 import { Icon } from "@/components/ui-icon";
 
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { consultationProducts, consultationImage } from "@/lib/consultation-products";
+import { consultationProducts } from "@/lib/consultation-products";
+import { NaturalProductImage } from "./natural-product-image";
 
 const banners = ["passiflora-300mg", "isoflavona-100mg", "berberina-500mg", "maca-peruana-500mg"].map(
   (slug) => consultationProducts.find((product) => product.slug === slug)!,
@@ -88,7 +88,7 @@ export function CampaignCarousel() {
               <p>{banner.apresentacao}. Conheça a apresentação e consulte nossa equipe para saber mais.</p>
               <Link href={`/produto/${banner.slug}`}>Conhecer o produto <span aria-hidden="true"><Icon name="arrow-right" /></span></Link>
             </div>
-            <div className="campaign-slide-image"><Image src={consultationImage(banner)} alt={`${banner.nome} ${banner.dose}, ${banner.apresentacao}, Botica Bioenergética`} width={400} height={400} sizes="(max-width: 560px) 200px, 340px" /></div>
+            <div className="campaign-slide-image"><NaturalProductImage produto={banner} sizes="(max-width: 560px) 200px, 340px" /></div>
           </article>
         ))}
       </div>
@@ -98,7 +98,6 @@ export function CampaignCarousel() {
         <button type="button" onClick={() => move(1)} aria-label="Próximo banner" aria-controls="campaign-slides"><Icon name="arrow-right" /></button>
       </div>
       <p className="carousel-status" aria-live={playing ? "off" : "polite"} aria-atomic="true">{active + 1} / {banners.length} · {banners[active].nome}</p>
-      <div className="carousel-progress" aria-hidden="true"><span key={`${active}-${playing}`} /></div>
     </section>
   );
 }

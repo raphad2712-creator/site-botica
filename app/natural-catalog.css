@@ -240,6 +240,7 @@ html[data-theme="dark"] body .product-info > .demo-price-note { color: #b7c6bb; 
 .product-artwork figcaption > span { display: block; font-size: 13px; }
 .natural-buy { width: 100%; margin-top: 18px; }
 .natural-buy.compact { margin-top: auto; padding-top: 14px; }
+.consultation-card > .natural-buy.compact { width: calc(100% - 30px); margin: auto 15px 18px; padding-top: 14px; }
 .natural-buy.compact .buy { width: 100%; min-height: 48px; }
 .natural-buy > p { color: #a13232; font-size: 14px; }
 .natural-buy button:disabled { opacity: .65; cursor: wait; }
@@ -300,6 +301,17 @@ html[data-theme="dark"] .natural-buy .quantity b {
   color: #edf5f0 !important;
 }
 html[data-theme="dark"] .natural-buy > p { color: #ffaaa3; }
+.natural-image-dark { display: none !important; }
+html[data-theme="dark"] .natural-image-light { display: none !important; }
+html[data-theme="dark"] .natural-image-dark {
+  display: block !important;
+  background: #050806 !important;
+  filter: none !important;
+}
+html[data-theme="dark"] .product-gallery-slide .natural-image-dark,
+html[data-theme="dark"] .product-gallery-controls .natural-image-dark {
+  filter: none !important;
+}
 
 @media (max-width: 560px) {
   .natural-buy:not(.compact) .buy-box { grid-template-columns: 1fr; }
