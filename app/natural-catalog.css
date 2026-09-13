@@ -303,13 +303,11 @@ html[data-theme="dark"] .natural-buy .quantity b {
 html[data-theme="dark"] .natural-buy > p { color: #ffaaa3; }
 .natural-image-dark { display: none !important; }
 html[data-theme="dark"] .natural-image-light { display: none !important; }
-html[data-theme="dark"] .natural-image-dark {
-  display: block !important;
-  background: #050806 !important;
-  filter: none !important;
-}
+html[data-theme="dark"] body .catalog-product-image.natural-image-dark,
 html[data-theme="dark"] .product-gallery-slide .natural-image-dark,
 html[data-theme="dark"] .product-gallery-controls .natural-image-dark {
+  display: block !important;
+  background: #050806 !important;
   filter: none !important;
 }
 
