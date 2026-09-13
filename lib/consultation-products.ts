@@ -1,6 +1,6 @@
 /** Dados transcritos dos oito rótulos enviados pela loja.
- * Preços demonstrativos incluídos a pedido da loja. Estoque não informado.
- * Itens sem cadastro real não recebem IDs fictícios para checkout.
+ * Preços iniciais incluídos a pedido da loja. O cadastro para compra é
+ * resolvido no servidor antes de adicionar ao carrinho.
  */
 export type ConsultationProduct = {
   slug: string;

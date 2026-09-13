@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { consultationHref, formatPrice, type ConsultationProduct } from "@/lib/consultation-products";
+import { formatPrice, type ConsultationProduct } from "@/lib/consultation-products";
 import { ProductInformation } from "./product-information";
 import { ProductArtwork } from "./product-artwork";
+import { NaturalProductBuy } from "./natural-product-buy";
 import { Icon } from "./ui-icon";
 
 export function ConsultationProductPage({ produto }: { produto: ConsultationProduct }) {
@@ -16,12 +17,7 @@ export function ConsultationProductPage({ produto }: { produto: ConsultationProd
         <strong className="demo-product-price">{formatPrice(produto.precoDemonstrativo)}</strong>
         <span className="demo-price-note">Preço demonstrativo</span>
         <a className="product-details-anchor" href="#informacoes">Ver informações do produto <Icon name="arrow-down" /></a>
-        <div className="consultation-box">
-          <b>Gostou deste produto?</b>
-          <p>Fale com nossa equipe para confirmar o valor e a disponibilidade.</p>
-          <a className="consultation-cta" href={consultationHref(produto)}>FALAR COM A BOTICA <Icon name="arrow-right" /></a>
-          <small>Abre uma mensagem no seu aplicativo de e-mail.</small>
-        </div>
+        <NaturalProductBuy produto={produto} />
       </div>
     </section>
     <ProductInformation produto={produto} />

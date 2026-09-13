@@ -56,7 +56,7 @@ export function CampaignCarousel() {
     <section ref={carousel} className={`botica-campaign-carousel animated-carousel${playing ? " is-playing" : ""}`} aria-label="Destaques da Botica" aria-roledescription="carrossel"
       onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(true); }}
       onPointerLeave={(event) => { if (event.pointerType === "mouse") setHovered(false); }}
-      onFocusCapture={(event) => { if (!(event.target as HTMLElement).closest("[data-autoplay-control]")) setPaused(true); }}
+      onFocusCapture={() => setPaused(true)}
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
           event.preventDefault();
@@ -96,7 +96,6 @@ export function CampaignCarousel() {
         <button type="button" onClick={() => move(-1)} aria-label="Banner anterior" aria-controls="campaign-slides"><Icon name="arrow-left" /></button>
         <div className="campaign-dots">{banners.map((banner, index) => <button type="button" key={banner.slug} onClick={() => { setPaused(true); setActive(index); }} aria-label={`Ver banner ${banner.nome}`} aria-controls="campaign-slides" aria-current={index === active ? "true" : undefined} />)}</div>
         <button type="button" onClick={() => move(1)} aria-label="Próximo banner" aria-controls="campaign-slides"><Icon name="arrow-right" /></button>
-        {!reducedMotion && <button className="carousel-play" type="button" data-autoplay-control onClick={() => setPaused((current) => !current)} aria-label={paused ? "Retomar avanço automático" : "Pausar avanço automático"} aria-pressed={!paused}><span aria-hidden="true"><Icon name={paused ? "play" : "pause"} /></span><span>{paused ? "Reproduzir" : "Pausar"}</span></button>}
       </div>
       <p className="carousel-status" aria-live={playing ? "off" : "polite"} aria-atomic="true">{active + 1} / {banners.length} · {banners[active].nome}</p>
       <div className="carousel-progress" aria-hidden="true"><span key={`${active}-${playing}`} /></div>

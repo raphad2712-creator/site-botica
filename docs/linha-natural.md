@@ -1,15 +1,11 @@
-# Oito produtos da Botica
+# Linha natural e compra
 
-As fotografias em `public/produtos/linha-natural/` são os oito JPEGs fornecidos pela loja, preservados sem recortes ou alterações. Cada produto tem uma foto individual com fundo branco. O Next.js gera versões menores para os cards e os destaques.
+Os oito produtos usam os arquivos originais: primeiro a foto branca de `public/produtos/linha-natural/`, depois a arte de `public/produtos/artes/`. A galeria permite deslize horizontal, setas, miniaturas, teclado e ampliação da imagem selecionada.
 
-Os dados de `lib/consultation-products.ts` reproduzem somente os rótulos: nome, concentração e frasco com 60 cápsulas. As informações ficam em texto abaixo da foto na página de cada produto. Os preços demonstrativos foram autorizados pela loja e ficam no campo `precoDemonstrativo`. Não são usados em cobranças reais; estoque e dados de checkout continuam dependendo do cadastro no banco.
+Adicionar ao carrinho resolve o cadastro em POST `/api/catalogo/[slug]`, restrito aos oito slugs. Cadastros existentes preservam preço, estoque e disponibilidade. Na ausência de cadastro, cria uma única linha com ID reservado entre 810001 e 810008, preço inicial autorizado e estoque demonstrativo inicial de 100 unidades. O painel permite ajustar esses valores. Não reabastece nem reativa produtos existentes. A chave administrativa permanece no servidor.
 
-Enquanto não existir um cadastro correspondente no banco, o item mostra seu valor com a indicação “Preço demonstrativo” e permite falar com a Botica. O contato usa `NEXT_PUBLIC_SUPPORT_EMAIL`, com o mesmo endereço de fallback do suporte existente.
+O carrinho recebe o ID persistido, foto, nome e preço do banco. O checkout existente valida preço e estoque novamente; as configurações atuais de pagamento continuam valendo.
 
-Para disponibilizar a compra, cadastre no painel o nome completo (por exemplo, “Passiflora 300 mg — 60 cápsulas”), descrição aprovada, preço e estoque reais. Um cadastro ativo com nome e concentração correspondentes substitui os dados demonstrativos e é reconhecido também no endereço permanente `/produto/passiflora-300mg`. Dosagens, fórmulas combinadas ou quantidades diferentes não recebem a fotografia deste rótulo.
+O carrossel de destaques não tem botão de pausar. Mantém setas, indicadores, gesto e teclado. Interação, passagem do mouse, aba oculta e movimento reduzido interrompem o avanço automático.
 
-O carrossel avança a cada sete segundos quando está visível. Setas, indicadores, teclado e gesto horizontal mudam um destaque completo. A interação pausa o avanço; o botão reproduzir o retoma. A passagem do mouse, a aba em segundo plano e a preferência por movimento reduzido suspendem as animações automáticas.
-
-As páginas dos oito produtos exibem as artes completas fornecidas pela loja em `public/produtos/artes/`, com a proporção original e opção de ampliação. Os cards e o carrossel mantêm as fotografias isoladas em fundo branco. Setas e outros símbolos da vitrine, do cabeçalho, do rodapé e das páginas de produto são SVGs de `components/ui-icon.tsx`.
-
-Validação das regras do catálogo: `node --test tests/catalog.test.cjs`.
+Testes: `node --test tests/catalog.test.cjs tests/natural-purchase.test.cjs`.
