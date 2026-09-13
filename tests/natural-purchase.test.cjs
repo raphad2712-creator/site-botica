@@ -16,7 +16,7 @@ function setup(rows = []) {
       ilike: async () => ({ data:rows }),
       eq: (_,id) => ({single:async () => ({data:rows.find(p=>p.id===id)})}),
     }; },
-    async upsert(product) { writes++; if(!rows.some(p=>p.id===product.id)) rows.push(product); return {}; },
+    insert(product) { writes++; const saved={...product,id:900000+writes}; rows.push(saved); return {select(){return {single:async()=>({data:saved})};}}; },
   }; } };
   const route = moduleFrom('app/api/catalogo/[slug]/route.ts', name => name==='next/server' ? {NextResponse:{json:(body,options={})=>({body,status:options.status||200})}} : name.includes('supabase') ? {criarClienteAdmin:()=>admin} : labels);
   return {call:slug=>route.POST({}, {params:Promise.resolve({slug})}),rows,get writes(){return writes;}};
@@ -24,7 +24,7 @@ function setup(rows = []) {
 test('os oito produtos recebem cadastros estáveis e não duplicam ao adicionar novamente',async()=>{
  const api=setup();
  for(const p of labels.consultationProducts){ const first=await api.call(p.slug); const again=await api.call(p.slug); assert.equal(first.status,200); assert.equal(first.body.id,again.body.id); assert.equal(first.body.preco,p.precoDemonstrativo); assert.equal(first.body.imagem_url,labels.consultationImage(p)); }
- assert.equal(api.rows.length,8); assert.equal(api.writes,8);
+ assert.equal(api.rows.length,8); assert.equal(new Set(api.rows.map(p=>p.id)).size,8); assert.equal(api.writes,8);
 });
 test('cadastro existente mantém ID, valor, estoque e indisponibilidade',async()=>{
  const row={id:45,nome:'Passiflora 300 mg',preco:65,estoque:4,ativo:true}; const api=setup([row]);
