@@ -243,3 +243,58 @@ html[data-theme="dark"] body .product-info > .demo-price-note { color: #b7c6bb; 
 .natural-buy.compact .buy { width: 100%; min-height: 48px; }
 .natural-buy > p { color: #a13232; font-size: 14px; }
 .natural-buy button:disabled { opacity: .65; cursor: wait; }
+
+/* Compra da linha natural: botão sólido e consistente nos cards e detalhes. */
+.natural-buy .buy {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: #124c3a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .035em;
+  text-align: center;
+}
+.natural-buy .buy:hover { background: #1d634a; }
+.natural-buy .buy:focus-visible { outline: 3px solid #8ebc54; outline-offset: 3px; }
+.natural-buy:not(.compact) .buy-box { display: grid; grid-template-columns: auto minmax(0, 1fr); width: 100%; }
+.natural-buy .quantity { min-height: 52px; border-radius: 7px; overflow: hidden; }
+
+/* O modo escuro não mantém superfícies claras, inclusive em fotos brancas. */
+html[data-theme="dark"] .product-gallery-track,
+html[data-theme="dark"] .product-gallery-slide,
+html[data-theme="dark"] .product-gallery-controls button,
+html[data-theme="dark"] body .consultation-card .photo,
+html[data-theme="dark"] body .campaign-slide-image {
+  background: #101713 !important;
+  border-color: #3a5043 !important;
+}
+html[data-theme="dark"] .product-gallery-slide img,
+html[data-theme="dark"] .product-gallery-controls img,
+html[data-theme="dark"] body .consultation-card .catalog-product-image,
+html[data-theme="dark"] body .campaign-slide-image img {
+  filter: brightness(.58) contrast(1.08) saturate(.82) !important;
+  background: #101713 !important;
+}
+html[data-theme="dark"] .product-gallery-controls button { color: #d8e8de; }
+html[data-theme="dark"] .product-gallery-controls button[aria-current="true"] { border-color: #8ebc54 !important; }
+html[data-theme="dark"] .natural-buy .buy { background: #2d7859 !important; color: #fff !important; }
+html[data-theme="dark"] .natural-buy .buy:hover { background: #388d69 !important; }
+html[data-theme="dark"] .natural-buy .quantity,
+html[data-theme="dark"] .natural-buy .quantity button,
+html[data-theme="dark"] .natural-buy .quantity b {
+  background: #111c16 !important;
+  border-color: #3a5043 !important;
+  color: #edf5f0 !important;
+}
+html[data-theme="dark"] .natural-buy > p { color: #ffaaa3; }
+
+@media (max-width: 560px) {
+  .natural-buy:not(.compact) .buy-box { grid-template-columns: 1fr; }
+  .natural-buy:not(.compact) .quantity { width: max-content; margin-bottom: 10px; }
+}
