@@ -79,7 +79,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           {itens.map((item) => (
             <article className="drawer-item" key={item.id}>
               <Link href={`/produto/${item.id}`} onClick={() => setAberto(false)} className="drawer-image">
-                <ProductImage nome={item.nome} />
+                <ProductImage nome={item.nome} imagemAtual={item.imagem_url} />
               </Link>
               <div className="drawer-item-copy"><Link href={`/produto/${item.id}`} onClick={() => setAberto(false)}><b>{item.nome}</b></Link><small>{item.categoria}</small><strong>{moeda(Number(item.preco))}</strong><button onClick={() => remover(item.id)}>Remover</button></div>
               <div className="drawer-quantity"><button onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>

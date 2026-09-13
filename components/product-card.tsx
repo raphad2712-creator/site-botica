@@ -30,7 +30,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
       </button>
       <Link href={`/produto/${produto.id}`} className={`photo p${(produto.id % 5) + 1}`}>
         {!!desconto && <span className="discount-badge">-{desconto}%</span>}
-        <ProductImage nome={produto.nome} />
+        <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
       </Link>
       <p>{produto.categoria}</p>
       <Link href={`/produto/${produto.id}`}><h3>{produto.nome}</h3></Link>

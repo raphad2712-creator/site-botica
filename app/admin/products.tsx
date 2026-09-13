@@ -75,7 +75,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
       <div className="admin-list admin-product-list">
         {produtos.map((produto) => (
           <article key={produto.id}>
-            <div className="admin-product-thumb"><ProductImage nome={produto.nome} /></div>
+            <div className="admin-product-thumb"><ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} /></div>
             <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque} unidades</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em></div>
             <strong>R$ {Number(produto.preco).toFixed(2).replace(".", ",")}</strong>
             <button onClick={() => alternar(produto)}>{produto.ativo ? "DESATIVAR" : "ATIVAR"}</button>

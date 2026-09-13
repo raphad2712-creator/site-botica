@@ -5,21 +5,40 @@ import type { Produto } from "@/lib/types";
 import Link from "next/link";
 import { comImagemCatalogo } from "@/lib/product-images";
 import { ProductImage } from "@/components/product-image";
+import { consultationProducts, matchConsultationProduct } from "@/lib/consultation-products";
+import { ConsultationProductPage } from "@/components/consultation-product-page";
+import { ProductInformation } from "@/components/product-information";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default async function ProdutoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await criarClienteServidor();
-  const { data } = await supabase.from("produtos").select("*").eq("id", id).single();
+  const rotulo = consultationProducts.find((product) => product.slug === id);
+  if (!rotulo && !/^\d+$/.test(id)) notFound();
+  let data: Produto | null = null;
+  if (rotulo) {
+    // Se a loja cadastrar esta apresentação, o mesmo link passa a exibir
+    // seu preço, estoque e botão de compra reais, sem duplicar o produto.
+    try {
+      const supabase = await criarClienteServidor();
+      const { data: cadastrados } = await supabase.from("produtos").select("*").eq("ativo", true).ilike("nome", `${rotulo.nome}%`);
+      data = (cadastrados as Produto[] | null)?.find((product) => matchConsultationProduct(product.nome)?.slug === rotulo.slug) ?? null;
+    } catch { /* O rótulo continua disponível durante uma falha de conexão. */ }
+    if (!data) return <ConsultationProductPage produto={rotulo} />;
+  } else {
+    const supabase = await criarClienteServidor();
+    const result = await supabase.from("produtos").select("*").eq("id", id).eq("ativo", true).single();
+    data = result.data;
+  }
   if (!data) notFound();
   const produto = comImagemCatalogo(data as Produto);
+  const informacoes = rotulo ?? matchConsultationProduct(produto.nome);
 
   return (
     <><nav className="product-breadcrumb" aria-label="Navegação estrutural"><Link href="/">Início</Link><span>›</span><Link href={`/?categoria=${encodeURIComponent(produto.categoria)}#produtos`}>{produto.categoria}</Link><span>›</span><b>{produto.nome}</b></nav><section className="product-page">
       <div className="product-page-visual">
-        <ProductImage nome={produto.nome} />
+        <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
       </div>
       <div className="product-info">
         <small>{produto.categoria}</small>
@@ -35,6 +54,6 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
           <p>Confira o rótulo e procure orientação profissional quando necessário. Medicamentos manipulados exigem avaliação da farmácia.</p>
         </div>
       </div>
-    </section></>
+    </section>{informacoes && <ProductInformation produto={informacoes} descricao={produto.descricao} />}</>
   );
 }

@@ -1,0 +1,158 @@
+/* Fotos individuais em fundo branco, com os dados fora da imagem. */
+body .pharmacy-card > .consultation-price {
+  font-size: 22px !important;
+  letter-spacing: -.4px;
+}
+body .pharmacy-card > a.consultation-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #124c3a !important;
+  color: #fff !important;
+  transition: background .2s, transform .2s;
+}
+body .pharmacy-card > a.consultation-link:hover { background: #23684d !important; }
+.consultation-card:focus-within { outline: 2px solid #7baa54; outline-offset: 3px; }
+html body .products .consultation-card .photo,
+html[data-theme="dark"] body .product-page-visual:has(.catalog-product-image) { background: #fff !important; }
+.consultation-product-page { align-items: start !important; gap: clamp(24px, 5vw, 70px) !important; }
+.consultation-product-visual { margin: 0; background: #fff; border-radius: 16px; overflow: hidden; }
+.consultation-product-visual img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; padding: 14px; }
+body .consultation-product-page .product-info h1 {
+  font: 600 clamp(32px, 3.8vw, 46px)/1.15 Arial, sans-serif !important;
+  letter-spacing: -1.2px;
+  margin: 18px 0;
+}
+.consultation-product-page .product-info h1 span { display: block; font-size: .65em; font-weight: 400; margin-top: 10px; letter-spacing: 0; }
+.product-presentation { font-size: 16px !important; }
+.consultation-box { margin: 24px 0; padding: 24px; background: #f2f6ef; border: 1px solid #dce6d7; border-radius: 14px; }
+.consultation-box > b { font-size: 25px; color: #124c3a; }
+.consultation-box > p { font-size: 15px !important; line-height: 1.65 !important; }
+.consultation-box > small { display: block; margin-top: 12px; font-size: 12px; line-height: 1.5; color: #526458; }
+.consultation-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 17px 20px;
+  background: #124c3a;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background .2s, transform .2s;
+}
+.consultation-cta:hover { background: #23684d; transform: translateY(-2px); }
+.product-details-anchor { display: inline-block; padding: 12px 0; font-size: 14px; font-weight: 700; color: #124c3a; text-decoration: underline; text-underline-offset: 4px; }
+.product-information { max-width: 1100px; margin: 24px auto 50px; padding: 0 25px; scroll-margin-top: 120px; }
+.product-information-heading { border-top: 1px solid #dce5de; padding: 32px 0 22px; }
+.product-information-heading > small { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #526e42; }
+.product-information h2 { font: 600 clamp(24px, 3vw, 32px)/1.2 Arial, sans-serif; color: #124c3a; margin: 12px 0; }
+.product-information-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.product-information-grid article { border: 1px solid #dde6df; border-radius: 12px; padding: 24px; background: #fff; }
+.product-information h3 { font-size: 18px; margin: 0 0 18px; color: #233b30; }
+.product-information p { color: #526458; line-height: 1.7; font-size: 15px; }
+.product-description { white-space: pre-line; }
+.product-information dl { margin: 0; }
+.product-information dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; border-bottom: 1px solid #e6ece7; font-size: 14px; line-height: 1.5; }
+.product-information dl > div:last-child { border: 0; }
+.product-information dt { color: #526458; }
+.product-information dd { margin: 0; text-align: right; font-weight: 600; }
+.product-return { max-width: 1100px; margin: 0 auto 48px; padding: 0 25px; font-size: 14px; color: #124c3a; }
+.consultation-product-page :focus-visible,
+.product-information :focus-visible,
+.product-return :focus-visible { outline: 3px solid #7baa54; outline-offset: 4px; }
+
+/* Os slides ocupam a mesma célula: o controle sempre exibe um slide inteiro. */
+.carousel-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: #526e42; }
+.carousel-heading > a { padding: 8px 0; letter-spacing: 0; font-size: 12px; }
+.animated-carousel .campaign-track { display: grid; overflow: hidden; scroll-snap-type: none; touch-action: pan-y pinch-zoom; isolation: isolate; }
+.animated-carousel .campaign-slide {
+  grid-area: 1/1;
+  min-height: 410px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(20px);
+  transition: opacity .5s ease, transform .6s ease, visibility .6s;
+}
+.animated-carousel .campaign-slide.is-active { opacity: 1; visibility: visible; pointer-events: auto; transform: none; z-index: 1; }
+.animated-carousel .campaign-slide-3 { background: #e7eeea; }
+.animated-carousel .campaign-dose { display: block; font: 400 .6em/1.4 Arial, sans-serif; margin-top: 10px; }
+.animated-carousel .campaign-slide-image {
+  width: min(100%, 340px);
+  border-radius: 20px;
+  background: #fff;
+  transform: translateY(12px) scale(.95);
+  transition: transform .7s ease;
+  box-shadow: 0 16px 35px #16452c12;
+}
+.animated-carousel .is-active .campaign-slide-image { transform: none; }
+.animated-carousel.is-playing .is-active .campaign-slide-image { animation: botica-product-float 5s ease-in-out infinite; }
+.animated-carousel .campaign-slide-image img { padding: 6px; }
+.animated-carousel .campaign-slide-copy > a { transition: background .2s, box-shadow .2s, transform .2s; }
+.animated-carousel .campaign-slide-copy > a:hover { transform: translateY(-2px); box-shadow: 0 8px 18px #124c3a24; }
+.animated-carousel .campaign-slide-copy > a span { transition: transform .2s; }
+.animated-carousel .campaign-slide-copy > a:hover span { transform: translateX(5px); }
+.animated-carousel .campaign-controls { gap: 8px; flex-wrap: wrap; }
+.animated-carousel .campaign-controls > button { width: 44px; height: 44px; transition: background .2s, transform .2s; }
+.animated-carousel .campaign-controls > button:hover { background: #e8f0e3; transform: translateY(-2px); }
+.animated-carousel .campaign-dots > button { width: 32px; height: 44px; }
+.animated-carousel .campaign-dots > button:after { inset: 18px 11px; transition: inset .25s, background .25s; }
+.animated-carousel .campaign-dots > button[aria-current]:after { inset: 18px 4px; }
+.animated-carousel .campaign-controls > .carousel-play { width: auto; padding: 0 14px; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; }
+.carousel-status { text-align: center; font-size: 12px; color: #526458; margin: 10px 0 12px; }
+.carousel-progress { height: 3px; max-width: 240px; margin: auto; background: #e1e8dd; border-radius: 8px; overflow: hidden; }
+.carousel-progress > span { display: block; height: 100%; background: #638b46; transform-origin: left; transform: scaleX(0); }
+.is-playing .carousel-progress > span { animation: botica-carousel-progress 7s linear forwards; }
+@keyframes botica-product-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes botica-carousel-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+html[data-theme="dark"] .consultation-box { background: #1b2b22; border-color: #35493c; }
+html[data-theme="dark"] .consultation-box > b,
+html[data-theme="dark"] .product-information h2,
+html[data-theme="dark"] .product-information h3,
+html[data-theme="dark"] .product-details-anchor,
+html[data-theme="dark"] .product-return { color: #d1e4c7; }
+html[data-theme="dark"] .product-information-grid article { background: #18241c; border-color: #35493c; }
+html[data-theme="dark"] .product-information p,
+html[data-theme="dark"] .product-information dt,
+html[data-theme="dark"] .consultation-box > small,
+html[data-theme="dark"] .consultation-product-page .product-info > p,
+html[data-theme="dark"] .consultation-box > p { color: #b7c6bb !important; }
+html[data-theme="dark"] .product-information dd { color: #e1ebe4; }
+html[data-theme="dark"] .product-information dl > div,
+html[data-theme="dark"] .product-information-heading { border-color: #35493c; }
+html[data-theme="dark"] .carousel-heading,
+html[data-theme="dark"] .product-information-heading > small,
+html[data-theme="dark"] .carousel-status { color: #b2c8a6; }
+html[data-theme="dark"] .animated-carousel .campaign-slide-3 { background: #23312c; }
+html[data-theme="dark"] .animated-carousel .campaign-controls > button:hover { background: #2f4534; }
+html[data-theme="dark"] .carousel-progress { background: #304034; }
+html[data-theme="dark"] .campaign-dots > button[aria-current]:after { background: #b2d48c; }
+
+@media (min-width: 1100px) { .objective-grid { grid-template-columns: repeat(7, minmax(0, 1fr)) !important; } }
+@media (max-width: 760px) {
+  .product-information-grid { grid-template-columns: 1fr; }
+  .product-information, .product-return { padding: 0 18px; }
+  .consultation-box, .product-information-grid article { padding: 20px; }
+}
+@media (max-width: 560px) {
+  .carousel-heading { flex-wrap: wrap; gap: 4px 12px; }
+  .animated-carousel .campaign-slide { min-height: 0; gap: 18px; padding: 24px; }
+  .animated-carousel .campaign-slide-image { width: 200px; }
+  .animated-carousel .campaign-slide-copy h2 { font-size: 32px; margin: 8px 0 12px; }
+  .animated-carousel .campaign-slide-copy p { font-size: 14px; }
+  .animated-carousel .campaign-controls > .carousel-play { width: 44px; padding: 0; }
+  .animated-carousel .carousel-play > span:last-child { display: none; }
+  .animated-carousel .campaign-dots > button { width: 28px; }
+  .animated-carousel .campaign-dots > button:after { inset: 18px 9px; }
+  .animated-carousel .campaign-dots > button[aria-current]:after { inset: 18px 4px; }
+  .consultation-product-visual img { padding: 8px; }
+  .product-information { scroll-margin-top: 100px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animated-carousel *, .animated-carousel *:after,
+  .consultation-cta, body .pharmacy-card, body .pharmacy-card .photo img,
+  body .pharmacy-card > a.consultation-link { animation: none !important; transition: none !important; transform: none !important; }
+}

@@ -51,7 +51,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
         {favoritos.length ? <div className="favorites-list">{favoritos.map((produto) => (
           <article key={produto.id}>
             <Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>
-              <ProductImage nome={produto.nome} />
+              <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
             </Link>
             <div><small>{produto.categoria}</small><Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>{produto.nome}</Link><b>{Number(produto.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</b></div>
             <button onClick={() => alternarFavorito(produto)} aria-label={`Remover ${produto.nome} dos favoritos`}>×</button>

@@ -6,8 +6,15 @@ import { comImagemCatalogo } from "@/lib/product-images";
 export const revalidate = 0;
 
 export default async function Home() {
-  const supabase = await criarClienteServidor();
-  const { data, error } = await supabase.from("produtos").select("*").eq("ativo", true).order("id");
-  const produtos = ((data ?? []) as Produto[]).map(comImagemCatalogo);
-  return <Storefront produtos={produtos} erro={error?.message} />;
+  let produtos: Produto[] = [];
+  let erro: string | undefined;
+  try {
+    const supabase = await criarClienteServidor();
+    const { data, error } = await supabase.from("produtos").select("*").eq("ativo", true).order("id");
+    produtos = ((data ?? []) as Produto[]).map(comImagemCatalogo);
+    erro = error?.message;
+  } catch {
+    erro = "Catálogo temporariamente indisponível";
+  }
+  return <Storefront produtos={produtos} erro={erro} />;
 }

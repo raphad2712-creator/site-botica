@@ -18,7 +18,7 @@ export default function CarrinhoPage() {
       <div className={`cart-shipping-card ${total >= 210 ? "complete" : ""}`}><div><b>{total >= 210 ? "✓ Frete grátis conquistado" : `Faltam ${moeda(210 - total)} para o frete grátis`}</b><small>Frete grátis nas compras a partir de R$ 210</small></div><span>{Math.min(100, Math.round(total / 2.1))}%</span></div>
       {itens.map((item) => (
         <article key={item.id}>
-          <div className="cart-page-product-image"><ProductImage nome={item.nome} /></div>
+          <div className="cart-page-product-image"><ProductImage nome={item.nome} imagemAtual={item.imagem_url} /></div>
           <div><b>{item.nome}</b><small>{moeda(Number(item.preco))} cada</small></div>
           <div className="quantity">
             <button onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button>

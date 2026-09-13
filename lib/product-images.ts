@@ -1,4 +1,5 @@
 import type { Produto } from "@/lib/types";
+import { consultationImage, matchConsultationProduct } from "./consultation-products";
 
 const imagensCatalogo: Array<[RegExp, string]> = [
   [/creatina monohidratada/, "/produtos/creatina-monohidratada-300g.jpg"],
@@ -15,6 +16,8 @@ function normalizar(texto: string) {
 }
 
 export function imagemCatalogo(nome: string, imagemAtual?: string | null) {
+  const produtoRotulo = matchConsultationProduct(nome);
+  if (produtoRotulo) return consultationImage(produtoRotulo);
   const nomeNormalizado = normalizar(nome);
   return imagensCatalogo.find(([padrao]) => padrao.test(nomeNormalizado))?.[1] ?? imagemAtual ?? null;
 }

@@ -4,9 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
 import { ProductCard } from "./product-card";
 import { CampaignCarousel } from "./campaign-carousel";
+import { ConsultationProductCard } from "./consultation-product-card";
+import { buildCatalog, filterCatalog, isConsultation } from "@/lib/catalog";
 
-const categorias = ["Todos", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
+const categorias = ["Todos", "Naturais", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
 const icones: Record<string, string> = {
+  Naturais: "M20 4c-8-1-15 2-15 8a6 6 0 0 0 6 6c6 0 9-7 9-14ZM4 21 15 10",
   Academia: "M5 9v6M2.5 10.5v3M19 9v6M21.5 10.5v3M5 12h14",
   Sono: "M20 15.2A8 8 0 0 1 8.8 4 8.2 8.2 0 1 0 20 15.2Z",
   Florais: "M12 9.8C9.5 7.1 9.8 4.6 12 3c2.2 1.6 2.5 4.1 0 6.8M14.2 12c2.7-2.5 5.2-2.2 6.8 0-1.6 2.2-4.1 2.5-6.8 0M12 14.2c2.5 2.7 2.2 5.2 0 6.8-2.2-1.6-2.5-4.1 0-6.8M9.8 12C7.1 14.5 4.6 14.2 3 12c1.6-2.2 4.1-2.5 6.8 0",
@@ -38,11 +41,8 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     return () => observer.disconnect();
   }, []);
 
-  const filtrados = useMemo(() => produtos.filter((produto) => {
-    const correspondeCategoria = categoria === "Todos" || produto.categoria.toLowerCase() === categoria.toLowerCase();
-    const texto = `${produto.nome} ${produto.descricao} ${produto.categoria}`.toLowerCase();
-    return correspondeCategoria && texto.includes(busca.toLowerCase());
-  }).sort((a, b) => ordem === "menor" ? Number(a.preco) - Number(b.preco) : ordem === "maior" ? Number(b.preco) - Number(a.preco) : ordem === "nome" ? a.nome.localeCompare(b.nome) : a.id - b.id), [produtos, categoria, busca, ordem]);
+  const catalogo = useMemo(() => buildCatalog(produtos), [produtos]);
+  const filtrados = useMemo(() => filterCatalog(catalogo, categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
 
   async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,7 +132,8 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         <div className="category-tabs">
           {categorias.map((item) => <button key={item} className={categoria === item ? "active" : ""} aria-pressed={categoria === item} onClick={() => setCategoria(item)}>{item}</button>)}
         </div>
-        {erro ? <div className="notice error">Não foi possível carregar os produtos agora. Tente novamente em instantes.</div> : filtrados.length ? <div className="products">{filtrados.map((produto) => <ProductCard key={produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente outro termo ou volte a visualizar todo o catálogo.</p><button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button></div>}
+        {erro && <div className="notice error" role="status">Não foi possível carregar os preços e a disponibilidade agora. Você pode consultar os produtos abaixo ou tentar novamente em instantes.</div>}
+        {filtrados.length ? <div className="products">{filtrados.map((produto) => isConsultation(produto) ? <ConsultationProductCard key={produto.slug} produto={produto} /> : <ProductCard key={produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente outro termo ou volte a visualizar todo o catálogo.</p><button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button></div>}
       </section>
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>
