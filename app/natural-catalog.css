@@ -276,10 +276,17 @@ html[data-theme="dark"] body .campaign-slide-image {
 }
 html[data-theme="dark"] .product-gallery-slide img,
 html[data-theme="dark"] .product-gallery-controls img,
-html[data-theme="dark"] body .consultation-card .catalog-product-image,
+html[data-theme="dark"] body .catalog-product-image,
 html[data-theme="dark"] body .campaign-slide-image img {
   filter: brightness(.58) contrast(1.08) saturate(.82) !important;
   background: #101713 !important;
+}
+html[data-theme="dark"] body .drawer-image,
+html[data-theme="dark"] body .summary-image,
+html[data-theme="dark"] body .cart-page-product-image,
+html[data-theme="dark"] body .product-page-visual {
+  background: #101713 !important;
+  border-color: #3a5043 !important;
 }
 html[data-theme="dark"] .product-gallery-controls button { color: #d8e8de; }
 html[data-theme="dark"] .product-gallery-controls button[aria-current="true"] { border-color: #8ebc54 !important; }
