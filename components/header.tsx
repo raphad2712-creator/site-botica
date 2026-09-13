@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui-icon";
+
+
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -43,7 +46,7 @@ export function Header() {
           <Image className="logo-light-image" src="/botica-logo-transparente.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
           <Image className="logo-dark-image" src="/botica-logo-dark-transparent.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
         </Link>
-        <form className="search" action="/#produtos"><span>⌕</span><input name="busca" placeholder="O que você está buscando?" /></form>
+        <form className="search" action="/#produtos"><span><Icon name="search" /></span><input name="busca" placeholder="O que você está buscando?" /></form>
         <div className="head-actions">
           <button className="favorites-header" onClick={abrirFavoritos} aria-label={`Abrir ${favoritos.length} produtos favoritos`}>
             <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>

@@ -20,7 +20,7 @@ function load(relative) {
   loaded.set(filename, module.exports);
   return module.exports;
 }
-const { consultationProducts, matchConsultationProduct, consultationImage } = load('lib/consultation-products.ts');
+const { consultationProducts, matchConsultationProduct, consultationImage, consultationArtwork } = load('lib/consultation-products.ts');
 const { buildCatalog, filterCatalog, isConsultation } = load('lib/catalog.ts');
 const { imagemCatalogo } = load('lib/product-images.ts');
 const registered = {
@@ -29,11 +29,13 @@ const registered = {
   imagem_url: '/foto-antiga.jpg', ativo: true,
 };
 
-test('oito rótulos com fotos locais e nenhum preço, estoque ou ID inventado', () => {
+test('oito rótulos com fotos, artes e preços demonstrativos, sem estoque ou ID fictício', () => {
   assert.equal(consultationProducts.length, 8);
   assert.equal(new Set(consultationProducts.map(p => p.slug)).size, 8);
   for (const product of consultationProducts) {
     assert.equal(product.apresentacao, '60 cápsulas');
+    assert.ok(product.precoDemonstrativo > 0);
+    assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationArtwork(product))));
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationImage(product))));
     for (const key of ['preco', 'estoque', 'id']) assert.ok(!(key in product));
   }
@@ -68,9 +70,11 @@ test('busca normaliza acentos e encontra os dados do rótulo', () => {
   assert.equal(filterCatalog(catalog, 'Naturais', '320 mg', 'relevancia')[0].nome, 'Saw Palmetto');
 });
 
-test('ordenação por preço mantém itens sem preço no final, em ambos os sentidos', () => {
+test('ordenação usa os preços exibidos, preservando o preço do cadastro real', () => {
   const second = { ...registered, id: 102, nome: 'Outro produto', preco: 19.9 };
   const catalog = buildCatalog([registered, second]);
-  assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'menor').slice(0, 2).map(p => p.id), [102, 101]);
-  assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'maior').slice(0, 2).map(p => p.id), [101, 102]);
+  const displayedPrice = p => isConsultation(p) ? p.precoDemonstrativo : p.preco;
+  const expected = [19.9, 39.9, 49.9, 59.9, 59.9, 59.9, 69.9, 79.9, 129.9];
+  assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'menor').map(displayedPrice), expected);
+  assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'maior').map(displayedPrice), [...expected].reverse());
 });

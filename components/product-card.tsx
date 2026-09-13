@@ -40,7 +40,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
       <small>{produto.estoque > 0 ? `ou 2x de ${moeda(Number(produto.preco) / 2)} sem juros` : "Indisponível"}</small>
       {produto.estoque > 0 && produto.estoque <= 5 && <em className="low-stock">Restam poucas unidades</em>}
       <button className={`buy ${adicionado ? "added" : ""}`} disabled={produto.estoque < 1} onClick={adicionarProduto}>
-        {produto.estoque < 1 ? "INDISPONÍVEL" : adicionado ? "✓ ADICIONADO" : "ADICIONAR AO CARRINHO"}
+        {produto.estoque < 1 ? "INDISPONÍVEL" : adicionado ? "ADICIONADO" : "ADICIONAR AO CARRINHO"}
       </button>
     </article>
   );

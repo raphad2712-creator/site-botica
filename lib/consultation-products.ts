@@ -1,6 +1,6 @@
 /** Dados transcritos dos oito rótulos enviados pela loja.
- * Preço, estoque, composição completa e posologia não foram informados.
- * Estes itens não recebem IDs fictícios e não podem entrar no checkout.
+ * Preços demonstrativos incluídos a pedido da loja. Estoque não informado.
+ * Itens sem cadastro real não recebem IDs fictícios para checkout.
  */
 export type ConsultationProduct = {
   slug: string;
@@ -8,17 +8,18 @@ export type ConsultationProduct = {
   dose: string;
   categoria: "Naturais";
   apresentacao: "60 cápsulas";
+  precoDemonstrativo: number;
 };
 
 export const consultationProducts: ConsultationProduct[] = [
-  { slug: "passiflora-300mg", nome: "Passiflora", dose: "300 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "isoflavona-100mg", nome: "Isoflavona", dose: "100 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "turkesterone-500mg", nome: "Turkesterone", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "saw-palmetto-320mg", nome: "Saw Palmetto", dose: "320 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "berberina-500mg", nome: "Berberina", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "glucomanan-500mg", nome: "Glucomanan", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "tribulus-terrestris-500mg", nome: "Tribulus Terrestris", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
-  { slug: "maca-peruana-500mg", nome: "Maca Peruana", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas" },
+  { slug: "passiflora-300mg", nome: "Passiflora", dose: "300 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90 },
+  { slug: "isoflavona-100mg", nome: "Isoflavona", dose: "100 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90 },
+  { slug: "turkesterone-500mg", nome: "Turkesterone", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 129.90 },
+  { slug: "saw-palmetto-320mg", nome: "Saw Palmetto", dose: "320 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 69.90 },
+  { slug: "berberina-500mg", nome: "Berberina", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 79.90 },
+  { slug: "glucomanan-500mg", nome: "Glucomanan", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 49.90 },
+  { slug: "tribulus-terrestris-500mg", nome: "Tribulus Terrestris", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90 },
+  { slug: "maca-peruana-500mg", nome: "Maca Peruana", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90 },
 ];
 
 export function normalizeCatalogText(text: string) {
@@ -40,6 +41,8 @@ export function matchConsultationProduct(name: string) {
 }
 
 export const consultationImage = (product: ConsultationProduct) => `/produtos/linha-natural/${product.slug}.jpg`;
+export const consultationArtwork = (product: ConsultationProduct) => `/produtos/artes/${product.slug}.jpg`;
+export const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function consultationHref(product: ConsultationProduct) {
   const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "raphad2712@gmail.com";

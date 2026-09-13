@@ -28,7 +28,13 @@
 }
 
 .promo span::before {
-  content: "✓";
+  content: "";
+  display: inline-block;
+  width: 11px;
+  height: 6px;
+  border-left: 1.8px solid currentColor;
+  border-bottom: 1.8px solid currentColor;
+  transform: rotate(-45deg);
   margin-right: 7px;
   color: #b6d98a;
 }

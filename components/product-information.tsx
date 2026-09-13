@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui-icon";
 import { consultationHref, type ConsultationProduct } from "@/lib/consultation-products";
 
 export function ProductInformation({ produto, descricao }: { produto: ConsultationProduct; descricao?: string }) {
@@ -18,7 +19,7 @@ export function ProductInformation({ produto, descricao }: { produto: Consultati
           <h3>Sobre o produto</h3>
           <p className="product-description">{descricao || `${produto.nome} ${produto.dose}, em frasco com ${produto.apresentacao}, da Botica Bioenergética.`}</p>
           <p>Para informações sobre a composição completa e o modo de uso, fale com a equipe da Botica.</p>
-          <a className="product-details-anchor" href={consultationHref(produto)}>Tirar dúvidas por e-mail <span aria-hidden="true">↗</span></a>
+          <a className="product-details-anchor" href={consultationHref(produto)}>Tirar dúvidas por e-mail <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
         </article>
       </div>
     </section>

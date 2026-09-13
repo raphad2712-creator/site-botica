@@ -22,7 +22,7 @@ export function AddProduct({ produto }: { produto: Produto }) {
         <button onClick={() => setQuantidade((q) => q + 1)}>+</button>
       </div>
       <button className={adicionado ? "added" : ""} onClick={adicionarProduto}>
-        {adicionado ? "✓ ADICIONADO AO CARRINHO" : "ADICIONAR AO CARRINHO"}
+        {adicionado ? "ADICIONADO AO CARRINHO" : "ADICIONAR AO CARRINHO"}
       </button>
     </div>
   );

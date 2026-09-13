@@ -156,3 +156,73 @@ html[data-theme="dark"] .campaign-dots > button[aria-current]:after { background
   .consultation-cta, body .pharmacy-card, body .pharmacy-card .photo img,
   body .pharmacy-card > a.consultation-link { animation: none !important; transition: none !important; transform: none !important; }
 }
+
+/* Ícones em SVG: aparência consistente no Safari, sem emojis do sistema. */
+.ui-icon { display: inline-block; width: 20px; height: 20px; flex: 0 0 auto; vertical-align: middle; }
+.hero-assurances > span { display: inline-flex; align-items: center; gap: 6px; }
+.hero-assurances .ui-icon { width: 15px; height: 15px; }
+.carousel-heading a, .product-details-anchor, .product-return a, .product-artwork figcaption a { display: inline-flex; align-items: center; gap: 8px; }
+.carousel-heading .ui-icon { width: 16px; height: 16px; }
+.animated-carousel .campaign-controls > button { display: inline-grid; place-items: center; }
+.animated-carousel .campaign-controls > .carousel-play { display: flex; }
+.campaign-slide-copy > a .ui-icon { transition: transform .2s; }
+.campaign-slide-copy > a:hover .ui-icon { transform: translateX(4px); }
+.footer-benefits .ui-icon { width: 26px; height: 26px; }
+.security-stamps .ui-icon { width: 16px; height: 16px; }
+.search .ui-icon, .catalog-search .ui-icon { margin: 0; }
+.rx-form > span .ui-icon { width: 32px; height: 32px; }
+
+/* Arte inteira na página; foto em fundo branco preservada nos cards. */
+.product-artwork { min-width: 0; margin: 0; align-self: start; }
+.product-artwork > a { display: block; border-radius: 14px; overflow: hidden; background: #fff; }
+.product-artwork img { display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain; aspect-ratio: auto; padding: 0; }
+.product-artwork figcaption { text-align: center; margin: 10px 0 0; }
+.product-artwork figcaption a { min-height: 44px; padding: 8px 14px; font-size: 13px; color: #124c3a; border-radius: 8px; }
+.product-artwork a:focus-visible { outline: 3px solid #7baa54; outline-offset: 3px; }
+body .product-info > .demo-product-price { font-size: 36px; margin-top: 20px; }
+body .product-info > .demo-price-note { font-size: 12px; color: #617368; margin: 6px 0 16px; }
+html[data-theme="dark"] .product-artwork figcaption a { color: #d1e4c7; }
+html[data-theme="dark"] body .product-info > .demo-price-note { color: #b7c6bb; }
+.product-page:has(.product-artwork) { max-width: 1280px; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 36px !important; align-items: start; }
+.product-page:has(.product-artwork) .product-info { min-width: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  body > header {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 78px !important;
+    grid-template-columns: 36px minmax(0, 1fr) auto !important;
+    gap: 6px !important;
+    padding: 8px 12px !important;
+  }
+  body > header .hamb { width: 36px !important; height: 40px !important; padding: 6px !important; }
+  body > header .logo-clean { width: 100% !important; max-width: 190px !important; min-width: 0 !important; height: 60px !important; flex-basis: auto !important; justify-self: center; }
+  body > header .logo-clean img { width: 100% !important; height: 100% !important; object-fit: contain !important; }
+  body > header .head-actions { min-width: 0 !important; gap: 4px !important; margin: 0 !important; }
+  body > header .head-actions > .favorites-header,
+  body > header .head-actions > .account-button,
+  body > header .head-actions > .cart-simple { display: flex !important; align-items: center !important; justify-content: center !important; width: 36px !important; min-width: 36px !important; max-width: 36px !important; height: 40px !important; padding: 0 !important; margin: 0 !important; gap: 0 !important; }
+  body > header .head-actions > button > span,
+  body > header .head-actions .account-button > span { display: none !important; }
+  body > header .head-actions svg { width: 22px !important; height: 22px !important; flex: 0 0 22px !important; padding: 0 !important; border-radius: 0 !important; }
+  body > header .head-actions .account-button svg { background: none !important; color: inherit !important; }
+  body > header .head-actions .header-profile-photo { width: 32px !important; height: 32px !important; max-width: 32px !important; object-fit: cover !important; border-radius: 50% !important; }
+  body .product-page:has(.product-artwork) { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; padding: 0 14px !important; margin: 18px auto 30px !important; }
+  .product-artwork > a { border-radius: 10px; }
+  body .consultation-product-page .product-info h1 { font-size: clamp(28px, 7vw, 36px) !important; letter-spacing: -.7px; }
+  .consultation-product-page .product-info { padding-top: 0 !important; }
+  .consultation-box { margin-top: 18px; }
+  .product-breadcrumb { flex-wrap: wrap; line-height: 1.6; overflow-wrap: anywhere; }
+  .product-information dl > div { gap: 12px; }
+  .product-information dd { min-width: 0; overflow-wrap: anywhere; }
+  .catalog-sort { display: flex !important; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .catalog-sort select { max-width: 100%; min-height: 44px; }
+  body .products .pharmacy-card { flex-basis: min(280px, calc(100vw - 52px)) !important; }
+}
+@media (max-width: 560px) {
+  body { padding-bottom: calc(66px + env(safe-area-inset-bottom)) !important; }
+  .mobile-bottom-nav { height: calc(66px + env(safe-area-inset-bottom)) !important; }
+  .support-widget { bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+  .product-information { margin-top: 16px; }
+  .product-information dl > div { font-size: 13px; }
+}

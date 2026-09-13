@@ -22,9 +22,8 @@ export function filterCatalog(products: CatalogProduct[], category: string, sear
   }).sort((a, b) => {
     if (order === "nome") return a.nome.localeCompare(b.nome, "pt-BR");
     if (order !== "menor" && order !== "maior") return 0;
-    // Um preço não informado nunca é tratado como zero.
-    if (isConsultation(a)) return isConsultation(b) ? 0 : 1;
-    if (isConsultation(b)) return -1;
-    return order === "menor" ? Number(a.preco) - Number(b.preco) : Number(b.preco) - Number(a.preco);
+    const priceA = isConsultation(a) ? a.precoDemonstrativo : Number(a.preco);
+    const priceB = isConsultation(b) ? b.precoDemonstrativo : Number(b.preco);
+    return order === "menor" ? priceA - priceB : priceB - priceA;
   });
 }

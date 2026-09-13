@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui-icon";
+
+
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
 import { ProductImage } from "@/components/product-image";
@@ -13,9 +16,9 @@ export default function CarrinhoPage() {
 
   return (
     <section className="cart-page cart-page-modern">
-      <div className="cart-page-head"><div><small>SUA COMPRA</small><h1>Meu carrinho</h1><p>Revise os produtos e as quantidades antes de continuar.</p></div><Link href="/#produtos">← Continuar comprando</Link></div>
+      <div className="cart-page-head"><div><small>SUA COMPRA</small><h1>Meu carrinho</h1><p>Revise os produtos e as quantidades antes de continuar.</p></div><Link href="/#produtos"><Icon name="arrow-left" /> Continuar comprando</Link></div>
       <div className="cart-page-layout"><div className="cart-page-items">
-      <div className={`cart-shipping-card ${total >= 210 ? "complete" : ""}`}><div><b>{total >= 210 ? "✓ Frete grátis conquistado" : `Faltam ${moeda(210 - total)} para o frete grátis`}</b><small>Frete grátis nas compras a partir de R$ 210</small></div><span>{Math.min(100, Math.round(total / 2.1))}%</span></div>
+      <div className={`cart-shipping-card ${total >= 210 ? "complete" : ""}`}><div><b>{total >= 210 ? "Frete grátis conquistado" : `Faltam ${moeda(210 - total)} para o frete grátis`}</b><small>Frete grátis nas compras a partir de R$ 210</small></div><span>{Math.min(100, Math.round(total / 2.1))}%</span></div>
       {itens.map((item) => (
         <article key={item.id}>
           <div className="cart-page-product-image"><ProductImage nome={item.nome} imagemAtual={item.imagem_url} /></div>

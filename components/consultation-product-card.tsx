@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { consultationImage, type ConsultationProduct } from "@/lib/consultation-products";
+import { consultationImage, formatPrice, type ConsultationProduct } from "@/lib/consultation-products";
+import { Icon } from "./ui-icon";
 
 export function ConsultationProductCard({ produto }: { produto: ConsultationProduct }) {
   const href = `/produto/${produto.slug}`;
@@ -12,9 +13,9 @@ export function ConsultationProductCard({ produto }: { produto: ConsultationProd
       <p>{produto.categoria}</p>
       <Link href={href}><h3>{produto.nome} {produto.dose}</h3></Link>
       <span className="product-brand-line">{produto.apresentacao} · Botica Bioenergética</span>
-      <strong className="consultation-price">Sob consulta</strong>
-      <small>Consulte preço e disponibilidade.</small>
-      <Link href={href} className="buy consultation-link">VER PRODUTO <span aria-hidden="true">→</span></Link>
+      <strong>{formatPrice(produto.precoDemonstrativo)}</strong>
+      <small>Preço demonstrativo</small>
+      <Link href={href} className="buy consultation-link">VER PRODUTO <Icon name="arrow-right" /></Link>
     </article>
   );
 }

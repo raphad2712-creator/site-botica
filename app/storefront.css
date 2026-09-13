@@ -38,7 +38,13 @@ a {
   font-size: 11px;
 }
 .promo span:before {
-  content: "✓";
+  content: "";
+  display: inline-block;
+  width: 11px;
+  height: 6px;
+  border-left: 1.8px solid currentColor;
+  border-bottom: 1.8px solid currentColor;
+  transform: rotate(-45deg);
   color: #b6d98a;
   margin-right: 7px;
 }
@@ -1076,7 +1082,7 @@ header {
   .photo { height: 230px; }
   .card:hover { transform: none; }
   .catalog::after {
-    content: "Arraste para o lado para ver mais →";
+    content: "Arraste para o lado para ver mais";
     display: block;
     margin-top: 2px;
     color: #718078;

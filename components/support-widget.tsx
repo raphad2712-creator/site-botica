@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui-icon";
+
+
 import Link from "next/link";
 import { useState } from "react";
 
@@ -16,10 +19,10 @@ export function SupportWidget() {
       {aberto && <section className="support-panel" aria-label="Central de ajuda">
         <header><div><small>ATENDIMENTO BOTICA</small><h2>Como podemos ajudar?</h2><p>Escolha uma opção para continuar.</p></div><button onClick={() => setAberto(false)} aria-label="Fechar suporte">×</button></header>
         <div className="support-shortcuts">
-          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Acompanhar pedido <span>→</span></Link>
-          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Trocas e reembolso <span>→</span></Link>
-          <a href="/#receita" onClick={() => setAberto(false)}>Enviar receita <span>→</span></a>
-          <a href={`mailto:${email}?subject=${assunto}`}>Falar com atendente <span>→</span></a>
+          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Acompanhar pedido <span><Icon name="arrow-right" /></span></Link>
+          <Link href="/minha-conta#pedidos" onClick={() => setAberto(false)}>Trocas e reembolso <span><Icon name="arrow-right" /></span></Link>
+          <a href="/#receita" onClick={() => setAberto(false)}>Enviar receita <span><Icon name="arrow-right" /></span></a>
+          <a href={`mailto:${email}?subject=${assunto}`}>Falar com atendente <span><Icon name="arrow-right" /></span></a>
         </div>
         <div className="support-faq">
           <button onClick={() => setFaq(faq === 1 ? null : 1)}>Qual é o prazo de entrega?<b>{faq === 1 ? "−" : "+"}</b></button>

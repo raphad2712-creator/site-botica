@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui-icon";
 import type { Metadata } from "next";
 import "./globals.css";
 import "./storefront.css";
@@ -35,21 +36,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
             <main>{children}</main>
             <section className="footer-benefits" aria-label="Vantagens da Botica">
-              <article><span aria-hidden="true">◇</span><div><strong>Compra segura</strong><small>Ambiente protegido e confiável</small></div></article>
-              <article><span aria-hidden="true">✦</span><div><strong>Qualidade farmacêutica</strong><small>Cuidado em cada fórmula</small></div></article>
-              <article><span aria-hidden="true">▱</span><div><strong>Envie sua receita</strong><small>Solicite seu orçamento online</small></div></article>
-              <article><span aria-hidden="true">✓</span><div><strong>Atendimento especializado</strong><small>Suporte em toda a sua compra</small></div></article>
+              <article><span aria-hidden="true"><Icon name="shield" /></span><div><strong>Compra segura</strong><small>Ambiente protegido e confiável</small></div></article>
+              <article><span aria-hidden="true"><Icon name="leaf" /></span><div><strong>Qualidade farmacêutica</strong><small>Cuidado em cada fórmula</small></div></article>
+              <article><span aria-hidden="true"><Icon name="document" /></span><div><strong>Envie sua receita</strong><small>Solicite seu orçamento online</small></div></article>
+              <article><span aria-hidden="true"><Icon name="check" /></span><div><strong>Atendimento especializado</strong><small>Suporte em toda a sua compra</small></div></article>
             </section>
             <footer className="official-style-footer">
               <section className="footer-primary">
                 <div className="footer-brand-column">
                   <div className="footer-logo"><ImageFooter /></div>
                   <p>Produtos naturais, suplementos e fórmulas manipuladas com cuidado, segurança e responsabilidade.</p>
-                  <a className="footer-contact-button" href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Falar com a Botica <span aria-hidden="true">→</span></a>
+                  <a className="footer-contact-button" href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Falar com a Botica <span aria-hidden="true"><Icon name="arrow-right" /></span></a>
                 </div>
                 <nav aria-label="Institucional"><b>INSTITUCIONAL</b><a href="/#sobre">Sobre a Botica</a><a href="/politica-de-privacidade">Política de privacidade</a><a href="/termos-de-uso">Termos de uso</a><CookieSettingsButton /></nav>
                 <nav aria-label="Ajuda e atendimento"><b>AJUDA E ATENDIMENTO</b><a href="mailto:raphad2712@gmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a><a href="/politica-de-trocas-e-devolucoes">Trocas e devoluções</a></nav>
-                <div className="footer-shopping"><b>PAGAMENTO</b><div className="payment-flags" aria-label="Formas de pagamento aceitas"><span>PIX</span><span>VISA</span><span>MASTER</span></div><b>SEGURANÇA</b><div className="security-stamps"><span><strong>🔒 SSL</strong><small>Ambiente protegido</small></span><span><strong>LGPD</strong><small>Seus dados seguros</small></span></div></div>
+                <div className="footer-shopping"><b>PAGAMENTO</b><div className="payment-flags" aria-label="Formas de pagamento aceitas"><span>PIX</span><span>VISA</span><span>MASTER</span></div><b>SEGURANÇA</b><div className="security-stamps"><span><strong><Icon name="lock" /> SSL</strong><small>Ambiente protegido</small></span><span><strong>LGPD</strong><small>Seus dados seguros</small></span></div></div>
               </section>
               <section className="footer-legal" aria-label="Informações legais da Botica Bioenergética">
                 <div><strong>FARMACÊUTICO RESPONSÁVEL</strong><span>Dr. Flávio Luís Alves</span><span>CRF-SP 42216</span></div>

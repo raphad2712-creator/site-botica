@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui-icon";
 import { notFound } from "next/navigation";
 import { AddProduct } from "@/components/add-product";
 import { criarClienteServidor } from "@/lib/supabase/server";
@@ -8,6 +9,7 @@ import { ProductImage } from "@/components/product-image";
 import { consultationProducts, matchConsultationProduct } from "@/lib/consultation-products";
 import { ConsultationProductPage } from "@/components/consultation-product-page";
 import { ProductInformation } from "@/components/product-information";
+import { ProductArtwork } from "@/components/product-artwork";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -37,9 +39,9 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
 
   return (
     <><nav className="product-breadcrumb" aria-label="Navegação estrutural"><Link href="/">Início</Link><span>›</span><Link href={`/?categoria=${encodeURIComponent(produto.categoria)}#produtos`}>{produto.categoria}</Link><span>›</span><b>{produto.nome}</b></nav><section className="product-page">
-      <div className="product-page-visual">
+      {informacoes ? <ProductArtwork produto={informacoes} /> : <div className="product-page-visual">
         <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
-      </div>
+      </div>}
       <div className="product-info">
         <small>{produto.categoria}</small>
         <h1>{produto.nome}</h1>
@@ -48,7 +50,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
         <strong>{moeda(produto.preco)}</strong>
         <span>{produto.estoque} unidades disponíveis</span>
         <AddProduct produto={produto} />
-        <div className="product-benefits"><span><b>✓</b> Compra segura</span><span><b>↗</b> Frete calculado no checkout</span><span><b>♡</b> Cuidado selecionado</span></div>
+        <div className="product-benefits"><span><b><Icon name="check" /></b> Compra segura</span><span><b><Icon name="arrow-up-right" /></b> Frete calculado no checkout</span><span><b><Icon name="heart" /></b> Cuidado selecionado</span></div>
         <div className="care-note">
           <b>Informação importante</b>
           <p>Confira o rótulo e procure orientação profissional quando necessário. Medicamentos manipulados exigem avaliação da farmácia.</p>

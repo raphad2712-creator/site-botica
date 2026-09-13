@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui-icon";
+
+
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
@@ -56,7 +59,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
             <div><small>{produto.categoria}</small><Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>{produto.nome}</Link><b>{Number(produto.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</b></div>
             <button onClick={() => alternarFavorito(produto)} aria-label={`Remover ${produto.nome} dos favoritos`}>×</button>
           </article>
-        ))}</div> : <div className="favorites-empty"><span>♡</span><h3>Sua lista está vazia</h3><p>Toque no coração de um produto para encontrá-lo facilmente depois.</p><button onClick={() => { setAberto(false); window.location.href = "/#produtos"; }}>VER PRODUTOS</button></div>}
+        ))}</div> : <div className="favorites-empty"><span><Icon name="heart" /></span><h3>Sua lista está vazia</h3><p>Toque no coração de um produto para encontrá-lo facilmente depois.</p><button onClick={() => { setAberto(false); window.location.href = "/#produtos"; }}>VER PRODUTOS</button></div>}
       </aside>
     </FavoritesContext.Provider>
   );

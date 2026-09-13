@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui-icon";
+
+
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -60,7 +63,7 @@ export function CampaignCarousel() {
           move(event.key === "ArrowLeft" ? -1 : 1);
         }
       }}>
-      <div className="carousel-heading"><span>CONHEÇA A LINHA BOTICA</span><Link href="/?categoria=Naturais#produtos">Ver todos os produtos <span aria-hidden="true">↗</span></Link></div>
+      <div className="carousel-heading"><span>CONHEÇA A LINHA BOTICA</span><Link href="/?categoria=Naturais#produtos">Ver todos os produtos <span aria-hidden="true"><Icon name="arrow-up-right" /></span></Link></div>
       <div className="campaign-track" id="campaign-slides" tabIndex={0} aria-label="Destaques; use as setas para navegar"
         onTouchStart={(event) => {
           const point = event.touches[0];
@@ -83,17 +86,17 @@ export function CampaignCarousel() {
               <small>BOTICA BIOENERGÉTICA</small>
               <h2>{banner.nome}<span className="campaign-dose">{banner.dose}</span></h2>
               <p>{banner.apresentacao}. Conheça a apresentação e consulte nossa equipe para saber mais.</p>
-              <Link href={`/produto/${banner.slug}`}>Conhecer o produto <span aria-hidden="true">→</span></Link>
+              <Link href={`/produto/${banner.slug}`}>Conhecer o produto <span aria-hidden="true"><Icon name="arrow-right" /></span></Link>
             </div>
             <div className="campaign-slide-image"><Image src={consultationImage(banner)} alt={`${banner.nome} ${banner.dose}, ${banner.apresentacao}, Botica Bioenergética`} width={400} height={400} sizes="(max-width: 560px) 200px, 340px" /></div>
           </article>
         ))}
       </div>
       <div className="campaign-controls">
-        <button type="button" onClick={() => move(-1)} aria-label="Banner anterior" aria-controls="campaign-slides">←</button>
+        <button type="button" onClick={() => move(-1)} aria-label="Banner anterior" aria-controls="campaign-slides"><Icon name="arrow-left" /></button>
         <div className="campaign-dots">{banners.map((banner, index) => <button type="button" key={banner.slug} onClick={() => { setPaused(true); setActive(index); }} aria-label={`Ver banner ${banner.nome}`} aria-controls="campaign-slides" aria-current={index === active ? "true" : undefined} />)}</div>
-        <button type="button" onClick={() => move(1)} aria-label="Próximo banner" aria-controls="campaign-slides">→</button>
-        {!reducedMotion && <button className="carousel-play" type="button" data-autoplay-control onClick={() => setPaused((current) => !current)} aria-label={paused ? "Retomar avanço automático" : "Pausar avanço automático"} aria-pressed={!paused}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span><span>{paused ? "Reproduzir" : "Pausar"}</span></button>}
+        <button type="button" onClick={() => move(1)} aria-label="Próximo banner" aria-controls="campaign-slides"><Icon name="arrow-right" /></button>
+        {!reducedMotion && <button className="carousel-play" type="button" data-autoplay-control onClick={() => setPaused((current) => !current)} aria-label={paused ? "Retomar avanço automático" : "Pausar avanço automático"} aria-pressed={!paused}><span aria-hidden="true"><Icon name={paused ? "play" : "pause"} /></span><span>{paused ? "Reproduzir" : "Pausar"}</span></button>}
       </div>
       <p className="carousel-status" aria-live={playing ? "off" : "polite"} aria-atomic="true">{active + 1} / {banners.length} · {banners[active].nome}</p>
       <div className="carousel-progress" aria-hidden="true"><span key={`${active}-${playing}`} /></div>
