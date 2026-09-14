@@ -20,7 +20,7 @@ function load(relative) {
   loaded.set(filename, module.exports);
   return module.exports;
 }
-const { consultationProducts, matchConsultationProduct, consultationImage, consultationDarkImage, consultationArtwork } = load('lib/consultation-products.ts');
+const { consultationProducts, matchConsultationProduct, consultationImage, consultationDarkImage, consultationArtwork, consultationDarkArtwork } = load('lib/consultation-products.ts');
 const { buildCatalog, filterCatalog, isConsultation } = load('lib/catalog.ts');
 const { imagemCatalogo } = load('lib/product-images.ts');
 const registered = {
@@ -36,6 +36,7 @@ test('oito rótulos com fotos, artes e preços demonstrativos, sem estoque ou ID
     assert.equal(product.apresentacao, '60 cápsulas');
     assert.ok(product.precoDemonstrativo > 0);
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationArtwork(product))));
+    assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationDarkArtwork(product))));
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationImage(product))));
     assert.ok(fs.existsSync(path.join(__dirname, '../public', consultationDarkImage(product))));
     for (const key of ['preco', 'estoque', 'id']) assert.ok(!(key in product));
@@ -75,7 +76,14 @@ test('ordenação usa os preços exibidos, preservando o preço do cadastro real
   const second = { ...registered, id: 102, nome: 'Outro produto', preco: 19.9 };
   const catalog = buildCatalog([registered, second]);
   const displayedPrice = p => isConsultation(p) ? p.precoDemonstrativo : p.preco;
-  const expected = [19.9, 39.9, 49.9, 59.9, 59.9, 59.9, 69.9, 79.9, 129.9];
+  const expected = [39.9, 49.9, 59.9, 59.9, 59.9, 69.9, 79.9, 129.9];
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'menor').map(displayedPrice), expected);
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'maior').map(displayedPrice), [...expected].reverse());
+});
+
+test('produtos antigos permanecem no painel, mas não entram na vitrine pública', () => {
+  const legacy = { ...registered, id: 103, nome: 'Creatina Monohidratada 300g' };
+  const catalog = buildCatalog([registered, legacy]);
+  assert.equal(catalog.length, 8);
+  assert.equal(catalog.some(product => product.nome.includes('Creatina')), false);
 });

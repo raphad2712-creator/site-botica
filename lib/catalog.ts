@@ -9,7 +9,9 @@ export function buildCatalog(products: Produto[]): CatalogProduct[] {
     const registered = products.find((product) => matchConsultationProduct(product.nome)?.slug === label.slug);
     return registered ? (registered.ativo ? [registered] : []) : [label];
   });
-  return [...featured, ...products.filter((product) => product.ativo && !matchConsultationProduct(product.nome))];
+  // A vitrine pública desta coleção exibe somente os oito produtos da linha
+  // natural. Os demais cadastros continuam preservados no painel da loja.
+  return featured;
 }
 
 export function filterCatalog(products: CatalogProduct[], category: string, search: string, order: string) {

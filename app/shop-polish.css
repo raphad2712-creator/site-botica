@@ -1061,6 +1061,7 @@ html[data-theme="dark"] .about-botica h2{color:#c6dfb9!important}
 html[data-theme="dark"] .about-botica-copy p{color:#aebbb3!important}
 html[data-theme="dark"] .about-botica-points article,html[data-theme="dark"] .cart-page-items>article,html[data-theme="dark"] .cart-page-summary,html[data-theme="dark"] .cart-shipping-card{background:#19231e!important;border-color:#35473d!important;color:#dce7e0!important}
 html[data-theme="dark"] .about-botica-points strong,html[data-theme="dark"] .cart-page-summary h2{color:#c6dfb9!important}
+html[data-theme="dark"] body .about-botica-points article>b{background:#050806!important;border:1px solid #3a5043!important;color:#b9d7aa!important;box-shadow:none!important}
 
 @media(max-width:900px){.about-botica{grid-template-columns:1fr}.cart-page-layout{grid-template-columns:1fr}.cart-page-summary{position:static}}
 @media(max-width:650px){

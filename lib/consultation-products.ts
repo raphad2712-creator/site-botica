@@ -43,6 +43,7 @@ export function matchConsultationProduct(name: string) {
 export const consultationImage = (product: ConsultationProduct) => `/produtos/linha-natural/${product.slug}.jpg`;
 export const consultationDarkImage = (product: ConsultationProduct) => `/produtos/linha-natural-dark/${product.slug}.jpg`;
 export const consultationArtwork = (product: ConsultationProduct) => `/produtos/artes/${product.slug}.jpg`;
+export const consultationDarkArtwork = (product: ConsultationProduct) => `/produtos/artes-dark/${product.slug}.jpg`;
 export const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function consultationHref(product: ConsultationProduct) {
