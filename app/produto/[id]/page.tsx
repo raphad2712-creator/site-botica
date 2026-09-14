@@ -10,6 +10,7 @@ import { consultationProducts, matchConsultationProduct } from "@/lib/consultati
 import { ConsultationProductPage } from "@/components/consultation-product-page";
 import { ProductInformation } from "@/components/product-information";
 import { ProductArtwork } from "@/components/product-artwork";
+import { ShippingCalculator } from "@/components/shipping-calculator";
 
 const moeda = (valor: number) =>
   Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -50,7 +51,8 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
         <strong>{moeda(produto.preco)}</strong>
         <span>{produto.estoque} unidades disponíveis</span>
         <AddProduct produto={produto} />
-        <div className="product-benefits"><span><b><Icon name="check" /></b> Compra segura</span><span><b><Icon name="arrow-up-right" /></b> Frete calculado no checkout</span><span><b><Icon name="heart" /></b> Cuidado selecionado</span></div>
+        <ShippingCalculator subtotal={Number(produto.preco)} />
+        <div className="product-benefits"><span><b><Icon name="check" /></b> Compra segura</span><span><b><Icon name="truck" /></b> Frete calculado pelo CEP</span><span><b><Icon name="heart" /></b> Cuidado selecionado</span></div>
         <div className="care-note">
           <b>Informação importante</b>
           <p>Confira o rótulo e procure orientação profissional quando necessário. Medicamentos manipulados exigem avaliação da farmácia.</p>

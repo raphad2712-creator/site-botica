@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { enviarEmail, escaparHtml } from "@/lib/email";
+import { consultarFrete } from "@/lib/frete";
 
 type ItemRecebido = { produto_id: number; quantidade: number };
 type ClienteRecebido = { nome?: string; email?: string; cpf?: string; telefone?: string; cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
@@ -29,6 +30,8 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "DADOS_PIX_INVALIDOS") return "Informe nome, e-mail e um CPF válido para gerar o Pix.";
   if (detalhe === "PIX_RECUSADO") return "Não foi possível gerar o Pix. Confira a credencial de teste do Mercado Pago.";
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento ainda não foi configurado na Vercel.";
+  if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
+  if (detalhe === "CEP_INDISPONIVEL") return "Não foi possível confirmar o frete agora. Tente novamente.";
   if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Configure a variável SUPABASE_SERVICE_ROLE_KEY na Vercel e faça um novo deploy.";
   if (codigo === "42P01" || codigo === "PGRST205") return "O banco de pedidos ainda precisa ser configurado no Supabase.";
   return "Não foi possível iniciar o pagamento. Tente novamente.";
@@ -60,9 +63,10 @@ export async function POST(request: Request) {
       subtotal += Number(produto.preco) * quantidade;
       return { produto_id: produto.id, nome: produto.nome, quantidade, preco_unitario: Number(produto.preco) };
     });
-    const frete = subtotal >= 210 ? 0 : 18.9;
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
+    etapa = "confirmar o frete";
+    const frete = (await consultarFrete(cliente.cep, subtotal)).valor;
 
     etapa = "salvar os dados do comprador";
     const { error: perfilError } = await admin.from("perfil_clientes").upsert({

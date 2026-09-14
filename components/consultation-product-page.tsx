@@ -4,6 +4,7 @@ import { ProductInformation } from "./product-information";
 import { ProductArtwork } from "./product-artwork";
 import { NaturalProductBuy } from "./natural-product-buy";
 import { Icon } from "./ui-icon";
+import { ShippingCalculator } from "./shipping-calculator";
 
 export function ConsultationProductPage({ produto }: { produto: ConsultationProduct }) {
   return <>
@@ -18,6 +19,7 @@ export function ConsultationProductPage({ produto }: { produto: ConsultationProd
         <span className="demo-price-note">Preço demonstrativo</span>
         <a className="product-details-anchor" href="#informacoes">Ver informações do produto <Icon name="arrow-down" /></a>
         <NaturalProductBuy produto={produto} />
+        <ShippingCalculator subtotal={produto.precoDemonstrativo} />
       </div>
     </section>
     <ProductInformation produto={produto} />
