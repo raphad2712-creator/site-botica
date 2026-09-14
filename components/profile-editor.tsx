@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { Icon } from "./ui-icon";
 
 export type PerfilCliente = { nome?: string | null; email?: string | null; foto_url?: string | null; cpf?: string | null; telefone?: string | null; nascimento?: string | null; genero?: string | null; cep?: string | null; rua?: string | null; numero?: string | null; complemento?: string | null; bairro?: string | null; cidade?: string | null; estado?: string | null };
 
@@ -52,7 +53,7 @@ export function ProfileEditor({ perfil, inicial }: { perfil: PerfilCliente; inic
 
   return <section className="account-profile" id="dados">
     <div className="profile-photo-area">
-      <button type="button" className="account-profile-avatar" onClick={() => fotoInput.current?.click()} disabled={enviandoFoto} aria-label={foto ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>{foto ? <img src={foto} alt="Foto de perfil" /> : <span>{inicial}</span>}<i>{enviandoFoto ? "…" : "⌁"}</i></button>
+      <button type="button" className="account-profile-avatar" onClick={() => fotoInput.current?.click()} disabled={enviandoFoto} aria-label={foto ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>{foto ? <img src={foto} alt="Foto de perfil" /> : <span>{inicial}</span>}<i>{enviandoFoto ? <span className="profile-uploading" /> : <Icon name="upload" />}</i></button>
       <div><button type="button" onClick={() => fotoInput.current?.click()} disabled={enviandoFoto}>{enviandoFoto ? "ENVIANDO..." : foto ? "TROCAR FOTO" : "ADICIONAR FOTO"}</button>{foto && <button type="button" className="remove-profile-photo" onClick={removerFoto} disabled={enviandoFoto}>REMOVER</button>}<small>JPG, PNG ou WebP • máximo 3 MB</small></div>
       <input ref={fotoInput} className="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={enviarFoto} />
     </div>
@@ -64,7 +65,7 @@ export function ProfileEditor({ perfil, inicial }: { perfil: PerfilCliente; inic
         <div><dt>Nascimento</dt><dd>{perfil.nascimento ? new Date(`${perfil.nascimento}T12:00:00`).toLocaleDateString("pt-BR") : "Não informado"}</dd></div>
         <div><dt>Endereço</dt><dd>{perfil.rua ? `${perfil.rua}, ${perfil.numero || "s/n"} — ${perfil.cidade || ""}/${perfil.estado || ""}` : "Não informado"}</dd></div>
       </dl>
-      <button className="profile-edit-button" onClick={() => setEditando(true)}>✎ ALTERAR MEUS DADOS</button>
+      <button className="profile-edit-button" onClick={() => setEditando(true)}><Icon name="document" /> ALTERAR MEUS DADOS</button>
     </> : <form className="profile-form" onSubmit={salvar}>
       <div className="profile-form-section"><h3>Dados pessoais</h3><div className="profile-form-grid">
         <label className="wide">Nome completo<input name="nome" defaultValue={perfil.nome ?? ""} required /></label>

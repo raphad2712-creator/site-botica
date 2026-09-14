@@ -16,6 +16,7 @@ const paths = {
   pause: "M8 5v14M16 5v14",
   expand: "M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5",
   truck: "M3 6h11v10H3Zm11 4h4l3 3v3h-7ZM6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+  clock: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
 };
 
 export function Icon({ name, className = "" }: { name: keyof typeof paths; className?: string }) {

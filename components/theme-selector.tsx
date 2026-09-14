@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Icon } from "./ui-icon";
 
 type Tema = "light" | "dark" | "auto";
 
@@ -25,7 +26,7 @@ export function ThemeSelector() {
   }
 
   return <label className="theme-selector" title="Escolher aparência do site">
-    <span aria-hidden="true">{tema === "dark" ? "☾" : tema === "light" ? "☀" : "◐"}</span>
+    <span aria-hidden="true"><Icon name="leaf" /></span>
     <b>Tema</b>
     <select value={tema} onChange={(event) => alterar(event.target.value as Tema)} aria-label="Tema do site">
       <option value="light">Claro</option>

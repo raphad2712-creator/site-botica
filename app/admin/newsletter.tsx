@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Icon } from "@/components/ui-icon";
 
 export function AdminNewsletter({ total }: { total: number }) {
   const [enviando, setEnviando] = useState(false);
@@ -33,7 +34,7 @@ export function AdminNewsletter({ total }: { total: number }) {
         <button disabled={enviando || total === 0}>{enviando ? "ENVIANDO..." : `ENVIAR PARA ${total} INSCRITOS`}</button>
         {mensagem && <p role="status">{mensagem}</p>}
       </form>
-      <aside><span>✉</span><h3>Antes de enviar</h3><ul><li>Revise o assunto e a mensagem.</li><li>Envie somente novidades relevantes.</li><li>O envio utiliza a conta Brevo configurada.</li><li>O plano gratuito possui limite diário.</li></ul><p>Os destinatários não enxergam os e-mails uns dos outros.</p></aside>
+      <aside><span><Icon name="document" /></span><h3>Antes de enviar</h3><ul><li>Revise o assunto e a mensagem.</li><li>Envie somente novidades relevantes.</li><li>O envio utiliza a conta Brevo configurada.</li><li>O plano gratuito possui limite diário.</li></ul><p>Os destinatários não enxergam os e-mails uns dos outros.</p></aside>
     </div>
   </section>;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Icon } from "./ui-icon";
 
 type Escolha = "aceitos" | "recusados";
 
@@ -23,7 +24,7 @@ export function CookieConsent() {
 
   if (!visivel) return null;
   return <aside className="cookie-consent" role="dialog" aria-modal="true" aria-label="Preferências de cookies">
-    <div className="cookie-icon">◌</div>
+    <div className="cookie-icon"><Icon name="shield" /></div>
     <div><small>PRIVACIDADE E COOKIES</small><h2>Sua escolha importa</h2><p>Utilizamos cookies necessários para manter sua conta e o carrinho funcionando. Com sua autorização, também poderemos usar cookies de análise para melhorar a experiência.</p><a href="/politica-de-privacidade">Saiba mais na Política de Privacidade</a></div>
     <div className="cookie-actions"><button type="button" onClick={() => escolher("recusados")}>RECUSAR OPCIONAIS</button><button type="button" onClick={() => escolher("aceitos")}>ACEITAR COOKIES</button></div>
   </aside>;

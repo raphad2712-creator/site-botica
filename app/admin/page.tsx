@@ -7,6 +7,7 @@ import { AdminAftercare } from "./aftercare";
 import { AdminTabs } from "./tabs";
 import { AdminNewsletter } from "./newsletter";
 import { AdminRecipes } from "./recipes";
+import { Icon } from "@/components/ui-icon";
 
 export default async function AdminPage() {
   const supabase = await criarClienteServidor();
@@ -51,17 +52,17 @@ export default async function AdminPage() {
   return <main className="admin-dashboard" data-admin-tab="overview">
     <header className="admin-dashboard-hero">
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
-      <a href="/">VER LOJA ↗</a>
+      <a href="/">VER LOJA <Icon name="arrow-up-right" /></a>
     </header>
     <AdminTabs numeros={{ deliveries: pedidosParaPreparar, requests: pendentes, recipes: receitasParaAnalisar }} />
     <section className={`admin-pending-summary ${totalPendencias ? "has-pending" : "is-clear"}`} aria-live="polite">
-      <span>{totalPendencias ? "!" : "✓"}</span><div><strong>{totalPendencias ? `${totalPendencias} ${totalPendencias === 1 ? "ação precisa" : "ações precisam"} da sua atenção` : "Tudo em dia por aqui"}</strong><p>{totalPendencias ? "Use os números vermelhos no menu para encontrar rapidamente o que está pendente." : "Quando chegar um pedido, receita ou solicitação, o aviso aparecerá neste painel."}</p></div>
+      <span><Icon name={totalPendencias ? "document" : "check"} /></span><div><strong>{totalPendencias ? `${totalPendencias} ${totalPendencias === 1 ? "ação precisa" : "ações precisam"} da sua atenção` : "Tudo em dia por aqui"}</strong><p>{totalPendencias ? "Use os números vermelhos no menu para encontrar rapidamente o que está pendente." : "Quando chegar um pedido, receita ou solicitação, o aviso aparecerá neste painel."}</p></div>
     </section>
     <section className="admin-overview" id="visao-geral">
-      <article><span>▣</span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
-      <article><span>▤</span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
-      <article><span>◎</span><div><small>EM ENTREGA</small><strong>{pedidosLista.filter((pedido) => ["postado", "em_transito", "saiu_para_entrega"].includes(pedido.status_entrega || "")).length}</strong><p>Acompanhe e atualize abaixo</p></div></article>
-      <article><span>!</span><div><small>EM ANÁLISE</small><strong>{solicitacoesLista.filter((item) => item.status === "em_analise").length}</strong><p>Solicitações de pós-venda</p></div></article>
+      <article><span><Icon name="document" /></span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
+      <article><span><Icon name="document" /></span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
+      <article><span><Icon name="truck" /></span><div><small>EM ENTREGA</small><strong>{pedidosLista.filter((pedido) => ["postado", "em_transito", "saiu_para_entrega"].includes(pedido.status_entrega || "")).length}</strong><p>Acompanhe e atualize abaixo</p></div></article>
+      <article><span><Icon name="document" /></span><div><small>EM ANÁLISE</small><strong>{solicitacoesLista.filter((item) => item.status === "em_analise").length}</strong><p>Solicitações de pós-venda</p></div></article>
     </section>
     <AdminProducts produtosIniciais={produtos} />
     <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} receitasAprovadas={receitasLista.filter((item) => item.status === "aprovada")} />

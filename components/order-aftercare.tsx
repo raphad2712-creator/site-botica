@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { Icon } from "./ui-icon";
 import { ProductImage } from "./product-image";
 
 type Pedido = {
@@ -31,7 +32,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
   }
 
   const pedidosComProdutos = pedidos.filter((pedido) => pedido.itens_pedido?.length);
-  if (!pedidosComProdutos.length) return <div className="account-empty"><span>⌑</span><h3>Você ainda não finalizou nenhum pedido</h3><p>Depois de concluir o checkout, sua compra aparecerá aqui com produtos, código e acompanhamento.</p><Link href="/#produtos">VER PRODUTOS</Link></div>;
+  if (!pedidosComProdutos.length) return <div className="account-empty"><span><Icon name="document" /></span><h3>Você ainda não finalizou nenhum pedido</h3><p>Depois de concluir o checkout, sua compra aparecerá aqui com produtos, código e acompanhamento.</p><Link href="/#produtos">VER PRODUTOS</Link></div>;
 
   return <div className="account-orders order-list-modern">{pedidosComProdutos.map((pedido) => {
     const indice = Math.max(0, etapas.indexOf(pedido.status_entrega || "preparando"));
@@ -49,9 +50,9 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
       {detalhesAbertos === pedido.id && <div className="order-expanded-content">
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image"><ProductImage nome={produto?.nome || "Produto Botica"} imagemAtual={produto?.imagem_url} /></div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>
       <div className="tracking-box">
-        <div className="tracking-head"><div><small>ACOMPANHAMENTO DA ENTREGA</small><h3>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</h3></div>{pedido.codigo_rastreio && <button type="button" onClick={() => navigator.clipboard.writeText(pedido.codigo_rastreio!)}>Copiar código</button>}</div>
-        <div className="tracking-steps">{etapas.map((etapa, i) => <div className={i <= indice && pedido.status_entrega !== "atrasado" ? "done" : ""} key={etapa}><i>{i < indice ? "✓" : i + 1}</i><span>{rotulos[etapa]}</span></div>)}</div>
-        <div className="tracking-details"><span><small>TRANSPORTADORA</small>{pedido.transportadora || "Será informada após a postagem"}</span><span><small>CÓDIGO</small>{pedido.codigo_rastreio || "Aguardando postagem"}</span>{pedido.link_rastreio && <a href={pedido.link_rastreio} target="_blank" rel="noreferrer">ACOMPANHAR NO SITE DA TRANSPORTADORA ↗</a>}</div>
+        <div className="tracking-head"><div><small>ACOMPANHAMENTO DA ENTREGA</small><h3>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</h3></div>{pedido.codigo_rastreio && <button type="button" onClick={() => navigator.clipboard.writeText(pedido.codigo_rastreio!)}><Icon name="document" />Copiar código</button>}</div>
+        <div className="tracking-steps">{etapas.map((etapa, i) => <div className={i <= indice && pedido.status_entrega !== "atrasado" ? "done" : ""} key={etapa}><i>{i < indice ? <Icon name="check" /> : <b>{i + 1}</b>}</i><span>{rotulos[etapa]}</span></div>)}</div>
+        <div className="tracking-details"><span><small>TRANSPORTADORA</small>{pedido.transportadora || "Será informada após a postagem"}</span><span><small>CÓDIGO</small>{pedido.codigo_rastreio || "Aguardando postagem"}</span>{pedido.link_rastreio && <a href={pedido.link_rastreio} target="_blank" rel="noreferrer">ACOMPANHAR NO SITE DA TRANSPORTADORA <Icon name="arrow-up-right" /></a>}</div>
       </div>
       {podeSolicitar ? <button className="aftercare-open" type="button" onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR" : "SOLICITAR TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Trocas e reembolsos ficam disponíveis após a confirmação do pagamento.</p>}
       {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
