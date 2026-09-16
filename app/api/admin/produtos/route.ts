@@ -23,10 +23,15 @@ export async function POST(request: Request) {
   const estoque = Number(body.estoque);
   const precoAntigo = body.preco_antigo === null || body.preco_antigo === "" ? null : Number(body.preco_antigo);
   const imagemUrl = String(body.imagem_url ?? "").trim() || null;
-  if (!nome || !descricao || !categoria || !Number.isFinite(preco) || preco <= 0 || !Number.isInteger(estoque) || estoque < 0 || (precoAntigo !== null && (!Number.isFinite(precoAntigo) || precoAntigo <= 0))) {
-    return NextResponse.json({ erro: "Preencha nome, categoria, descrição, preço e estoque corretamente." }, { status: 400 });
+  const pesoKg = Number(body.peso_kg);
+  const alturaCm = Number(body.altura_cm);
+  const larguraCm = Number(body.largura_cm);
+  const comprimentoCm = Number(body.comprimento_cm);
+  const medidas = [pesoKg, alturaCm, larguraCm, comprimentoCm];
+  if (!nome || !descricao || !categoria || !Number.isFinite(preco) || preco <= 0 || !Number.isInteger(estoque) || estoque < 0 || (precoAntigo !== null && (!Number.isFinite(precoAntigo) || precoAntigo <= 0)) || medidas.some((valor) => !Number.isFinite(valor) || valor <= 0)) {
+    return NextResponse.json({ erro: "Preencha os dados do produto, peso e dimensões corretamente." }, { status: 400 });
   }
-  const { data, error } = await autenticacao.admin.from("produtos").insert({ nome, descricao, categoria, preco, preco_antigo: precoAntigo, estoque, imagem_url: imagemUrl, ativo: true }).select().single();
+  const { data, error } = await autenticacao.admin.from("produtos").insert({ nome, descricao, categoria, preco, preco_antigo: precoAntigo, estoque, imagem_url: imagemUrl, peso_kg: pesoKg, altura_cm: alturaCm, largura_cm: larguraCm, comprimento_cm: comprimentoCm, ativo: true }).select().single();
   if (error) {
     console.error("Erro ao cadastrar produto:", error);
     return NextResponse.json({ erro: `Não foi possível cadastrar o produto: ${error.message}` }, { status: 500 });
@@ -45,8 +50,19 @@ export async function PATCH(request: Request) {
     if (autenticacao.erro) return autenticacao.erro;
     const body = await request.json();
   const id = Number(body.id);
-  if (!Number.isInteger(id) || typeof body.ativo !== "boolean") return NextResponse.json({ erro: "Produto inválido." }, { status: 400 });
-  const { data, error } = await autenticacao.admin.from("produtos").update({ ativo: body.ativo }).eq("id", id).select().single();
+  if (!Number.isInteger(id)) return NextResponse.json({ erro: "Produto inválido." }, { status: 400 });
+  let alteracao: Record<string, number | boolean>;
+  if (typeof body.ativo === "boolean") {
+    alteracao = { ativo: body.ativo };
+  } else {
+    const pesoKg = Number(body.peso_kg);
+    const alturaCm = Number(body.altura_cm);
+    const larguraCm = Number(body.largura_cm);
+    const comprimentoCm = Number(body.comprimento_cm);
+    if ([pesoKg, alturaCm, larguraCm, comprimentoCm].some((valor) => !Number.isFinite(valor) || valor <= 0)) return NextResponse.json({ erro: "Informe peso e dimensões maiores que zero." }, { status: 400 });
+    alteracao = { peso_kg: pesoKg, altura_cm: alturaCm, largura_cm: larguraCm, comprimento_cm: comprimentoCm };
+  }
+  const { data, error } = await autenticacao.admin.from("produtos").update(alteracao).eq("id", id).select().single();
   if (error) return NextResponse.json({ erro: "Não foi possível alterar o produto." }, { status: 500 });
     return NextResponse.json({ mensagem: "Produto atualizado.", produto: data });
   } catch (error) {

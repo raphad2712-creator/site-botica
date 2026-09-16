@@ -51,7 +51,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
         <strong>{moeda(produto.preco)}</strong>
         <span>{produto.estoque} unidades disponíveis</span>
         <AddProduct produto={produto} />
-        <ShippingCalculator subtotal={Number(produto.preco)} />
+        <ShippingCalculator subtotal={Number(produto.preco)} produtoId={Number(produto.id)} />
         <div className="product-benefits"><span><b><Icon name="check" /></b> Compra segura</span><span><b><Icon name="truck" /></b> Frete calculado pelo CEP</span><span><b><Icon name="heart" /></b> Cuidado selecionado</span></div>
         <div className="care-note">
           <b>Informação importante</b>

@@ -32,6 +32,10 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
       preco_antigo: form.get("preco_antigo") ? Number(form.get("preco_antigo")) : null,
       estoque: Number(form.get("estoque")),
       imagem_url: String(form.get("imagem_url") || "") || null,
+      peso_kg: Number(form.get("peso_kg")),
+      altura_cm: Number(form.get("altura_cm")),
+      largura_cm: Number(form.get("largura_cm")),
+      comprimento_cm: Number(form.get("comprimento_cm")),
       ativo: true,
     };
     setSalvando(true);
@@ -58,6 +62,27 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
     setMensagem("Produto atualizado.");
   }
 
+  async function salvarMedidas(event: FormEvent<HTMLFormElement>, produto: Produto) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setSalvando(true);
+    setMensagem("");
+    try {
+      const resposta = await fetch("/api/admin/produtos", {
+        method: "PATCH", credentials: "same-origin", headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ id: produto.id, peso_kg: Number(form.get("peso_kg")), altura_cm: Number(form.get("altura_cm")), largura_cm: Number(form.get("largura_cm")), comprimento_cm: Number(form.get("comprimento_cm")) }),
+      });
+      const resultado = await lerResposta(resposta);
+      if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível salvar as medidas.");
+      setProdutos((atuais) => atuais.map((atual) => atual.id === produto.id ? resultado.produto as Produto : atual));
+      setMensagem(`Peso e dimensões de ${produto.nome} foram atualizados.`);
+    } catch {
+      setMensagem("Falha de conexão. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
   return (
     <section className="admin-page admin-products-panel" id="produtos-admin">
       <div className="admin-panel-heading"><div><small>CATÁLOGO</small><h2>Produtos da loja</h2><p>Cadastre produtos novos e escolha quais ficam disponíveis para compra.</p></div><span>{produtos.filter((produto) => produto.ativo).length} ATIVOS</span></div>
@@ -69,6 +94,10 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         <label>Preço anterior<input name="preco_antigo" type="number" step="0.01" placeholder="Opcional" /></label>
         <label>Quantidade em estoque<input name="estoque" type="number" min="0" placeholder="0" required /></label>
         <label>Imagem do produto<input name="imagem_url" type="url" placeholder="Cole a URL da imagem (opcional)" /></label>
+        <label>Peso (kg)<input name="peso_kg" type="number" min="0.001" step="0.001" placeholder="Ex.: 0,300" required /></label>
+        <label>Altura (cm)<input name="altura_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 12" required /></label>
+        <label>Largura (cm)<input name="largura_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 10" required /></label>
+        <label>Comprimento (cm)<input name="comprimento_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 15" required /></label>
         <button disabled={salvando}>{salvando ? "CADASTRANDO..." : "+ CADASTRAR PRODUTO"}</button>
       </form>
       <p className="form-message">{mensagem}</p>
@@ -79,6 +108,13 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
             <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque} unidades</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em></div>
             <strong>R$ {Number(produto.preco).toFixed(2).replace(".", ",")}</strong>
             <button onClick={() => alternar(produto)}>{produto.ativo ? "DESATIVAR" : "ATIVAR"}</button>
+            <form className="admin-shipping-form" onSubmit={(event) => salvarMedidas(event, produto)}>
+              <label>Peso (kg)<input name="peso_kg" type="number" min="0.001" step="0.001" defaultValue={produto.peso_kg ?? ""} required /></label>
+              <label>Altura (cm)<input name="altura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.altura_cm ?? ""} required /></label>
+              <label>Largura (cm)<input name="largura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.largura_cm ?? ""} required /></label>
+              <label>Comprimento (cm)<input name="comprimento_cm" type="number" min="0.1" step="0.1" defaultValue={produto.comprimento_cm ?? ""} required /></label>
+              <button disabled={salvando}>SALVAR MEDIDAS</button>
+            </form>
           </article>
         ))}
       </div>

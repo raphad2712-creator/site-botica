@@ -10,9 +10,19 @@ create table if not exists public.produtos (
   preco_antigo numeric(10,2),
   estoque integer not null default 0 check (estoque >= 0),
   imagem_url text,
+  peso_kg numeric(8,3) check (peso_kg > 0),
+  altura_cm numeric(8,2) check (altura_cm > 0),
+  largura_cm numeric(8,2) check (largura_cm > 0),
+  comprimento_cm numeric(8,2) check (comprimento_cm > 0),
   ativo boolean not null default true,
   criado_em timestamptz not null default now()
 );
+
+alter table public.produtos
+  add column if not exists peso_kg numeric(8,3) check (peso_kg > 0),
+  add column if not exists altura_cm numeric(8,2) check (altura_cm > 0),
+  add column if not exists largura_cm numeric(8,2) check (largura_cm > 0),
+  add column if not exists comprimento_cm numeric(8,2) check (comprimento_cm > 0);
 
 create table if not exists public.perfis (
   id uuid primary key references auth.users(id) on delete cascade,

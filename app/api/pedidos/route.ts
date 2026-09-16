@@ -47,7 +47,12 @@ export async function POST(request: Request) {
   const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido; metodo_pagamento?: "pix" | "cartao" };
   if (!body.itens?.length) return NextResponse.json({ erro: "Carrinho vazio." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
-  const { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,ativo").in("id", ids).eq("ativo", true);
+  let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
+  if (error) {
+    const consultaLegada = await supabase.from("produtos").select("id,nome,preco,estoque,ativo").in("id", ids).eq("ativo", true);
+    produtos = consultaLegada.data?.map((produto) => ({ ...produto, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null })) ?? null;
+    error = consultaLegada.error;
+  }
   if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
 
   let pedidoId: number | null = null;
@@ -66,7 +71,17 @@ export async function POST(request: Request) {
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
     etapa = "confirmar o frete";
-    const frete = (await consultarFrete(cliente.cep, subtotal)).valor;
+    const cotacaoFrete = await consultarFrete(cliente.cep, subtotal, itensPedido.map((item) => {
+      const produto = produtos.find((atual) => Number(atual.id) === Number(item.produto_id))!;
+      return {
+        id: produto.id, nome: produto.nome, preco: Number(produto.preco), quantidade: item.quantidade,
+        peso_kg: produto.peso_kg === null ? null : Number(produto.peso_kg),
+        altura_cm: produto.altura_cm === null ? null : Number(produto.altura_cm),
+        largura_cm: produto.largura_cm === null ? null : Number(produto.largura_cm),
+        comprimento_cm: produto.comprimento_cm === null ? null : Number(produto.comprimento_cm),
+      };
+    }));
+    const frete = cotacaoFrete.valor;
 
     etapa = "salvar os dados do comprador";
     const { error: perfilError } = await admin.from("perfil_clientes").upsert({
@@ -90,7 +105,7 @@ export async function POST(request: Request) {
     if (enderecoError) throw enderecoError;
     const total = Number((subtotal + frete).toFixed(2));
     etapa = "criar o pedido";
-    const { data: pedido, error: pedidoError } = await supabase.from("pedidos").insert({ usuario_id: auth.user.id, endereco_id: endereco.id, total, frete, status: "aguardando_pagamento" }).select("id").single();
+    const { data: pedido, error: pedidoError } = await supabase.from("pedidos").insert({ usuario_id: auth.user.id, endereco_id: endereco.id, total, frete, transportadora: `${cotacaoFrete.transportadora} — ${cotacaoFrete.servico}`, status: "aguardando_pagamento" }).select("id").single();
     if (pedidoError) throw pedidoError;
     pedidoId = Number(pedido.id);
     etapa = "salvar os produtos do pedido";

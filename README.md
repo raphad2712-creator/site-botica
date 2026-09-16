@@ -74,9 +74,15 @@ Edite o arquivo:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=COLE_A_URL_DO_PROJETO
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=COLE_A_CHAVE_PUBLICA
+MELHOR_ENVIO_TOKEN=COLE_O_TOKEN_PRIVADO
+MELHOR_ENVIO_SANDBOX=true
+MELHOR_ENVIO_USER_AGENT=Botica Bioenergetica (seu-email@exemplo.com)
+CEP_ORIGEM_FRETE=08180050
 ```
 
 Não coloque aspas e não deixe espaços ao redor do sinal `=`.
+
+Antes de ativar o frete real, execute `supabase/frete-melhor-envio.sql` no SQL Editor e preencha peso e dimensões de todos os produtos no painel administrativo. Use `MELHOR_ENVIO_SANDBOX=true` durante os testes e altere para `false` somente com o token de produção.
 
 ## 5. Instalar e abrir
 
@@ -133,7 +139,7 @@ Saia e entre novamente no site. Depois abra **Admin**.
 4. O navegador não decide o preço final.
 5. O pedido é gravado em `pedidos` e `itens_pedido`.
 
-O pagamento ainda é demonstrativo. A próxima etapa será integrar Mercado Pago e Melhor Envio usando rotas do servidor e variáveis secretas.
+O pagamento usa Mercado Pago quando as credenciais estão configuradas. O frete consulta o Melhor Envio no servidor quando o token, peso e dimensões estão cadastrados; enquanto a configuração estiver incompleta, o site identifica o valor como estimado.
 
 ## 9. Onde editar
 
@@ -163,7 +169,7 @@ O pagamento ainda é demonstrativo. A próxima etapa será integrar Mercado Pago
 ## Próximas integrações
 
 1. Upload privado de receitas.
-2. Endereços e cálculo de frete pelo Melhor Envio.
+2. Compra e geração automática de etiquetas pelo Melhor Envio.
 3. Mercado Pago com Pix e cartão.
 4. Webhook de pagamento.
 5. Atualização automática de estoque.
