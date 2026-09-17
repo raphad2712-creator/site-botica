@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { criarClienteServidor } from "@/lib/supabase/server";
+import { assinaturaArquivoValida, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 const BUCKET = "fotos-perfil";
 const TIPOS = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -17,6 +18,7 @@ async function garantirBucket() {
 
 export async function POST(request: Request) {
   try {
+    if (await limiteExcedido(request, "foto-perfil", 6, 3600)) return respostaMuitasTentativas(3600);
     const supabase = await criarClienteServidor();
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta para adicionar uma foto." }, { status: 401 });
@@ -24,6 +26,7 @@ export async function POST(request: Request) {
     if (!(foto instanceof File)) return NextResponse.json({ erro: "Selecione uma foto." }, { status: 400 });
     if (!TIPOS.has(foto.type)) return NextResponse.json({ erro: "Use uma imagem JPG, PNG ou WebP." }, { status: 400 });
     if (foto.size > 3 * 1024 * 1024) return NextResponse.json({ erro: "A foto deve ter no máximo 3 MB." }, { status: 400 });
+    if (!await assinaturaArquivoValida(foto)) return NextResponse.json({ erro: "O conteúdo da imagem não corresponde ao formato informado." }, { status: 400 });
     const admin = await garantirBucket(); const extensao = foto.type.split("/")[1].replace("jpeg", "jpg"); const caminho = `${auth.user.id}/perfil.${extensao}`;
     const existentes = await admin.storage.from(BUCKET).list(auth.user.id);
     if (existentes.data?.length) await admin.storage.from(BUCKET).remove(existentes.data.map((item) => `${auth.user!.id}/${item.name}`));

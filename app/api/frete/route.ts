@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { consultarFrete, type ProdutoFrete } from "@/lib/frete";
 import { criarClienteServidor } from "@/lib/supabase/server";
+import { limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 function mensagemFrete(erro: unknown) {
   const codigo = erro instanceof Error ? erro.message : "";
@@ -13,6 +14,7 @@ function mensagemFrete(erro: unknown) {
 
 export async function POST(request: Request) {
   try {
+    if (await limiteExcedido(request, "frete", 30, 60)) return respostaMuitasTentativas(60);
     const body = (await request.json()) as { cep?: string; subtotal?: number; itens?: Array<{ produto_id?: number; quantidade?: number }> };
     const itensRecebidos = Array.isArray(body.itens) ? body.itens : [];
     const ids = [...new Set(itensRecebidos.map((item) => Number(item.produto_id)).filter(Number.isInteger))];

@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 export async function POST(request: Request) {
   try {
+    if (await limiteExcedido(request, "recuperar-senha", 4, 3600)) return respostaMuitasTentativas(3600);
     const { email } = await request.json();
-    if (!email) return NextResponse.json({ erro: "Informe seu e-mail." }, { status: 400 });
+    const emailNormalizado = emailValido(email);
+    if (!emailNormalizado) return NextResponse.json({ erro: "Informe um e-mail válido." }, { status: 400 });
 
     // O fluxo implícito permite abrir o e-mail em outro aparelho ou no navegador
     // interno do Gmail, sem depender do verificador PKCE salvo no aparelho inicial.
@@ -14,10 +17,10 @@ export async function POST(request: Request) {
       { auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false } },
     );
     const origem = new URL(request.url).origin;
-    const { error } = await supabase.auth.resetPasswordForEmail(String(email).trim().toLowerCase(), {
+    await supabase.auth.resetPasswordForEmail(emailNormalizado, {
       redirectTo: `${origem}/redefinir-senha`,
     });
-    if (error) return NextResponse.json({ erro: error.message }, { status: 400 });
+    // A resposta é sempre genérica para não revelar se o e-mail possui conta.
     return NextResponse.json({ sucesso: true });
   } catch {
     return NextResponse.json({ erro: "Não foi possível enviar o link agora." }, { status: 500 });

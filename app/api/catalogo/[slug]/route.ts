@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { consultationProducts, consultationImage, matchConsultationProduct } from "@/lib/consultation-products";
+import { limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 // Cadastro inicial da linha demonstrativa autorizada pela loja.
 // O banco gera um ID livre, sem risco de substituir cadastros existentes.
-export async function POST(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ slug: string }> }) {
+  if (await limiteExcedido(request, "catalogo", 12, 60)) return respostaMuitasTentativas(60);
   const { slug } = await params;
   const label = consultationProducts.find(product => product.slug === slug);
   if (!label) return NextResponse.json({ erro: "Produto não encontrado." }, { status: 404 });

@@ -51,11 +51,13 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     event.preventDefault();
     if (newsletterEnviando) return;
     const formulario = event.currentTarget;
-    const email = String(new FormData(formulario).get("email") ?? "");
+    const dadosFormulario = new FormData(formulario);
+    const email = String(dadosFormulario.get("email") ?? "");
+    const consentimento = dadosFormulario.get("consentimento") === "sim";
     setNewsletterEnviando(true);
     setNewsletterMensagem("");
     try {
-      const resposta = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const resposta = await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, consentimento }) });
       const dados = await resposta.json();
       setNewsletterMensagem(dados.mensagem ?? dados.erro ?? "Não foi possível cadastrar.");
       if (resposta.ok) formulario.reset();
@@ -145,7 +147,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         <div className="about-botica-points"><article><b>01</b><div><strong>Orientação responsável</strong><p>Informações claras para você comprar com mais confiança.</p></div></article><article><b>02</b><div><strong>Experiência completa</strong><p>Conta, pagamento, pedidos e suporte em um só lugar.</p></div></article><article><b>03</b><div><strong>Atendimento humano</strong><p>Uma equipe preparada para acompanhar suas necessidades.</p></div></article></div>
       </section>
       <section className="rx scroll-reveal" id="receita"><div><small>MANIPULAÇÃO PERSONALIZADA</small><h2>Tem uma receita?</h2><p>Envie sua prescrição. Nossa equipe analisa e entra em contato com o orçamento.</p><ol><li><b>1</b> Envie a receita</li><li><b>2</b> Receba o orçamento</li><li><b>3</b> Aprove seu pedido</li></ol></div><form className="rx-form" onSubmit={enviarReceita}><span><Icon name="upload" /></span><h3>Envie sua receita</h3><p>PDF, JPG ou PNG • até 10 MB</p><label className={receitaArquivo ? "rx-file selected" : "rx-file"}>{receitaArquivo ? receitaArquivo : "SELECIONAR ARQUIVO"}<input name="arquivo" type="file" accept="application/pdf,image/jpeg,image/png" onChange={(e) => { setReceitaArquivo(e.target.files?.[0]?.name || ""); setReceitaMensagem(""); }} required /></label><textarea name="observacao" maxLength={600} placeholder="Observação ou informação para o orçamento (opcional)" /><button disabled={receitaEnviando}>{receitaEnviando ? "ENVIANDO..." : "SOLICITAR ORÇAMENTO"}</button>{receitaMensagem && <strong className="rx-message" role="status">{receitaMensagem}</strong>}</form></section>
-      <section className="newsletter scroll-reveal"><div><small>NOVIDADES DA BOTICA</small><h2>Cuide-se com informação.</h2><p>Receba novidades, conteúdos e ofertas da Botica no seu e-mail.</p></div><form onSubmit={cadastrarNewsletter}><input name="email" type="email" placeholder="Seu melhor e-mail" required disabled={newsletterEnviando} /><button disabled={newsletterEnviando}>{newsletterEnviando ? "CADASTRANDO..." : "QUERO RECEBER"}</button>{newsletterMensagem && <p className="newsletter-message" role="status">{newsletterMensagem}</p>}<small>Ao cadastrar, você concorda em receber comunicações da Botica. É possível cancelar quando quiser.</small></form></section>
+      <section className="newsletter scroll-reveal"><div><small>NOVIDADES DA BOTICA</small><h2>Cuide-se com informação.</h2><p>Receba novidades, conteúdos e ofertas da Botica no seu e-mail.</p></div><form onSubmit={cadastrarNewsletter}><input name="email" type="email" placeholder="Seu melhor e-mail" required disabled={newsletterEnviando} /><label className="newsletter-consent"><input name="consentimento" type="checkbox" value="sim" required /> <span>Autorizo o envio de novidades e ofertas por e-mail. Li a <a href="/politica-de-privacidade">Política de Privacidade</a> e posso cancelar quando quiser.</span></label><button disabled={newsletterEnviando}>{newsletterEnviando ? "CADASTRANDO..." : "QUERO RECEBER"}</button>{newsletterMensagem && <p className="newsletter-message" role="status">{newsletterMensagem}</p>}</form></section>
     </>
   );
 }

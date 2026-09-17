@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { enviarEmail, escaparHtml } from "@/lib/email";
+import { assinaturaArquivoValida, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 const tiposPermitidos = new Set(["application/pdf", "image/jpeg", "image/png"]);
 
 export async function POST(request: Request) {
   try {
+    if (await limiteExcedido(request, "receitas", 4, 3600)) return respostaMuitasTentativas(3600);
     const supabase = await criarClienteServidor();
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta para enviar a receita." }, { status: 401 });
@@ -24,6 +26,7 @@ export async function POST(request: Request) {
     if (!(arquivo instanceof File) || !arquivo.size) return NextResponse.json({ erro: "Selecione um arquivo." }, { status: 400 });
     if (!tiposPermitidos.has(arquivo.type)) return NextResponse.json({ erro: "Envie um arquivo PDF, JPG ou PNG." }, { status: 400 });
     if (arquivo.size > 10 * 1024 * 1024) return NextResponse.json({ erro: "O arquivo deve ter no máximo 10 MB." }, { status: 400 });
+    if (!await assinaturaArquivoValida(arquivo)) return NextResponse.json({ erro: "O conteúdo do arquivo não corresponde ao formato informado." }, { status: 400 });
 
     const bucket = "receitas-privadas";
     const { data: bucketAtual } = await admin.storage.getBucket(bucket);

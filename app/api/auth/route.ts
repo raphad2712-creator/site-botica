@@ -1,22 +1,28 @@
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
+import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 export async function POST(request: Request) {
   try {
+    if (await limiteExcedido(request, "auth", 8, 600)) return respostaMuitasTentativas(600);
     const { acao, email, password, nome } = await request.json();
-    if (!email || !password) return NextResponse.json({ erro: "Preencha e-mail e senha." }, { status: 400 });
+    const emailNormalizado = emailValido(email);
+    const senha = String(password ?? "");
+    const nomeNormalizado = String(nome ?? "").trim().slice(0, 100);
+    const tamanhoMinimo = acao === "cadastro" ? 8 : 6;
+    if (!emailNormalizado || !["login", "cadastro"].includes(String(acao)) || senha.length < tamanhoMinimo || senha.length > 128 || (acao === "cadastro" && nomeNormalizado.length < 3)) return NextResponse.json({ erro: "Confira e-mail, nome e senha. Novas senhas devem ter pelo menos 8 caracteres." }, { status: 400 });
     const supabase = await criarClienteServidor();
     const origem = new URL(request.url).origin;
     const resposta = acao === "cadastro"
       ? await supabase.auth.signUp({
-          email,
-          password,
+          email: emailNormalizado,
+          password: senha,
           options: {
-            data: { nome },
+            data: { nome: nomeNormalizado },
             emailRedirectTo: `${origem}/auth/callback?next=/minha-conta`,
           },
         })
-      : await supabase.auth.signInWithPassword({ email, password });
+      : await supabase.auth.signInWithPassword({ email: emailNormalizado, password: senha });
     if (resposta.error) {
       const mensagem = resposta.error.message.toLowerCase();
       const erro = mensagem.includes("invalid login") ? "E-mail ou senha incorretos."

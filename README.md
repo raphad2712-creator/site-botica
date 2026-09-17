@@ -78,11 +78,14 @@ MELHOR_ENVIO_TOKEN=COLE_O_TOKEN_PRIVADO
 MELHOR_ENVIO_SANDBOX=true
 MELHOR_ENVIO_USER_AGENT=Botica Bioenergetica (seu-email@exemplo.com)
 CEP_ORIGEM_FRETE=08180050
+RATE_LIMIT_SECRET=COLE_UM_VALOR_LONGO_E_ALEATORIO
 ```
 
 Não coloque aspas e não deixe espaços ao redor do sinal `=`.
 
 Antes de ativar o frete real, execute `supabase/frete-melhor-envio.sql` no SQL Editor e preencha peso e dimensões de todos os produtos no painel administrativo. Use `MELHOR_ENVIO_SANDBOX=true` durante os testes e altere para `false` somente com o token de produção.
+
+Para ativar a Central de Privacidade, a prova de consentimento da newsletter e o limitador distribuído contra abuso, execute também `supabase/lgpd-seguranca.sql` no SQL Editor.
 
 ## 5. Instalar e abrir
 
@@ -156,6 +159,7 @@ O pagamento usa Mercado Pago quando as credenciais estão configuradas. O frete 
 | Login/cadastro | `app/login/page.tsx` |
 | Painel admin | `app/admin/page.tsx` e `app/admin/products.tsx` |
 | Banco e segurança | `supabase/banco-completo.sql` |
+| LGPD e proteção contra abuso | `supabase/lgpd-seguranca.sql` |
 
 ## 10. Segurança importante
 
@@ -164,6 +168,8 @@ O pagamento usa Mercado Pago quando as credenciais estão configuradas. O frete 
 - Não aceite preços enviados pelo navegador sem conferir no banco.
 - Receitas médicas precisam de armazenamento privado e controle de acesso.
 - Pagamentos reais exigem webhooks e validação no servidor.
+- Gere `RATE_LIMIT_SECRET` com pelo menos 32 caracteres aleatórios e mantenha-o somente na Vercel.
+- Revise periodicamente usuários administradores, dependências, logs e solicitações da Central de Privacidade.
 - Antes de vender manipulados, valide o fluxo com o farmacêutico responsável e a Vigilância Sanitária.
 
 ## Próximas integrações
