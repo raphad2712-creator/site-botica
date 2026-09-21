@@ -1,0 +1,441 @@
+/*
+ * Refinamento visual e responsivo da loja.
+ * Este arquivo fica por último para reunir as decisões atuais sem alterar
+ * os fluxos de compra, conta, pagamento e administração.
+ */
+
+:root {
+  --botica-forest: #124b39;
+  --botica-forest-strong: #0b382a;
+  --botica-leaf: #7da24f;
+  --botica-mint: #e9f1e4;
+  --botica-paper: #fbfcf9;
+  --botica-border: #dfe8e1;
+  --botica-copy: #53645b;
+  --botica-radius: 20px;
+  --botica-shadow: 0 18px 50px rgba(18, 75, 57, 0.1);
+}
+
+html { scroll-padding-top: 150px; }
+body { overflow-x: hidden; background: var(--botica-paper); }
+body > main { min-width: 0; }
+
+/* Cabeçalho mais leve e previsível em todas as larguras. */
+.promo {
+  min-height: 36px !important;
+  height: auto !important;
+  padding: 8px 24px !important;
+  gap: clamp(24px, 7vw, 90px) !important;
+  background: var(--botica-forest-strong) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.035em;
+}
+
+body > header {
+  min-height: 96px !important;
+  height: auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(220px, 290px) minmax(260px, 1fr) auto;
+  align-items: center;
+  gap: clamp(20px, 3vw, 46px) !important;
+  padding: 12px max(4vw, 24px) !important;
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-bottom: 1px solid var(--botica-border) !important;
+  box-shadow: 0 8px 28px rgba(14, 56, 41, 0.045);
+  backdrop-filter: blur(16px);
+}
+
+body > header .official-logo {
+  width: min(100%, 286px) !important;
+  height: 72px !important;
+}
+
+body > header .official-logo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+body > header .search {
+  width: 100%;
+  max-width: 670px !important;
+  min-width: 0;
+  height: 50px !important;
+  margin: 0 auto;
+  border: 1px solid #d5e0d9 !important;
+  border-radius: 26px !important;
+  background: #f7faf7 !important;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+body > header .search:focus-within {
+  border-color: #88a997 !important;
+  box-shadow: 0 0 0 4px rgba(83, 135, 107, 0.11);
+}
+
+.head-actions { align-items: center; gap: 8px !important; }
+.head-actions .favorites-header,
+.head-actions .account-button,
+.head-actions .cart-simple {
+  min-height: 48px;
+  border: 1px solid #e0e8e3 !important;
+  border-radius: 14px !important;
+}
+
+.head-actions .favorites-header,
+.head-actions .cart-simple { padding: 8px 12px !important; }
+
+.head-actions svg { width: 22px; height: 22px; }
+
+.nav {
+  min-height: 48px !important;
+  height: auto !important;
+  padding: 0 max(4vw, 24px);
+  gap: clamp(15px, 2.2vw, 34px) !important;
+  background: #fff;
+  color: #2d493d;
+  border-bottom: 1px solid var(--botica-border) !important;
+}
+
+.nav > a { padding: 16px 0; font-size: 11px; white-space: nowrap; }
+
+/* Vitrine principal. */
+.hero {
+  width: min(1480px, calc(100% - 40px)) !important;
+  min-height: 600px !important;
+  margin: 20px auto 0 !important;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+  border: 1px solid #dbe6d8;
+  border-radius: 28px !important;
+  background: linear-gradient(125deg, #f1f6ed 0%, #e4efdd 52%, #d5e4ce 100%) !important;
+  box-shadow: var(--botica-shadow);
+}
+
+.hero-copy {
+  min-height: 600px !important;
+  padding: clamp(56px, 6vw, 96px) clamp(34px, 5vw, 78px) !important;
+  justify-content: center;
+}
+
+.hero-eyebrow { line-height: 1.5; }
+.hero h1 {
+  max-width: 650px !important;
+  margin: 18px 0 24px !important;
+  font-size: clamp(54px, 5.1vw, 82px) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.035em;
+}
+
+.hero p { max-width: 570px; font-size: clamp(15px, 1.25vw, 18px) !important; }
+.hero-img,
+.hero-img img { min-height: 600px !important; height: 100% !important; }
+.hero-img img { object-fit: cover !important; object-position: center !important; }
+
+.hero-copy > .hero-actions > a {
+  min-height: 54px;
+  border-radius: 27px !important;
+  padding-inline: 27px;
+}
+
+.trust-row {
+  width: min(1180px, calc(100% - 72px));
+  margin-top: -34px !important;
+  border: 1px solid var(--botica-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 17px 45px rgba(18, 65, 47, 0.11) !important;
+}
+
+.trust-row article { min-width: 0; padding: 22px 20px !important; }
+.trust-row article > span { min-width: 0; }
+
+/* Seções e catálogo com ritmo visual consistente. */
+.objectives,
+.catalog,
+.about-botica,
+.rx,
+.newsletter { scroll-margin-top: 145px; }
+
+.objectives { padding-inline: max(4vw, 24px) !important; }
+.objectives > .title,
+.objective-grid,
+.catalog-head,
+.catalog-tools,
+.category-tabs,
+.products,
+.catalog > .notice { width: min(1200px, 100%); margin-inline: auto !important; }
+
+.objective-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.objective-grid button {
+  min-width: 0;
+  min-height: 134px;
+  padding: 18px 10px !important;
+  border: 1px solid var(--botica-border) !important;
+  border-radius: 17px !important;
+  background: #fff !important;
+  box-shadow: 0 7px 22px rgba(18, 64, 45, 0.045);
+}
+
+.objective-grid button i { width: 56px !important; height: 56px !important; }
+.objective-grid button b { font-size: 11px !important; overflow-wrap: anywhere; }
+
+.catalog { padding-inline: max(4vw, 24px) !important; }
+.catalog-tools { grid-template-columns: minmax(260px, 1fr) 210px !important; }
+.category-tabs { scrollbar-width: none; }
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.products {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch;
+  gap: 22px !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+.products .card {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  flex: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 9px 30px rgba(20, 66, 48, 0.07) !important;
+}
+
+.products .card .photo {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 1 / 0.92;
+}
+
+.products .card > p,
+.products .card > a:not(.photo),
+.products .card > .product-brand-line,
+.products .card > del,
+.products .card > strong,
+.products .card > small,
+.products .card > .low-stock { margin-inline: 18px !important; }
+
+.products .card > p { margin-top: 18px !important; }
+.products .card > a h3 { min-height: 2.7em !important; }
+.products .card > .buy {
+  width: calc(100% - 36px) !important;
+  min-height: 48px !important;
+  margin: 16px 18px 18px !important;
+  border-radius: 24px !important;
+}
+
+.about-botica { padding-inline: max(6vw, 30px) !important; }
+.rx,
+.newsletter { width: min(1200px, calc(100% - 48px)); margin-inline: auto !important; border-radius: 22px; }
+
+/* Foco visível para teclado sem interferir no clique/toque. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(125, 162, 79, 0.48) !important;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1180px) {
+  body > header { grid-template-columns: 235px minmax(220px, 1fr) auto; gap: 18px !important; }
+  .head-actions .favorites-header > span,
+  .head-actions .account-button > span,
+  .head-actions .cart-simple > span { display: none !important; }
+  .head-actions .account-button { min-width: 48px !important; padding: 6px !important; }
+  .products { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .objective-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 900px) {
+  html { scroll-padding-top: 120px; }
+  .promo { justify-content: space-around; gap: 15px !important; }
+  body > header {
+    position: sticky !important;
+    top: 0;
+    z-index: 70;
+    grid-template-columns: 46px minmax(150px, 1fr) auto;
+    gap: 12px !important;
+    padding: 9px 16px 13px !important;
+  }
+  body > header .hamb {
+    display: grid !important;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--botica-border) !important;
+    border-radius: 13px;
+    background: #f8faf8 !important;
+  }
+  body > header .official-logo { width: min(100%, 230px) !important; height: 59px !important; }
+  body > header .search { grid-column: 1 / -1; grid-row: 2; max-width: none !important; height: 47px !important; }
+  .head-actions .favorites-header,
+  .head-actions .account-button { display: none !important; }
+  .head-actions .cart-simple {
+    min-width: 46px !important;
+    width: 46px !important;
+    height: 46px !important;
+    justify-content: center;
+    padding: 0 !important;
+  }
+  .head-actions .cart-simple b { position: absolute; transform: translate(14px, -14px); }
+  .nav { display: none !important; }
+  .nav.open {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 !important;
+    min-height: 0 !important;
+    padding: 10px 16px 18px;
+    background: #fff;
+    box-shadow: 0 18px 38px rgba(13, 50, 37, 0.14);
+  }
+  .nav.open > a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 12px !important;
+    border-bottom: 1px solid #e8eee9;
+    white-space: normal;
+  }
+  .nav.open .theme-selector { grid-column: 1 / -1; }
+  .hero {
+    width: calc(100% - 28px) !important;
+    min-height: 0 !important;
+    margin-top: 14px !important;
+    grid-template-columns: 1fr !important;
+    border-radius: 22px !important;
+  }
+  .hero-copy { min-height: 0 !important; padding: 55px 38px 44px !important; }
+  .hero h1 { max-width: 680px !important; font-size: clamp(48px, 9vw, 68px) !important; }
+  .hero-img,
+  .hero-img img { min-height: 400px !important; height: 400px !important; }
+  .trust-row { width: calc(100% - 48px); grid-template-columns: 1fr 1fr !important; margin-top: -24px !important; }
+  .trust-row article:nth-child(2) { border-right: 0 !important; }
+  .trust-row article:nth-child(-n + 2) { border-bottom: 1px solid var(--botica-border); }
+  .catalog-tools { grid-template-columns: 1fr !important; }
+  .products { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px !important; }
+  .rx,
+  .newsletter { width: calc(100% - 32px); }
+}
+
+@media (max-width: 600px) {
+  html { scroll-padding-top: 112px; }
+  .promo { min-height: 32px !important; padding: 7px 12px !important; }
+  .promo span { display: none; }
+  .promo span:first-child { display: inline !important; }
+  body > header { grid-template-columns: 42px minmax(0, 1fr) 42px; padding-inline: 12px !important; }
+  body > header .hamb { width: 42px; height: 42px; }
+  body > header .official-logo { justify-self: center; width: min(100%, 205px) !important; height: 53px !important; }
+  .head-actions .cart-simple { min-width: 42px !important; width: 42px !important; height: 42px !important; }
+  .nav.open { grid-template-columns: 1fr; padding-inline: 12px; }
+  .hero { width: calc(100% - 20px) !important; border-radius: 18px !important; }
+  .hero-copy { padding: 40px 22px 32px !important; }
+  .hero-eyebrow { font-size: 9px !important; letter-spacing: 0.12em !important; }
+  .hero h1 { margin-block: 14px 17px !important; font-size: clamp(42px, 13vw, 56px) !important; line-height: 1 !important; }
+  .hero p { font-size: 14px !important; line-height: 1.65 !important; }
+  .hero-copy > .hero-actions { display: grid !important; grid-template-columns: 1fr !important; gap: 9px; }
+  .hero-copy > .hero-actions > a { width: 100%; min-height: 50px; font-size: 10px; }
+  .hero-assurances { display: grid !important; grid-template-columns: 1fr !important; gap: 9px !important; }
+  .hero-img,
+  .hero-img img { min-height: 285px !important; height: 285px !important; }
+  .trust-row {
+    width: calc(100% - 28px);
+    margin-top: 14px !important;
+    grid-template-columns: 1fr 1fr !important;
+    border-radius: 15px;
+    box-shadow: 0 10px 28px rgba(18, 65, 47, 0.08) !important;
+  }
+  .trust-row article { display: grid !important; grid-template-columns: 38px 1fr; padding: 15px 12px !important; gap: 9px !important; }
+  .trust-row article > b { width: 38px !important; height: 38px !important; }
+  .trust-row strong { font-size: 10px !important; line-height: 1.35; }
+  .trust-row small { font-size: 8px !important; line-height: 1.35; }
+  .objectives,
+  .catalog { padding-inline: 14px !important; }
+  .objectives > .title { text-align: left !important; }
+  .objective-grid {
+    display: flex !important;
+    width: calc(100% + 14px) !important;
+    margin-right: -14px !important;
+    padding: 2px 14px 13px 0;
+    gap: 10px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .objective-grid::-webkit-scrollbar { display: none; }
+  .objective-grid button {
+    flex: 0 0 125px;
+    min-height: 120px;
+    scroll-snap-align: start;
+  }
+  .catalog-head h2 { font-size: 34px !important; }
+  .catalog-sort select,
+  .catalog-search input { font-size: 16px !important; }
+  .category-tabs { width: calc(100% + 14px) !important; margin-right: -14px !important; padding-right: 14px !important; }
+  .products { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .products .card { border-radius: 14px !important; }
+  .products .card .photo { aspect-ratio: 1 / 1.02; }
+  .products .card > p,
+  .products .card > a:not(.photo),
+  .products .card > .product-brand-line,
+  .products .card > del,
+  .products .card > strong,
+  .products .card > small,
+  .products .card > .low-stock { margin-inline: 11px !important; }
+  .products .card > p { margin-top: 12px !important; font-size: 8px !important; }
+  .products .card > a h3 { min-height: 2.8em !important; margin-top: 7px !important; font-size: 12px !important; }
+  .products .card > .product-brand-line { font-size: 8px !important; }
+  .products .card > strong { font-size: 18px !important; }
+  .products .card > small { min-height: 28px; font-size: 8px !important; }
+  .products .card > .buy {
+    width: calc(100% - 20px) !important;
+    min-height: 43px !important;
+    margin: 12px 10px 11px !important;
+    padding-inline: 7px !important;
+    font-size: 8px !important;
+  }
+  .about-botica { padding: 58px 20px !important; }
+  .about-botica h2 { font-size: 38px !important; }
+  .about-botica-points article { grid-template-columns: 42px 1fr; gap: 13px; }
+  .about-botica-points article > b { width: 42px; height: 42px; }
+  .rx,
+  .newsletter { width: calc(100% - 20px); border-radius: 17px; }
+  .footer-benefits { grid-template-columns: 1fr 1fr !important; padding-inline: 14px !important; }
+  .footer-benefits article { min-height: 108px; display: grid !important; grid-template-columns: 38px 1fr; padding: 15px 8px !important; }
+  .footer-benefits article:nth-child(odd) { border-right: 1px solid var(--botica-border) !important; }
+  .footer-benefits article:nth-child(-n + 2) { border-bottom: 1px solid var(--botica-border) !important; }
+  .footer-benefits article > span { width: 38px; height: 38px; }
+  .footer-benefits strong { font-size: 10px; }
+  .footer-benefits small { font-size: 8px; }
+}
+
+@media (max-width: 370px) {
+  .products { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .products .card { width: 100% !important; }
+  .products .card .photo { aspect-ratio: 1.2 / 1; }
+  .products .card > a h3 { font-size: 15px !important; }
+  .products .card > strong { font-size: 22px !important; }
+  .products .card > .buy { font-size: 9px !important; }
+}
+
+html[data-theme="dark"] body > header,
+html[data-theme="dark"] .nav,
+html[data-theme="dark"] .nav.open { background: rgba(15, 25, 19, 0.98) !important; }
+html[data-theme="dark"] body > header .search,
+html[data-theme="dark"] body > header .hamb { background: #17231c !important; border-color: #35493d !important; }
+html[data-theme="dark"] .hero { border-color: #30443a !important; }
+html[data-theme="dark"] .objective-grid button { border-color: #33483c !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
