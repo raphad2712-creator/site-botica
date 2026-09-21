@@ -1,6 +1,6 @@
-# Configurar o pagamento da Botica
+# Configurar o pagamento da Botica com PagBank
 
-O código já está preparado para o Checkout Pro do Mercado Pago. Comece com credenciais de teste.
+O site usa o Checkout PagBank hospedado. O cliente é redirecionado ao ambiente seguro do PagBank, escolhe Pix ou cartão e volta ao site após o pagamento.
 
 ## 1. Atualizar o banco
 
@@ -10,17 +10,15 @@ No Supabase, abra **SQL Editor**, crie uma nova consulta, cole todo o conteúdo 
 
 No Supabase, abra **Project Settings > API Keys** e copie a chave `service_role`. Ela é secreta.
 
-## 3. Criar a integração do Mercado Pago
+## 3. Obter o token do PagBank
 
-No painel Mercado Pago Developers, abra **Suas integrações**, crie uma aplicação para pagamentos on-line e copie o **Access Token de teste**.
+Entre no ambiente de desenvolvedores do PagBank e gere primeiro um token de Sandbox. Não coloque esse token no GitHub e não use o prefixo `NEXT_PUBLIC_`.
 
-Em **Webhooks**, cadastre esta URL:
+O site já envia esta URL ao PagBank para receber as notificações de pagamento:
 
 ```text
-https://site-botica.vercel.app/api/mercado-pago/webhook
+https://site-botica.vercel.app/api/pagbank/webhook
 ```
-
-Selecione o evento de pagamentos e copie a assinatura secreta gerada para o webhook.
 
 ## 4. Configurar a Vercel
 
@@ -28,22 +26,22 @@ Em **Vercel > projeto > Settings > Environment Variables**, adicione para Produc
 
 ```text
 SUPABASE_SERVICE_ROLE_KEY = chave service_role do Supabase
-MERCADO_PAGO_ACCESS_TOKEN = Access Token de teste do Mercado Pago
-MERCADO_PAGO_WEBHOOK_SECRET = assinatura secreta do webhook
-MERCADO_PAGO_MODO_TESTE = true
+PAGBANK_TOKEN = token privado do PagBank
+PAGBANK_SANDBOX = true
 ```
-
-Não use o prefixo `NEXT_PUBLIC_` nessas três variáveis. Não coloque os valores no GitHub nem envie prints das chaves.
 
 Depois, abra **Deployments**, selecione o último deploy e clique em **Redeploy**.
 
-## 5. Testar
+## 5. Testar no Sandbox
 
-Use somente os usuários e cartões de teste fornecidos pelo Mercado Pago. Confirme se:
+Use os dados de teste fornecidos pelo PagBank e confirme se:
 
-1. O checkout abre no Mercado Pago.
-2. O pagamento aprovado retorna ao site.
-3. O pedido aparece como `pago` em Minha conta.
-4. O estoque é reduzido uma única vez.
+1. O checkout abre no PagBank.
+2. Pix e cartão aparecem como opções.
+3. O pagamento aprovado retorna ao site.
+4. O pedido aparece como `pago` em Minha conta.
+5. O estoque é reduzido uma única vez.
 
-Somente depois dos testes substitua o Access Token pela credencial de produção, atualize o webhook da aplicação de produção e troque `MERCADO_PAGO_MODO_TESTE` para `false`.
+## 6. Ativar pagamentos reais
+
+Somente depois dos testes, substitua o token pelo token de produção, altere `PAGBANK_SANDBOX` para `false` e faça um novo deploy.

@@ -11,9 +11,9 @@ const nextConfig: NextConfig = {
       "script-src 'self' 'unsafe-inline'", "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.supabase.co",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://viacep.com.br https://www.melhorenvio.com.br https://sandbox.melhorenvio.com.br",
-      "frame-src https://www.mercadopago.com https://*.mercadopago.com",
-      "form-action 'self' https://*.mercadopago.com", "upgrade-insecure-requests",
+      "connect-src 'self' https://*.supabase.co https://api.pagseguro.com https://sandbox.api.pagseguro.com https://viacep.com.br https://www.melhorenvio.com.br https://sandbox.melhorenvio.com.br",
+      "frame-src 'none'",
+      "form-action 'self'", "upgrade-insecure-requests",
     ].join("; ");
     return [{
       source: "/:path*",

@@ -15,7 +15,7 @@ Projeto em Next.js com:
 2. Na Vercel, cadastre `ADMIN_EMAIL`, `EMAIL_REMETENTE` e `BREVO_API_KEY`.
 3. Faça um novo deploy para carregar as variáveis.
 
-Para testar o checkout sem Mercado Pago, defina `MODO_PEDIDO_TESTE=true`. Esse modo funciona exclusivamente para a conta cujo e-mail é igual a `ADMIN_EMAIL`: o checkout cria um pedido completo marcado como teste, sem cobrança e sem reduzir o estoque. Antes de publicar para clientes, altere para `false`.
+Para testar o checkout sem PagBank, defina `MODO_PEDIDO_TESTE=true`. Esse modo funciona exclusivamente para a conta cujo e-mail é igual a `ADMIN_EMAIL`: o checkout cria um pedido completo marcado como teste, sem cobrança e sem reduzir o estoque. Antes de publicar para clientes, altere para `false`.
 
 Enquanto nenhuma transportadora estiver integrada, o administrador informa manualmente no painel `/admin` a transportadora, o código, o link e a etapa da entrega. O cliente acompanha tudo em `/minha-conta`. Uma API de transportadora poderá substituir a atualização manual futuramente.
 - Produtos em carrossel horizontal no celular.
@@ -24,7 +24,7 @@ Enquanto nenhuma transportadora estiver integrada, o administrador informa manua
 - Cadastro e login de clientes.
 - Carrinho salvo no navegador.
 - Carrinho lateral com imagem do produto, quantidades, subtotal e frete.
-- Checkout demonstrativo completo, sem cobrança real.
+- Checkout PagBank com Pix e cartão.
 - Frete calculado somente no checkout, após informar o CEP.
 - Criação segura de pedidos.
 - Histórico de pedidos do cliente.
@@ -79,6 +79,8 @@ MELHOR_ENVIO_SANDBOX=true
 MELHOR_ENVIO_USER_AGENT=Botica Bioenergetica (seu-email@exemplo.com)
 CEP_ORIGEM_FRETE=08180050
 RATE_LIMIT_SECRET=COLE_UM_VALOR_LONGO_E_ALEATORIO
+PAGBANK_TOKEN=COLE_O_TOKEN_PRIVADO
+PAGBANK_SANDBOX=true
 ```
 
 Não coloque aspas e não deixe espaços ao redor do sinal `=`.
@@ -142,7 +144,7 @@ Saia e entre novamente no site. Depois abra **Admin**.
 4. O navegador não decide o preço final.
 5. O pedido é gravado em `pedidos` e `itens_pedido`.
 
-O pagamento usa Mercado Pago quando as credenciais estão configuradas. O frete consulta o Melhor Envio no servidor quando o token, peso e dimensões estão cadastrados; enquanto a configuração estiver incompleta, o site identifica o valor como estimado.
+O pagamento usa o checkout hospedado do PagBank quando o token está configurado. O cliente escolhe Pix ou cartão no ambiente seguro do PagBank. O frete consulta o Melhor Envio no servidor quando o token, peso e dimensões estão cadastrados; enquanto a configuração estiver incompleta, o site identifica o valor como estimado.
 
 ## 9. Onde editar
 
@@ -176,7 +178,5 @@ O pagamento usa Mercado Pago quando as credenciais estão configuradas. O frete 
 
 1. Upload privado de receitas.
 2. Compra e geração automática de etiquetas pelo Melhor Envio.
-3. Mercado Pago com Pix e cartão.
-4. Webhook de pagamento.
-5. Atualização automática de estoque.
-6. Fotos enviadas pelo painel administrativo.
+3. Validar o PagBank em produção com Pix e cartão.
+4. Fotos enviadas pelo painel administrativo.

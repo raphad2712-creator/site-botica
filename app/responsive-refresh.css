@@ -328,6 +328,20 @@ textarea:focus-visible {
   .newsletter { width: calc(100% - 32px); }
 }
 
+.pagbank-checkout-choice {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #9ac47c;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f5faef, #fff);
+}
+.pagbank-checkout-choice > strong { color: var(--green); font-size: 16px; }
+.pagbank-checkout-choice > p { margin: 8px 0 14px; color: #637269; font-size: 11px; line-height: 1.55; }
+.pagbank-checkout-choice > div { display: flex; flex-wrap: wrap; gap: 7px; }
+.pagbank-checkout-choice span { padding: 6px 10px; border-radius: 999px; background: #e3f0d8; color: #285d45; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+html[data-theme="dark"] .pagbank-checkout-choice { background: #1d2a23; border-color: #526d5c; }
+html[data-theme="dark"] .pagbank-checkout-choice > p { color: #b5c2ba; }
+
 @media (max-width: 600px) {
   html { scroll-padding-top: 112px; }
   .promo { min-height: 32px !important; padding: 7px 12px !important; }
@@ -382,8 +396,28 @@ textarea:focus-visible {
   .catalog-sort select,
   .catalog-search input { font-size: 16px !important; }
   .category-tabs { width: calc(100% + 14px) !important; margin-right: -14px !important; padding-right: 14px !important; }
-  .products { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .products {
+    display: flex !important;
+    width: calc(100% + 14px) !important;
+    margin-right: -14px !important;
+    padding: 2px 14px 18px 0 !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 0;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .products::-webkit-scrollbar { display: none; }
   .products .card { border-radius: 14px !important; }
+  .products .card {
+    flex: 0 0 min(82vw, 305px) !important;
+    width: min(82vw, 305px) !important;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
   .products .card .photo { aspect-ratio: 1 / 1.02; }
   .products .card > p,
   .products .card > a:not(.photo),
@@ -404,6 +438,7 @@ textarea:focus-visible {
     padding-inline: 7px !important;
     font-size: 8px !important;
   }
+  .pagbank-checkout-choice { padding: 18px; }
   .about-botica { padding: 58px 20px !important; }
   .about-botica h2 { font-size: 38px !important; }
   .about-botica-points article { grid-template-columns: 42px 1fr; gap: 13px; }
@@ -420,8 +455,8 @@ textarea:focus-visible {
 }
 
 @media (max-width: 370px) {
-  .products { grid-template-columns: 1fr !important; gap: 14px !important; }
-  .products .card { width: 100% !important; }
+  .products { gap: 10px !important; }
+  .products .card { flex-basis: 86vw !important; width: 86vw !important; }
   .products .card .photo { aspect-ratio: 1.2 / 1; }
   .products .card > a h3 { font-size: 15px !important; }
   .products .card > strong { font-size: 22px !important; }

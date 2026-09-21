@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // O proxy não faz chamadas externas, evitando timeout na Vercel.
 export function proxy(request: NextRequest) {
   const mutacao = ["POST", "PUT", "PATCH", "DELETE"].includes(request.method);
-  const webhook = request.nextUrl.pathname === "/api/mercado-pago/webhook";
+  const webhook = request.nextUrl.pathname === "/api/pagbank/webhook";
 
   if (mutacao && request.nextUrl.pathname.startsWith("/api/") && !webhook) {
     const origem = request.headers.get("origin");

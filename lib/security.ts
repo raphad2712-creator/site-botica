@@ -12,7 +12,7 @@ function ipDaRequisicao(request: Request) {
 }
 
 export async function limiteExcedido(request: Request, escopo: string, limite: number, janelaSegundos: number) {
-  const segredo = process.env.RATE_LIMIT_SECRET || process.env.MERCADO_PAGO_WEBHOOK_SECRET || "botica-rate-limit";
+  const segredo = process.env.RATE_LIMIT_SECRET || process.env.PAGBANK_TOKEN || "botica-rate-limit";
   const identificador = createHash("sha256").update(`${segredo}:${escopo}:${ipDaRequisicao(request)}`).digest("hex");
   try {
     const { data, error } = await criarClienteAdmin().rpc("consumir_limite_api", {
