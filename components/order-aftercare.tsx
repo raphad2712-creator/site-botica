@@ -36,7 +36,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
 
   return <div className="account-orders order-list-modern">{pedidosComProdutos.map((pedido) => {
     const indice = Math.max(0, etapas.indexOf(pedido.status_entrega || "preparando"));
-    const codigoPedido = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`;
+    const codigoPedido = String(pedido.id).padStart(6, "0");
     const podeSolicitar = ["pago", "aprovado", "preparando", "enviado", "entregue"].includes(pedido.status);
     return <article className="order-card" key={pedido.id}>
       <header className="order-card-header"><div><small>CÓDIGO DO PEDIDO</small><h3>{codigoPedido}</h3></div><span>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</span></header>

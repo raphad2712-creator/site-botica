@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
   const { data: pedido } = await supabase.from("pedidos").select("id,total,criado_em").eq("id", pedidoId).eq("usuario_id", auth.user.id).maybeSingle();
   if (!pedido) return NextResponse.json({ erro: "Pedido não encontrado." }, { status: 404 });
-  const codigoPedido = `BOT-${new Date(pedido.criado_em).getFullYear()}-${String(pedido.id).padStart(6, "0")}`;
+  const codigoPedido = String(pedido.id).padStart(6, "0");
   if (codigoInformado !== codigoPedido) {
     return NextResponse.json({ erro: "O código informado não corresponde a este pedido. Confira o código exibido no topo." }, { status: 400 });
   }
