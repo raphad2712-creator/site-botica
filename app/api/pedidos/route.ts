@@ -44,8 +44,9 @@ export async function POST(request: Request) {
   const accessToken = process.env.PAGBANK_TOKEN;
   const modoPedidoTeste = process.env.MODO_PEDIDO_TESTE === "true" && !!process.env.ADMIN_EMAIL && auth.user.email?.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
   if (!accessToken && !modoPedidoTeste) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
-  const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido };
+  const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido; metodo_pagamento?: "pix" | "cartao" };
   if (!body.itens?.length) return NextResponse.json({ erro: "Carrinho vazio." }, { status: 400 });
+  if (body.metodo_pagamento !== "pix" && body.metodo_pagamento !== "cartao") return NextResponse.json({ erro: "Escolha Pix ou cartão de crédito." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
   let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
   if (error) {
@@ -128,6 +129,7 @@ export async function POST(request: Request) {
     }
 
     const cpf = String(cliente.cpf ?? "").replace(/\D/g, "");
+    const pagamentoCartao = body.metodo_pagamento === "cartao";
     if (cpf.length !== 11 || !cliente.email || !cliente.nome) throw new Error("DADOS_PAGAMENTO_INVALIDOS");
     const origem = new URL(request.url).origin;
     const notificationUrl = origem.startsWith("https://") ? `${origem}/api/pagbank/webhook` : undefined;
@@ -162,14 +164,14 @@ export async function POST(request: Request) {
             complement: String(cliente.complemento ?? "").trim() || undefined,
           },
         },
-        payment_methods: [{ type: "PIX" }, { type: "CREDIT_CARD" }],
-        payment_methods_configs: [{
+        payment_methods: [{ type: pagamentoCartao ? "CREDIT_CARD" : "PIX" }],
+        ...(pagamentoCartao ? { payment_methods_configs: [{
           type: "CREDIT_CARD",
           config_options: [
             { option: "INSTALLMENTS_LIMIT", value: "6" },
             { option: "INTEREST_FREE_INSTALLMENTS", value: "6" },
           ],
-        }],
+        }] } : {}),
         soft_descriptor: "BOTICA BIO",
         redirect_url: `${origem}/pagamento/retorno?pedido=${pedido.id}&resultado=pendente`,
         return_url: `${origem}/pagamento/retorno?pedido=${pedido.id}&resultado=falha`,
@@ -184,7 +186,7 @@ export async function POST(request: Request) {
       console.error("ERRO_CHECKOUT_PAGBANK", { status: checkoutResposta.status, pedidoId: pedido.id, resposta: checkout });
       throw new Error("CHECKOUT_RECUSADO");
     }
-    await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: "PagBank — aguardando confirmação" });
+    await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: `${pagamentoCartao ? "Cartão de crédito" : "Pix"} — aguardando confirmação` });
     return NextResponse.json({ pedido_id: pedido.id, checkout_url: checkoutUrl });
   } catch (erro) {
     console.error("ERRO_CRIAR_PEDIDO", { etapa, pedidoId, erro });
