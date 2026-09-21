@@ -143,6 +143,46 @@ footer{margin-top:0!important;background:linear-gradient(135deg,#082f25,#124d3b)
   .support-panel{position:relative!important;z-index:2!important;width:100%!important;max-height:82dvh!important;margin:0!important;border:0!important;border-radius:24px 24px 0 0!important;overflow:auto!important;animation:support-mobile-in .25s ease!important}.support-panel>header{padding:22px 20px!important}.support-shortcuts,.support-faq{padding-inline:20px!important}.support-backdrop{z-index:1!important}
 }
 
+/* Ações e formulário de pós-venda: ficam junto ao resumo do pedido. */
+.order-card-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid #e2e9e4;background:#fff}
+.order-card-actions .order-details-toggle,.order-card-actions .aftercare-open{min-width:0;min-height:56px;margin:0;padding:12px 18px;border:0;background:#f7faf7;color:#14503c;font-size:9px;font-weight:900;line-height:1.35;text-align:center}
+.order-card-actions .order-details-toggle{border-top:0;border-right:1px solid #e2e9e4}
+.order-card-actions .aftercare-open{border-top:0;background:#14503c;color:#fff}
+.order-card-actions .aftercare-open:hover{background:#1b654c}
+.order-card-actions .aftercare-unavailable{display:grid;place-items:center;min-height:56px;margin:0;padding:10px 14px;border:0;background:#f7f9f7}
+
+.order-card>.aftercare-form{display:grid;grid-template-columns:1fr;gap:17px;padding:24px;background:#f7faf7;border-top:1px solid #dce7df}
+.aftercare-form-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 16px;padding:16px 18px;border:1px solid #d8e5dc;border-radius:12px;background:#fff}
+.aftercare-form-heading>span{color:#6f8f5e;font-size:8px;font-weight:900;letter-spacing:.14em}
+.aftercare-form-heading>strong{grid-column:2;grid-row:1/3;color:#14503c;font:700 22px Georgia;letter-spacing:.05em}
+.aftercare-form-heading>p{grid-column:1;margin:0;color:#66776e;font-size:9px;line-height:1.45}
+.aftercare-form>input[type="hidden"]{display:none!important}
+.aftercare-field{display:block;min-width:0;margin:0;padding:0;border:0;background:transparent}
+.aftercare-field>label{display:block;margin:0 0 7px;color:#40574b;font-size:9px;font-weight:900;line-height:1.3}
+.order-card .aftercare-field>input,.order-card .aftercare-field>select,.order-card .aftercare-field>textarea{display:block;box-sizing:border-box;width:100%;max-width:100%;margin:0;padding:13px 14px;border:1px solid #cbd9d0;border-radius:10px;background:#fff;color:#293f34;outline:none;line-height:1.4}
+.order-card .aftercare-field>select{min-height:50px;padding-right:38px}
+.order-card .aftercare-field>textarea{min-height:116px;resize:vertical}
+.order-card .aftercare-field>input:focus,.order-card .aftercare-field>select:focus,.order-card .aftercare-field>textarea:focus{border-color:#6f9e59;box-shadow:0 0 0 4px #74a25b18}
+.order-card>.aftercare-form>p{margin:0;color:#64746c;font-size:9px;line-height:1.6}
+.order-card>.aftercare-form>button{min-height:48px;margin:0;border:0;border-radius:24px;background:#14503c;color:#fff;padding:14px;font-size:9px;font-weight:900}
+.order-card>.aftercare-form>a{color:#557a68;font-size:9px;line-height:1.5;text-align:center;text-decoration:underline}
+.order-card>.aftercare-form>.aftercare-message{color:#356c50;font-size:10px;text-align:center}
+
+html[data-theme="dark"] .order-card-actions{background:#19231e;border-color:#33443a}
+html[data-theme="dark"] .order-card-actions .order-details-toggle{border-color:#33443a}
+html[data-theme="dark"] .aftercare-form-heading{background:#202d25;border-color:#3a4c41}
+html[data-theme="dark"] .aftercare-form-heading>p{color:#aab8af}
+
+@media(max-width:760px){
+  .order-card-actions .order-details-toggle,.order-card-actions .aftercare-open{min-height:64px;padding:10px 11px;font-size:8px}
+  .order-card>.aftercare-form{display:grid!important;grid-template-columns:1fr!important;gap:16px;padding:18px 14px 22px;overflow:visible}
+  .aftercare-form-heading{grid-template-columns:1fr;padding:15px}
+  .aftercare-form-heading>strong{grid-column:1;grid-row:2;font-size:20px}
+  .aftercare-form-heading>p{grid-column:1;grid-row:3;margin-top:3px}
+  .order-card .aftercare-field{display:block!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+  .order-card .aftercare-field>input,.order-card .aftercare-field>select,.order-card .aftercare-field>textarea{width:100%!important;max-width:100%!important;margin:0!important;font-size:16px}
+}
+
 .newsletter .newsletter-consent{grid-column:1/-1;display:flex;align-items:flex-start;gap:9px;color:#e7f1eb;font-size:9px;line-height:1.5}.newsletter .newsletter-consent input{width:17px;height:17px;flex:none;margin:1px 0}.newsletter .newsletter-consent a{text-decoration:underline;font-weight:800}
 .privacy-center{min-height:70vh;padding:70px max(20px,5vw) 100px;background:#f4f7f3}.privacy-center>header,.privacy-center-grid{max-width:1120px;margin:auto}.privacy-center>header small{color:#6f9d50;font-size:9px;font-weight:900;letter-spacing:.18em}.privacy-center>header h1{margin:8px 0;font:700 clamp(38px,6vw,64px) Georgia;color:#14503c}.privacy-center>header p{max-width:650px;color:#63736a}.privacy-center-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:35px}.privacy-center-grid>section{padding:25px;border:1px solid #dce6df;border-radius:16px;background:#fff;box-shadow:0 10px 35px #153f2e0a}.privacy-center h2{margin:0 0 9px;font:700 24px Georgia;color:#14503c}.privacy-center p{color:#68776f;font-size:11px;line-height:1.6}.privacy-center form{display:grid;gap:12px;margin-top:17px}.privacy-center label{font-size:9px;font-weight:900;color:#40564a}.privacy-center input,.privacy-center select,.privacy-center textarea{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #cbd8d0;border-radius:8px;background:#fff;font:inherit}.privacy-center textarea{min-height:120px;resize:vertical}.privacy-center button,.privacy-action{display:inline-block;border:0;border-radius:24px;background:#14503c;color:#fff;padding:13px 18px;font-size:9px;font-weight:900}.privacy-center section>a:not(.privacy-action){display:block;margin-top:10px;color:#14503c;text-decoration:underline;font-size:10px;font-weight:800}.privacy-center section>small{display:block;margin-top:9px;color:#77857d}
 @media(max-width:760px){.privacy-center{padding:45px 14px 70px}.privacy-center-grid{grid-template-columns:1fr}.newsletter .newsletter-consent{font-size:10px}}
@@ -1257,4 +1297,23 @@ html[data-theme="dark"] body .admin-pending-summary.is-clear{background:#17251b;
   .order-card .aftercare-form>.aftercare-message{display:block;width:100%;max-width:100%;margin:0!important}
   .order-card .aftercare-form>button{min-height:50px;border-radius:25px}
   .order-card .aftercare-form>a{text-align:center;line-height:1.5;overflow-wrap:anywhere}
+}
+
+/* Mantém o novo formulário acima dos detalhes e neutraliza regras antigas. */
+.order-card>.aftercare-form{display:grid!important;grid-template-columns:1fr!important;gap:17px!important}
+.order-card>.aftercare-form>.aftercare-form-heading,
+.order-card>.aftercare-form>.aftercare-field,
+.order-card>.aftercare-form>p,
+.order-card>.aftercare-form>button,
+.order-card>.aftercare-form>a,
+.order-card>.aftercare-form>.aftercare-message{grid-column:1!important}
+@media(max-width:760px){
+  .order-card>.aftercare-form{display:grid!important;grid-template-columns:1fr!important;gap:16px!important;padding:18px 14px 22px!important;overflow:visible!important}
+  .order-card>.aftercare-form .aftercare-field{display:block!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+  .order-card>.aftercare-form .aftercare-field>label{display:block!important;width:auto!important;margin:0 0 7px!important;padding:0!important;border:0!important;background:transparent!important}
+  .order-card>.aftercare-form .aftercare-field>input,
+  .order-card>.aftercare-form .aftercare-field>select,
+  .order-card>.aftercare-form .aftercare-field>textarea{width:100%!important;max-width:100%!important;margin:0!important;font-size:16px!important}
+  .order-card>.aftercare-form .aftercare-field>select{min-height:52px!important;padding-right:38px!important}
+  .order-card>.aftercare-form .aftercare-field>textarea{min-height:125px!important}
 }

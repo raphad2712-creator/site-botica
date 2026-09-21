@@ -46,7 +46,21 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         <div><small>PAGAMENTO</small><span className={`order-status status-${pedido.status}`}>{pedido.status.replaceAll("_", " ")}</span></div>
         <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
       </div>
-      <button className="order-details-toggle" type="button" onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "OCULTAR DETALHES" : "VER PRODUTOS E ACOMPANHAR ENTREGA"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
+      <div className="order-card-actions">
+        <button className="order-details-toggle" type="button" onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "OCULTAR DETALHES" : "VER PRODUTOS E ACOMPANHAR ENTREGA"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
+        {podeSolicitar ? <button className="aftercare-open" type="button" aria-expanded={aberto === pedido.id} onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR SOLICITAÇÃO" : "TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Pós-venda disponível após o pagamento.</p>}
+      </div>
+      {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
+        <div className="aftercare-form-heading"><span>ATENDIMENTO DESTE PEDIDO</span><strong>{codigoPedido}</strong><p>Preencha os dados abaixo para nossa equipe analisar sua solicitação.</p></div>
+        <input type="hidden" name="codigo_pedido" value={codigoPedido} />
+        <div className="aftercare-field aftercare-type"><label htmlFor={`tipo-${pedido.id}`}>O que você precisa?</label><select id={`tipo-${pedido.id}`} name="tipo" required><option value="arrependimento">Desistir da compra (direito de arrependimento)</option><option value="troca">Trocar produto</option><option value="devolucao">Devolver produto</option><option value="defeito">Produto com defeito ou avaria</option><option value="reembolso">Solicitar reembolso</option></select></div>
+        <div className="aftercare-field"><label htmlFor={`motivo-${pedido.id}`}>Motivo</label><input id={`motivo-${pedido.id}`} name="motivo" minLength={5} maxLength={160} required placeholder="Conte resumidamente o motivo" /></div>
+        <div className="aftercare-field aftercare-details"><label htmlFor={`detalhes-${pedido.id}`}>Detalhes</label><textarea id={`detalhes-${pedido.id}`} name="detalhes" maxLength={2000} placeholder="Informe o produto, o problema e outras informações importantes" /></div>
+        <p>Ao enviar, a solicitação ficará em análise. Você receberá a confirmação e as próximas orientações por e-mail.</p>
+        <button disabled={enviando}>{enviando ? "ENVIANDO..." : "ENVIAR SOLICITAÇÃO"}</button>
+        {mensagem && <strong className="aftercare-message">{mensagem}</strong>}
+        <Link href="/politica-de-trocas-e-devolucoes">Consultar política de trocas, devoluções e reembolso</Link>
+      </form>}
       {detalhesAbertos === pedido.id && <div className="order-expanded-content">
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image"><ProductImage nome={produto?.nome || "Produto Botica"} imagemAtual={produto?.imagem_url} /></div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>
       <div className="tracking-box">
@@ -54,17 +68,6 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         <div className="tracking-steps">{etapas.map((etapa, i) => <div className={i <= indice && pedido.status_entrega !== "atrasado" ? "done" : ""} key={etapa}><i>{i < indice ? <Icon name="check" /> : <b>{i + 1}</b>}</i><span>{rotulos[etapa]}</span></div>)}</div>
         <div className="tracking-details"><span><small>TRANSPORTADORA</small>{pedido.transportadora || "Será informada após a postagem"}</span><span><small>CÓDIGO</small>{pedido.codigo_rastreio || "Aguardando postagem"}</span>{pedido.link_rastreio && <a href={pedido.link_rastreio} target="_blank" rel="noreferrer">ACOMPANHAR NO SITE DA TRANSPORTADORA <Icon name="arrow-up-right" /></a>}</div>
       </div>
-      {podeSolicitar ? <button className="aftercare-open" type="button" onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR" : "SOLICITAR TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Trocas e reembolsos ficam disponíveis após a confirmação do pagamento.</p>}
-      {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
-        <label className="aftercare-order-code">Código do pedido<input name="codigo_pedido" required autoComplete="off" placeholder={codigoPedido} aria-describedby={`ajuda-codigo-${pedido.id}`} /><small id={`ajuda-codigo-${pedido.id}`}>Digite exatamente o código mostrado no topo deste pedido.</small></label>
-        <label>O que você precisa?<select name="tipo" required><option value="arrependimento">Desistir da compra (direito de arrependimento)</option><option value="troca">Trocar produto</option><option value="devolucao">Devolver produto</option><option value="defeito">Produto com defeito ou avaria</option><option value="reembolso">Solicitar reembolso</option></select></label>
-        <label>Motivo<input name="motivo" minLength={5} maxLength={160} required placeholder="Conte resumidamente o motivo" /></label>
-        <label>Detalhes<textarea name="detalhes" maxLength={2000} placeholder="Informe o produto, o problema e outras informações importantes" /></label>
-        <p>Ao enviar, a solicitação ficará em análise. Você receberá a confirmação e as próximas orientações por e-mail.</p>
-        <button disabled={enviando}>{enviando ? "ENVIANDO..." : "ENVIAR SOLICITAÇÃO"}</button>
-        {mensagem && <strong className="aftercare-message">{mensagem}</strong>}
-        <Link href="/politica-de-trocas-e-devolucoes">Consultar política de trocas, devoluções e reembolso</Link>
-      </form>}
       </div>}
     </article>;
   })}</div>;
