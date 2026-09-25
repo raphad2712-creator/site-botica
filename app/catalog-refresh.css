@@ -40,3 +40,170 @@ html[data-theme="dark"] .campaign-slide-copy h2{color:#d4e8c6}html[data-theme="d
 html[data-theme="dark"] .campaign-controls>button{background:#1b2c22;color:#e0ece3;border-color:#415448}
 @media(max-width:760px){.campaign-slide{padding:28px;gap:16px;grid-template-columns:1fr .7fr}.campaign-slide-copy h2{font-size:32px}.campaign-slide-copy p{font-size:13px}.campaign-slide-copy>a{font-size:12px;padding:13px}.botica-campaign-carousel{margin-top:32px;padding:0 16px}}
 @media(max-width:560px){.campaign-slide{grid-template-columns:1fr;padding:28px 24px}.campaign-slide-copy{max-width:none}.campaign-slide-image{width:180px;grid-row:1}.campaign-slide-copy h2{font-size:30px}.campaign-slide-copy p{margin:10px 0}.campaign-slide-copy>a{width:100%;justify-content:space-between}body .products .pharmacy-card{flex-basis:280px!important}body .products .pharmacy-card .photo{height:245px!important;min-height:245px!important;max-height:245px!important}}
+
+
+/* Carrossel mobile no estilo de vitrine: banner arredondado, setas sobrepostas e indicadores dentro do card. */
+@media(max-width:560px){
+  .botica-campaign-carousel{
+    position:relative;
+    margin:34px auto 0!important;
+    padding:0 14px 10px!important;
+  }
+
+  .botica-campaign-carousel .carousel-heading{
+    display:none!important;
+  }
+
+  .botica-campaign-carousel .campaign-track{
+    position:relative;
+    border-radius:28px!important;
+    overflow:hidden!important;
+    box-shadow:0 16px 34px rgba(15,54,39,.14);
+    background:#edf2e7;
+  }
+
+  .botica-campaign-carousel .campaign-slide{
+    min-height:560px!important;
+    padding:34px 28px 104px!important;
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto 1fr!important;
+    align-content:start!important;
+    gap:20px!important;
+    border-radius:28px!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-image{
+    grid-row:1!important;
+    width:min(74vw,280px)!important;
+    align-self:center!important;
+    justify-self:center!important;
+    border-radius:22px!important;
+    box-shadow:0 14px 28px rgba(18,76,58,.12)!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-copy{
+    grid-row:2!important;
+    text-align:center!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-copy>small{
+    font-size:9px!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-copy h2{
+    margin:10px 0 12px!important;
+    font-size:clamp(28px,8vw,36px)!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-copy p{
+    max-width:320px!important;
+    margin:0 auto 14px!important;
+    font-size:13px!important;
+    line-height:1.55!important;
+  }
+
+  .botica-campaign-carousel .campaign-slide-copy>a{
+    width:auto!important;
+    min-width:210px!important;
+    justify-content:center!important;
+    margin-top:6px!important;
+    border-radius:999px!important;
+  }
+
+  .botica-campaign-carousel .campaign-controls{
+    position:absolute!important;
+    inset:0 14px auto 14px!important;
+    height:560px!important;
+    margin:0!important;
+    display:block!important;
+    pointer-events:none!important;
+    z-index:5!important;
+  }
+
+  .botica-campaign-carousel .campaign-controls>button{
+    position:absolute!important;
+    top:50%!important;
+    width:58px!important;
+    height:58px!important;
+    margin-top:-29px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:0!important;
+    border-radius:50%!important;
+    box-shadow:0 9px 22px rgba(0,0,0,.16)!important;
+    pointer-events:auto!important;
+  }
+
+  .botica-campaign-carousel .campaign-controls>button:first-child{
+    left:24px!important;
+    background:#fff!important;
+    color:#52605a!important;
+  }
+
+  .botica-campaign-carousel .campaign-controls>button:last-child{
+    right:24px!important;
+    background:#124c3a!important;
+    color:#fff!important;
+  }
+
+  .botica-campaign-carousel .campaign-controls>button .ui-icon{
+    width:25px!important;
+    height:25px!important;
+  }
+
+  .botica-campaign-carousel .campaign-dots{
+    position:absolute!important;
+    left:50%!important;
+    bottom:24px!important;
+    transform:translateX(-50%)!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:2px!important;
+    padding:4px 8px!important;
+    border-radius:999px!important;
+    background:rgba(255,255,255,.58)!important;
+    backdrop-filter:blur(8px);
+    pointer-events:auto!important;
+  }
+
+  .botica-campaign-carousel .campaign-dots>button{
+    width:28px!important;
+    height:32px!important;
+  }
+
+  .botica-campaign-carousel .campaign-dots>button:after{
+    inset:13px 10px!important;
+    background:#52605a!important;
+  }
+
+  .botica-campaign-carousel .campaign-dots>button[aria-current]:after{
+    inset:12px 3px!important;
+    background:#124c3a!important;
+  }
+
+  .botica-campaign-carousel .carousel-status{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    overflow:hidden!important;
+    clip:rect(0 0 0 0)!important;
+    white-space:nowrap!important;
+  }
+}
+
+@media(max-width:390px){
+  .botica-campaign-carousel .campaign-slide{
+    min-height:525px!important;
+    padding:30px 22px 92px!important;
+  }
+  .botica-campaign-carousel .campaign-controls{
+    height:525px!important;
+  }
+  .botica-campaign-carousel .campaign-controls>button{
+    width:52px!important;
+    height:52px!important;
+    margin-top:-26px!important;
+  }
+  .botica-campaign-carousel .campaign-controls>button:first-child{left:18px!important}
+  .botica-campaign-carousel .campaign-controls>button:last-child{right:18px!important}
+}
