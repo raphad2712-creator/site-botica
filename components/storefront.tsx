@@ -10,6 +10,17 @@ import { CampaignCarousel } from "./campaign-carousel";
 import { ConsultationProductCard } from "./consultation-product-card";
 import { buildCatalog, filterCatalog, isConsultation, type CatalogProduct } from "@/lib/catalog";
 
+const categorias = ["Naturais", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
+const icones: Record<string, string> = {
+  Naturais: "M20 4c-8-1-15 2-15 8a6 6 0 0 0 6 6c6 0 9-7 9-14ZM4 21 15 10",
+  Academia: "M5 9v6M2.5 10.5v3M19 9v6M21.5 10.5v3M5 12h14",
+  Sono: "M20 15.2A8 8 0 0 1 8.8 4 8.2 8.2 0 1 0 20 15.2Z",
+  Florais: "M12 9.8C9.5 7.1 9.8 4.6 12 3c2.2 1.6 2.5 4.1 0 6.8M14.2 12c2.7-2.5 5.2-2.2 6.8 0-1.6 2.2-4.1 2.5-6.8 0M12 14.2c2.5 2.7 2.2 5.2 0 6.8-2.2-1.6-2.5-4.1 0-6.8M9.8 12C7.1 14.5 4.6 14.2 3 12c1.6-2.2 4.1-2.5 6.8 0",
+  Vitaminas: "M8.2 5.2a4.2 4.2 0 0 1 6 0l4.6 4.6a4.2 4.2 0 0 1-6 6l-4.6-4.6a4.2 4.2 0 0 1 0-6ZM9.7 12.7l5-5",
+  Emagrecimento: "M5 20h14a2 2 0 0 0 2-2V8a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v10a2 2 0 0 0 2 2ZM8 8a4 4 0 0 1 8 0M12 8l2-2",
+  Beleza: "M12 3c1.1 3.5 2.5 4.9 6 6-3.5 1.1-4.9 2.5-6 6-1.1-3.5-2.5-4.9-6-6 3.5-1.1 4.9-2.5 6-6Z",
+};
+
 function CatalogCard({ produto }: { produto: CatalogProduct }) {
   return isConsultation(produto)
     ? <ConsultationProductCard produto={produto} />
@@ -17,6 +28,7 @@ function CatalogCard({ produto }: { produto: CatalogProduct }) {
 }
 
 export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: string }) {
+  const [categoria, setCategoria] = useState("Naturais");
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("relevancia");
   const [newsletterMensagem, setNewsletterMensagem] = useState("");
@@ -26,6 +38,8 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   const [receitaEnviando, setReceitaEnviando] = useState(false);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const inicial = params.get("categoria");
+    if (inicial && categorias.includes(inicial)) setCategoria(inicial);
     const termo = params.get("busca");
     if (termo) setBusca(termo);
     const observer = new IntersectionObserver(
@@ -37,7 +51,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   }, []);
 
   const catalogo = useMemo(() => buildCatalog(produtos), [produtos]);
-  const filtrados = useMemo(() => filterCatalog(catalogo, "Todos", busca, ordem), [catalogo, busca, ordem]);
+  const filtrados = useMemo(() => filterCatalog(catalogo, categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
 
   async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -104,6 +118,21 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       </section>
 
       <CampaignCarousel />
+      <section className="objectives scroll-reveal" id="objetivos">
+        <div className="title">
+          <small>LINHAS DA BOTICA</small>
+          <h2>Compre por categoria</h2>
+          <p>Escolha uma categoria para encontrar os produtos disponíveis.</p>
+        </div>
+        <div className="objective-grid">
+          {categorias.map((item) => (
+            <button className={categoria === item ? "active" : ""} key={item} onClick={() => { setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={categoria === item}>
+              <i><svg viewBox="0 0 24 24"><path d={icones[item]} /></svg></i>
+              <b>{item}</b>
+            </button>
+          ))}
+        </div>
+      </section>
       <section className="natural-line-intro scroll-reveal" aria-label="Diferenciais da linha natural">
         <article><Icon name="leaf" /><div><strong>Seleção Botica</strong><span>Oito fórmulas em uma linha clara e fácil de escolher.</span></div></article>
         <article><Icon name="document" /><div><strong>Informação completa</strong><span>Apresentação, concentração e detalhes de cada produto.</span></div></article>
@@ -111,13 +140,16 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       </section>
 
       <section className="catalog scroll-reveal" id="produtos">
-        <div className="catalog-head"><div><small>BOTICA BIOENERGÉTICA</small><h2>Nossa linha natural</h2><p>Fórmulas selecionadas em cápsulas para complementar a sua rotina de cuidado.</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
+        <div className="catalog-head"><div><small>BOTICA BIOENERGÉTICA</small><h2>{categoria === "Naturais" ? "Nossa linha natural" : categoria}</h2><p>{categoria === "Naturais" ? "Fórmulas selecionadas em cápsulas para complementar a sua rotina de cuidado." : "Esta categoria estará disponível em breve."}</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
         <div className="catalog-tools">
           <label className="catalog-search"><span><Icon name="search" /></span><input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Busque por produto ou objetivo" aria-label="Buscar produtos" />{busca && <button onClick={() => setBusca("")} aria-label="Limpar busca">×</button>}</label>
           <label className="catalog-sort"><span>Ordenar por</span><select value={ordem} onChange={(e) => setOrdem(e.target.value)}><option value="relevancia">Mais relevantes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="nome">Nome A–Z</option></select></label>
         </div>
+        <div className="category-tabs" aria-label="Categorias de produtos">
+          {categorias.map((item) => <button key={item} className={categoria === item ? "active" : ""} aria-pressed={categoria === item} onClick={() => setCategoria(item)}>{item}</button>)}
+        </div>
         {erro && <div className="notice error" role="status">Não foi possível carregar os preços e a disponibilidade agora. Você pode consultar os produtos abaixo ou tentar novamente em instantes.</div>}
-        {filtrados.length ? <div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente buscar pelo nome da fórmula ou pela concentração.</p><button onClick={() => setBusca("")}>LIMPAR BUSCA</button></div>}
+        {filtrados.length ? <div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>{busca ? "Nenhum produto encontrado" : "Categoria sem produtos"}</b><p>{busca ? "Tente buscar pelo nome da fórmula ou pela concentração." : "Novos produtos serão adicionados em breve."}</p>{busca && <button onClick={() => setBusca("")}>LIMPAR BUSCA</button>}</div>}
       </section>
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>
