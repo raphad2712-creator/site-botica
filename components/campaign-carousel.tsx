@@ -2,11 +2,10 @@
 
 import { Icon } from "@/components/ui-icon";
 
-
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { consultationProducts } from "@/lib/consultation-products";
-import { NaturalProductImage } from "./natural-product-image";
+import { consultationArtwork, consultationProducts } from "@/lib/consultation-products";
 
 const banners = ["passiflora-300mg", "isoflavona-100mg", "berberina-500mg", "maca-peruana-500mg"].map(
   (slug) => consultationProducts.find((product) => product.slug === slug)!,
@@ -88,7 +87,17 @@ export function CampaignCarousel() {
               <p>{banner.apresentacao}. Conheça a apresentação e consulte nossa equipe para saber mais.</p>
               <Link href={`/produto/${banner.slug}`}>Conhecer o produto <span aria-hidden="true"><Icon name="arrow-right" /></span></Link>
             </div>
-            <div className="campaign-slide-image"><NaturalProductImage produto={banner} sizes="(max-width: 560px) 200px, 340px" /></div>
+            <div className="campaign-slide-image campaign-slide-ad">
+              <Image
+                className="campaign-artwork"
+                src={consultationArtwork(banner)}
+                alt={`Banner publicitário de ${banner.nome} ${banner.dose}`}
+                width={1254}
+                height={1254}
+                sizes="(max-width: 560px) calc(100vw - 68px), 390px"
+                priority={index === 0}
+              />
+            </div>
           </article>
         ))}
       </div>
