@@ -3,6 +3,7 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { enviarEmail, escaparHtml } from "@/lib/email";
 import { consultarFrete } from "@/lib/frete";
+import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 type ItemRecebido = { produto_id: number; quantidade: number };
 type ClienteRecebido = { nome?: string; email?: string; cpf?: string; telefone?: string; cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
@@ -38,6 +39,7 @@ function mensagemErro(erro: unknown) {
 }
 
 export async function POST(request: Request) {
+  if (await limiteExcedido(request, "criar-pedido", 6, 60)) return respostaMuitasTentativas(60);
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
@@ -129,8 +131,10 @@ export async function POST(request: Request) {
     }
 
     const cpf = String(cliente.cpf ?? "").replace(/\D/g, "");
+    const email = emailValido(cliente.email);
+    const nomeCliente = String(cliente.nome ?? "").trim().slice(0, 120);
     const pagamentoCartao = body.metodo_pagamento === "cartao";
-    if (cpf.length !== 11 || !cliente.email || !cliente.nome) throw new Error("DADOS_PAGAMENTO_INVALIDOS");
+    if (cpf.length !== 11 || !email || nomeCliente.length < 3) throw new Error("DADOS_PAGAMENTO_INVALIDOS");
     const origem = new URL(request.url).origin;
     const notificationUrl = origem.startsWith("https://") ? `${origem}/api/pagbank/webhook` : undefined;
     const apiBase = process.env.PAGBANK_SANDBOX === "false"
@@ -141,7 +145,7 @@ export async function POST(request: Request) {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         reference_id: String(pedido.id),
-        customer: { name: cliente.nome.trim(), email: cliente.email.trim(), tax_id: cpf },
+        customer: { name: nomeCliente, email, tax_id: cpf },
         customer_modifiable: true,
         items: itensPedido.map((item) => ({
           reference_id: String(item.produto_id),

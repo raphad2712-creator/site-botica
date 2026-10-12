@@ -18,7 +18,13 @@ function setup(rows = []) {
     }; },
     insert(product) { writes++; const saved={...product,id:900000+writes}; rows.push(saved); return {select(){return {single:async()=>({data:saved})};}}; },
   }; } };
-  const route = moduleFrom('app/api/catalogo/[slug]/route.ts', name => name==='next/server' ? {NextResponse:{json:(body,options={})=>({body,status:options.status||200})}} : name.includes('supabase') ? {criarClienteAdmin:()=>admin} : labels);
+  const route = moduleFrom('app/api/catalogo/[slug]/route.ts', name => name==='next/server'
+    ? {NextResponse:{json:(body,options={})=>({body,status:options.status||200})}}
+    : name.includes('supabase')
+      ? {criarClienteAdmin:()=>admin}
+      : name.includes('security')
+        ? {limiteExcedido:async()=>false,respostaMuitasTentativas:()=>({status:429})}
+        : labels);
   return {call:slug=>route.POST({}, {params:Promise.resolve({slug})}),rows,get writes(){return writes;}};
 }
 test('os oito produtos recebem cadastros estáveis e não duplicam ao adicionar novamente',async()=>{

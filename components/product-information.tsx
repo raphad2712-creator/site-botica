@@ -17,9 +17,19 @@ export function ProductInformation({ produto, descricao }: { produto: Consultati
         </article>
         <article>
           <h3>Sobre o produto</h3>
-          <p className="product-description">{descricao || `${produto.nome} ${produto.dose}, em frasco com ${produto.apresentacao}, da Botica Bioenergética.`}</p>
-          <p>Para informações sobre a composição completa e o modo de uso, fale com a equipe da Botica.</p>
+          <p className="product-description">{descricao || produto.descricao}</p>
+          <p>A composição completa, os ingredientes e as orientações de uso devem ser conferidos no rótulo recebido ou com a equipe farmacêutica.</p>
           <a className="product-details-anchor" href={consultationHref(produto)}>Tirar dúvidas por e-mail <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
+        </article>
+        <article>
+          <h3>Orientações importantes</h3>
+          <ul className="product-guidance-list">
+            <li>Confira o lacre e o rótulo antes do uso.</li>
+            <li>Conserve em local seco, fresco e protegido da luz.</li>
+            <li>Mantenha fora do alcance de crianças.</li>
+            <li>Em caso de dúvida, procure orientação de um profissional de saúde.</li>
+          </ul>
+          <p className="product-info-disclaimer">As informações desta página não substituem avaliação ou orientação profissional.</p>
         </article>
       </div>
     </section>

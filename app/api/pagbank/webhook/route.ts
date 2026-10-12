@@ -21,9 +21,18 @@ export async function POST(request: Request) {
     const body = JSON.parse(payload);
     const cobrancas = Array.isArray(body?.charges) ? body.charges : [];
     const cobrancaPaga = cobrancas.find((cobranca: { status?: string }) => cobranca.status === "PAID");
+    const pedidoId = Number(body.reference_id);
+    const cobrancaNaoConcluida = cobrancas.find((cobranca: { id?: string; status?: string }) => ["DECLINED", "CANCELED"].includes(String(cobranca.status)));
+    if (!cobrancaPaga && cobrancaNaoConcluida && Number.isInteger(pedidoId) && pedidoId > 0) {
+      const { error } = await criarClienteAdmin().from("pedidos").update({
+        status: "cancelado",
+        pagamento_id: cobrancaNaoConcluida.id ? String(cobrancaNaoConcluida.id) : null,
+      }).eq("id", pedidoId).eq("status", "aguardando_pagamento");
+      if (error) throw error;
+      return NextResponse.json({ recebido: true });
+    }
     if (!cobrancaPaga) return NextResponse.json({ recebido: true });
 
-    const pedidoId = Number(body.reference_id);
     const centavos = Number(cobrancaPaga?.amount?.summary?.paid ?? cobrancaPaga?.amount?.value);
     if (!Number.isInteger(pedidoId) || pedidoId < 1 || !Number.isInteger(centavos) || centavos < 0) {
       throw new Error("PAGAMENTO_INVALIDO");

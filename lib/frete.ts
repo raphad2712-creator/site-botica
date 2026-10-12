@@ -56,7 +56,7 @@ export function calcularValorFrete(endereco: EnderecoFrete, subtotal: number): C
   return {
     ...tabela, valor: gratis ? 0 : tabela.valor,
     destino: `${endereco.cidade}/${endereco.estado}`, gratis,
-    transportadora: "Tabela da loja", servico: "Entrega padrão", servicoId: null, estimado: true,
+    transportadora: "Botica", servico: "Entrega estimada", servicoId: null, estimado: true,
   };
 }
 
@@ -86,7 +86,7 @@ async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, p
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json",
-      "User-Agent": process.env.MELHOR_ENVIO_USER_AGENT || "Botica Bioenergetica (raphad2712@gmail.com)",
+      "User-Agent": process.env.MELHOR_ENVIO_USER_AGENT || "Botica Bioenergetica (contato@boticabioenergetica.com.br)",
     },
     body: JSON.stringify({
       from: { postal_code: somenteNumerosCep(process.env.CEP_ORIGEM_FRETE || CEP_ORIGEM_PADRAO) },

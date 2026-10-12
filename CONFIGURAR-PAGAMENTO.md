@@ -39,8 +39,10 @@ Use os dados de teste fornecidos pelo PagBank e confirme se:
 1. O checkout abre no PagBank.
 2. Pix e cartão aparecem como opções.
 3. O pagamento aprovado retorna ao site.
-4. O pedido aparece como `pago` em Minha conta.
-5. O estoque é reduzido uma única vez.
+4. Um pagamento recusado ou cancelado aparece como não concluído e permite nova tentativa.
+5. Um Pix ainda não pago permanece como pendente, sem baixar estoque.
+6. O pedido aprovado aparece como `pago` em Minha conta.
+7. O estoque é reduzido uma única vez.
 
 ## 6. Ativar pagamentos reais
 

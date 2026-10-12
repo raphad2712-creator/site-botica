@@ -9,17 +9,18 @@ export type ConsultationProduct = {
   categoria: "Naturais";
   apresentacao: "60 cápsulas";
   precoDemonstrativo: number;
+  descricao: string;
 };
 
 export const consultationProducts: ConsultationProduct[] = [
-  { slug: "passiflora-300mg", nome: "Passiflora", dose: "300 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90 },
-  { slug: "isoflavona-100mg", nome: "Isoflavona", dose: "100 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90 },
-  { slug: "turkesterone-500mg", nome: "Turkesterone", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 129.90 },
-  { slug: "saw-palmetto-320mg", nome: "Saw Palmetto", dose: "320 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 69.90 },
-  { slug: "berberina-500mg", nome: "Berberina", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 79.90 },
-  { slug: "glucomanan-500mg", nome: "Glucomanan", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 49.90 },
-  { slug: "tribulus-terrestris-500mg", nome: "Tribulus Terrestris", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90 },
-  { slug: "maca-peruana-500mg", nome: "Maca Peruana", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90 },
+  { slug: "passiflora-300mg", nome: "Passiflora", dose: "300 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90, descricao: "Passiflora em cápsulas, com concentração de 300 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "isoflavona-100mg", nome: "Isoflavona", dose: "100 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90, descricao: "Isoflavona em cápsulas, com concentração de 100 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "turkesterone-500mg", nome: "Turkesterone", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 129.90, descricao: "Turkesterone em cápsulas, com concentração de 500 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "saw-palmetto-320mg", nome: "Saw Palmetto", dose: "320 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 69.90, descricao: "Saw Palmetto em cápsulas, com concentração de 320 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "berberina-500mg", nome: "Berberina", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 79.90, descricao: "Berberina em cápsulas, com concentração de 500 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "glucomanan-500mg", nome: "Glucomanan", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 49.90, descricao: "Glucomanan em cápsulas, com concentração de 500 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "tribulus-terrestris-500mg", nome: "Tribulus Terrestris", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 59.90, descricao: "Tribulus Terrestris em cápsulas, com concentração de 500 mg indicada no rótulo e apresentação com 60 unidades." },
+  { slug: "maca-peruana-500mg", nome: "Maca Peruana", dose: "500 mg", categoria: "Naturais", apresentacao: "60 cápsulas", precoDemonstrativo: 39.90, descricao: "Maca Peruana em cápsulas, com concentração de 500 mg indicada no rótulo e apresentação com 60 unidades." },
 ];
 
 export function normalizeCatalogText(text: string) {
@@ -47,7 +48,7 @@ export const consultationDarkArtwork = (product: ConsultationProduct) => `/produ
 export const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function consultationHref(product: ConsultationProduct) {
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "raphad2712@gmail.com";
+  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "contato@boticabioenergetica.com.br";
   const name = `${product.nome} ${product.dose} — ${product.apresentacao}`;
   return `mailto:${email}?subject=${encodeURIComponent(`Consulta sobre ${name}`)}&body=${encodeURIComponent(`Olá! Gostaria de consultar o preço e a disponibilidade de ${name}.`)}`;
 }

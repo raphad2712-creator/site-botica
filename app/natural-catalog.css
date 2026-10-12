@@ -48,7 +48,7 @@ body .consultation-product-page .product-info h1 {
 .product-information-heading { border-top: 1px solid #dce5de; padding: 32px 0 22px; }
 .product-information-heading > small { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #526e42; }
 .product-information h2 { font: 600 clamp(24px, 3vw, 32px)/1.2 Arial, sans-serif; color: #124c3a; margin: 12px 0; }
-.product-information-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.product-information-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
 .product-information-grid article { border: 1px solid #dde6df; border-radius: 12px; padding: 24px; background: #fff; }
 .product-information h3 { font-size: 18px; margin: 0 0 18px; color: #233b30; }
 .product-information p { color: #526458; line-height: 1.7; font-size: 15px; }
@@ -58,6 +58,9 @@ body .consultation-product-page .product-info h1 {
 .product-information dl > div:last-child { border: 0; }
 .product-information dt { color: #526458; }
 .product-information dd { margin: 0; text-align: right; font-weight: 600; }
+.product-guidance-list { display: grid; gap: 10px; margin: 0; padding-left: 18px; color: #526458; font-size: 14px; line-height: 1.55; }
+.product-guidance-list li::marker { color: #6d954c; }
+.product-info-disclaimer { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid #e6ece7; font-size: 12px !important; }
 .product-return { max-width: 1100px; margin: 0 auto 48px; padding: 0 25px; font-size: 14px; color: #124c3a; }
 .consultation-product-page :focus-visible,
 .product-information :focus-visible,
@@ -112,6 +115,7 @@ html[data-theme="dark"] .product-details-anchor,
 html[data-theme="dark"] .product-return { color: #d1e4c7; }
 html[data-theme="dark"] .product-information-grid article { background: #18241c; border-color: #35493c; }
 html[data-theme="dark"] .product-information p,
+html[data-theme="dark"] .product-guidance-list,
 html[data-theme="dark"] .product-information dt,
 html[data-theme="dark"] .consultation-box > small,
 html[data-theme="dark"] .consultation-product-page .product-info > p,
