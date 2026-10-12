@@ -63,7 +63,7 @@ export function Header() {
         </div>
       </header>
       <nav className={`nav ${menu ? "open" : ""}`}>
-        <a href="/" onClick={() => setMenu(false)}>Início</a><a href="/#produtos" onClick={() => setMenu(false)}>Linha natural</a><a href="/#sobre" onClick={() => setMenu(false)}>Sobre a Botica</a><a href="/#receita" onClick={() => setMenu(false)}>Envie sua receita</a><a href="/minha-conta" onClick={() => setMenu(false)}>Meus pedidos</a><ThemeSelector />
+        <a href="/#produtos" onClick={() => setMenu(false)}>Todos os produtos</a><a href="/?categoria=Emagrecimento#produtos" onClick={() => setMenu(false)}>Emagrecimento</a><a href="/?categoria=Academia#produtos" onClick={() => setMenu(false)}>Desempenho físico</a><a href="/?categoria=Vitaminas#produtos" onClick={() => setMenu(false)}>Saúde</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Queda capilar</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Beleza</a><a href="/#receita" onClick={() => setMenu(false)}>Envie sua receita</a><ThemeSelector />
       </nav>
       <nav className="mobile-bottom-nav" aria-label="Navegação rápida">
         <Link href="/" aria-label="Início"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" /></svg><span>Início</span></Link>
