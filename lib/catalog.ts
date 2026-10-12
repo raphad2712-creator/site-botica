@@ -9,9 +9,8 @@ export function buildCatalog(products: Produto[]): CatalogProduct[] {
     const registered = products.find((product) => matchConsultationProduct(product.nome)?.slug === label.slug);
     return registered ? (registered.ativo ? [registered] : []) : [label];
   });
-  // A vitrine pública desta coleção exibe somente os oito produtos da linha
-  // natural. Os demais cadastros continuam preservados no painel da loja.
-  return featured;
+  const otherActiveProducts = products.filter((product) => product.ativo && !matchConsultationProduct(product.nome));
+  return [...featured, ...otherActiveProducts];
 }
 
 export function filterCatalog(products: CatalogProduct[], category: string, search: string, order: string) {
@@ -19,7 +18,7 @@ export function filterCatalog(products: CatalogProduct[], category: string, sear
   return products.filter((product) => {
     const label = isConsultation(product) ? product : matchConsultationProduct(product.nome);
     const description = isConsultation(product) ? `${product.dose} ${product.apresentacao}` : product.descricao;
-    const matchesCategory = category === "Todos" || normalizeCatalogText(product.categoria) === normalizeCatalogText(category) || (category === "Naturais" && !!label);
+    const matchesCategory = category === "Todos" || normalizeCatalogText(product.categoria) === normalizeCatalogText(category);
     return matchesCategory && normalizeCatalogText(`${product.nome} ${description} ${product.categoria} ${label?.dose ?? ""} ${label?.apresentacao ?? ""}`).includes(query);
   }).sort((a, b) => {
     if (order === "nome") return a.nome.localeCompare(b.nome, "pt-BR");

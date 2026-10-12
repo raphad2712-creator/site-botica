@@ -8,7 +8,7 @@ import type { Produto } from "@/lib/types";
 import { ProductCard } from "./product-card";
 import { CampaignCarousel } from "./campaign-carousel";
 import { ConsultationProductCard } from "./consultation-product-card";
-import { buildCatalog, filterCatalog, isConsultation } from "@/lib/catalog";
+import { buildCatalog, filterCatalog, isConsultation, type CatalogProduct } from "@/lib/catalog";
 
 const categorias = ["Todos", "Naturais", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
 const icones: Record<string, string> = {
@@ -20,6 +20,12 @@ const icones: Record<string, string> = {
   Emagrecimento: "M5 20h14a2 2 0 0 0 2-2V8a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v10a2 2 0 0 0 2 2ZM8 8a4 4 0 0 1 8 0M12 8l2-2",
   Beleza: "M12 3c1.1 3.5 2.5 4.9 6 6-3.5 1.1-4.9 2.5-6 6-1.1-3.5-2.5-4.9-6-6 3.5-1.1 4.9-2.5 6-6Z",
 };
+
+function CatalogCard({ produto }: { produto: CatalogProduct }) {
+  return isConsultation(produto)
+    ? <ConsultationProductCard produto={produto} />
+    : <ProductCard produto={produto} />;
+}
 
 export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: string }) {
   const [categoria, setCategoria] = useState("Todos");
@@ -46,6 +52,15 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
 
   const catalogo = useMemo(() => buildCatalog(produtos), [produtos]);
   const filtrados = useMemo(() => filterCatalog(catalogo, categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
+  const grupos = useMemo(() => {
+    const conhecidas = categorias.slice(1);
+    const extras = [...new Set(catalogo.map((produto) => produto.categoria))]
+      .filter((nome) => !conhecidas.some((conhecida) => conhecida.localeCompare(nome, "pt-BR", { sensitivity: "base" }) === 0));
+    return [...conhecidas, ...extras].map((nome) => ({
+      nome,
+      produtos: filterCatalog(catalogo, nome, busca, ordem),
+    })).filter((grupo) => grupo.produtos.length);
+  }, [catalogo, busca, ordem]);
 
   async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -138,7 +153,12 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
           {categorias.map((item) => <button key={item} className={categoria === item ? "active" : ""} aria-pressed={categoria === item} onClick={() => setCategoria(item)}>{item}</button>)}
         </div>
         {erro && <div className="notice error" role="status">Não foi possível carregar os preços e a disponibilidade agora. Você pode consultar os produtos abaixo ou tentar novamente em instantes.</div>}
-        {filtrados.length ? <div className="products">{filtrados.map((produto) => isConsultation(produto) ? <ConsultationProductCard key={produto.slug} produto={produto} /> : <ProductCard key={produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente outro termo ou volte a visualizar todo o catálogo.</p><button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button></div>}
+        {filtrados.length ? categoria === "Todos" ? <div className="catalog-category-groups">
+          {grupos.map((grupo) => <section className="catalog-category-group" key={grupo.nome} aria-labelledby={`categoria-${grupo.nome}`}>
+            <header><div><small>CATEGORIA</small><h3 id={`categoria-${grupo.nome}`}>{grupo.nome}</h3></div><span>{grupo.produtos.length} {grupo.produtos.length === 1 ? "produto" : "produtos"}</span></header>
+            <div className="products">{grupo.produtos.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div>
+          </section>)}
+        </div> : <div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>Nenhum produto encontrado</b><p>Tente outro termo ou volte a visualizar todo o catálogo.</p><button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button></div>}
       </section>
 
       <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>

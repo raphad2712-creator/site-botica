@@ -471,6 +471,48 @@ html[data-theme="dark"] body > header .hamb { background: #17231c !important; bo
 html[data-theme="dark"] .hero { border-color: #30443a !important; }
 html[data-theme="dark"] .objective-grid button { border-color: #33483c !important; }
 
+/* Categorias legíveis em todos os estados e vitrine organizada por seção. */
+.category-tabs button:hover:not(.active) {
+  background: #edf4e9 !important;
+  border-color: #aec4b5 !important;
+  color: #124c3a !important;
+}
+.category-tabs button:focus-visible { color: #124c3a; }
+.category-tabs button.active:focus-visible { color: #fff; }
+.catalog-category-groups { display: grid; gap: 52px; max-width: 1200px; margin: 0 auto; }
+.catalog-category-group { min-width: 0; }
+.catalog-category-group > header {
+  position: static;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  height: auto;
+  margin: 0 0 18px;
+  padding: 0 0 12px;
+  border: 0;
+  border-bottom: 1px solid #dce5df;
+  background: transparent;
+}
+.catalog-category-group > header small { color: #789756; font-size: 9px; font-weight: 800; letter-spacing: .14em; }
+.catalog-category-group > header h3 { margin: 5px 0 0; color: #124c3a; font: 600 clamp(25px, 3vw, 34px)/1.1 Georgia, serif; }
+.catalog-category-group > header > span { color: #6c7c73; font-size: 11px; }
+
+/* O anúncio inteiro permanece visível, sem recorte nas bordas. */
+.campaign-slide-ad .campaign-artwork {
+  object-fit: contain !important;
+  background: #fff;
+}
+
+html[data-theme="dark"] .catalog-category-group > header { border-color: #35493c; }
+html[data-theme="dark"] .catalog-category-group > header h3 { color: #dce9df; }
+html[data-theme="dark"] .catalog-category-group > header > span { color: #aebbb3; }
+
+@media (max-width: 560px) {
+  .catalog-category-groups { gap: 38px; }
+  .catalog-category-group > header { align-items: center; }
+  .catalog-category-group > header > span { font-size: 9px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
