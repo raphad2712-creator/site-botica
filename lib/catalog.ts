@@ -5,12 +5,10 @@ export type CatalogProduct = Produto | ConsultationProduct;
 export const isConsultation = (product: CatalogProduct): product is ConsultationProduct => "slug" in product;
 
 export function buildCatalog(products: Produto[]): CatalogProduct[] {
-  const featured = consultationProducts.flatMap<CatalogProduct>((label) => {
+  return consultationProducts.flatMap<CatalogProduct>((label) => {
     const registered = products.find((product) => matchConsultationProduct(product.nome)?.slug === label.slug);
     return registered ? (registered.ativo ? [registered] : []) : [label];
   });
-  const otherActiveProducts = products.filter((product) => product.ativo && !matchConsultationProduct(product.nome));
-  return [...featured, ...otherActiveProducts];
 }
 
 export function filterCatalog(products: CatalogProduct[], category: string, search: string, order: string) {

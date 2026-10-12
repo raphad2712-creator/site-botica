@@ -516,3 +516,109 @@ html[data-theme="dark"] .catalog-category-group > header > span { color: #aebbb3
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* Vitrine final: uma única linha de produtos, sem blocos vazios ou categorias antigas. */
+.natural-line-intro {
+  width: min(1200px, calc(100% - 48px));
+  margin: 56px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--botica-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 38px rgba(18, 65, 47, .06);
+  overflow: hidden;
+}
+.natural-line-intro article {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  border-right: 1px solid var(--botica-border);
+}
+.natural-line-intro article:last-child { border-right: 0; }
+.natural-line-intro .ui-icon {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  border-radius: 50%;
+  background: var(--botica-mint);
+  color: var(--botica-forest);
+}
+.natural-line-intro strong,
+.natural-line-intro span { display: block; }
+.natural-line-intro strong { margin-bottom: 5px; color: var(--botica-forest); font-size: 13px; }
+.natural-line-intro span { color: var(--botica-copy); font-size: 11px; line-height: 1.5; }
+
+.catalog { padding-top: 76px !important; }
+.catalog-head { margin-bottom: 26px !important; }
+.catalog-head > div { max-width: 780px; }
+.catalog-head p { max-width: 650px; font-size: 14px !important; line-height: 1.65; }
+.catalog-count { display: block; margin-top: 10px; color: #718078; font-size: 11px; font-weight: 700; }
+.catalog-tools { margin-bottom: 28px !important; }
+.products .consultation-card { min-height: 100%; }
+
+html[data-theme="dark"] .natural-line-intro { background: #17231c; border-color: #35493d; }
+html[data-theme="dark"] .natural-line-intro article { border-color: #35493d; }
+html[data-theme="dark"] .natural-line-intro .ui-icon { background: #25382c; color: #b7d5a7; }
+html[data-theme="dark"] .natural-line-intro strong { color: #dce9df; }
+html[data-theme="dark"] .natural-line-intro span,
+html[data-theme="dark"] .catalog-count { color: #aebbb3; }
+
+@media (max-width: 760px) {
+  .natural-line-intro { width: calc(100% - 28px); grid-template-columns: 1fr; margin-top: 34px; }
+  .natural-line-intro article { border-right: 0; border-bottom: 1px solid var(--botica-border); padding: 18px; }
+  .natural-line-intro article:last-child { border-bottom: 0; }
+}
+
+@media (max-width: 600px) {
+  .catalog { padding-top: 58px !important; }
+  .catalog-head { margin-bottom: 20px !important; }
+  .catalog-head h2 { font-size: 36px !important; }
+  .catalog-head p { font-size: 13px !important; }
+  .catalog-tools { margin-bottom: 22px !important; }
+  .products {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+  body .products .pharmacy-card,
+  .products .card {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+    border-radius: 13px !important;
+  }
+  body .products .pharmacy-card .photo,
+  .products .card .photo {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+  body .products .pharmacy-card .photo .catalog-product-image { padding: 9px !important; }
+  .products .card > p,
+  .products .card > a:not(.photo),
+  .products .card > .product-brand-line,
+  .products .card > strong,
+  .products .card > small { margin-inline: 12px !important; }
+  .products .card > p { margin-top: 12px !important; font-size: 8px !important; }
+  .products .card > a h3 { min-height: 3em !important; font-size: 13px !important; line-height: 1.45 !important; }
+  .products .card > .product-brand-line { min-height: 2.7em; margin-bottom: 12px !important; font-size: 9px !important; line-height: 1.4; }
+  .products .card > strong { font-size: 20px !important; }
+  .products .card > small { min-height: 15px; font-size: 8px !important; }
+  .consultation-card > .natural-buy.compact { width: calc(100% - 20px); margin: auto 10px 11px; }
+  .natural-buy.compact .buy { min-height: 44px; padding: 9px 5px; font-size: 8px; line-height: 1.25; }
+}
+
+@media (max-width: 340px) {
+  .products { grid-template-columns: 1fr !important; }
+}

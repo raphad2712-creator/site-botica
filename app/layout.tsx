@@ -17,12 +17,12 @@ import { SupportWidget } from "@/components/support-widget";
 import { CookieConsent, CookieSettingsButton } from "@/components/cookie-consent";
 
 export const metadata: Metadata = {
-  title: "Botica Bioenergética",
-  description: "Loja de suplementos, cosméticos e produtos naturais.",
+  title: "Botica Bioenergética | Produtos naturais e manipulação",
+  description: "Produtos naturais, fórmulas manipuladas e atendimento farmacêutico com compra segura e entrega para todo o Brasil.",
   applicationName: "Botica Bioenergética",
   openGraph: {
-    title: "Botica Bioenergética",
-    description: "Fórmulas personalizadas, suplementos e produtos naturais.",
+    title: "Botica Bioenergética | Produtos naturais e manipulação",
+    description: "Produtos naturais, fórmulas personalizadas e atendimento farmacêutico.",
     type: "website",
   },
 };

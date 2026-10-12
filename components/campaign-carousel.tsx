@@ -62,7 +62,7 @@ export function CampaignCarousel() {
           move(event.key === "ArrowLeft" ? -1 : 1);
         }
       }}>
-      <div className="carousel-heading"><span>CONHEÇA A LINHA BOTICA</span><Link href="/?categoria=Naturais#produtos">Ver todos os produtos <span aria-hidden="true"><Icon name="arrow-up-right" /></span></Link></div>
+      <div className="carousel-heading"><span>CONHEÇA A LINHA NATURAL</span><Link href="/#produtos">Ver todos os produtos <span aria-hidden="true"><Icon name="arrow-up-right" /></span></Link></div>
       <div className="campaign-track" id="campaign-slides" tabIndex={0} aria-label="Destaques; use as setas para navegar"
         onTouchStart={(event) => {
           const point = event.touches[0];

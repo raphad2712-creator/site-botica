@@ -48,7 +48,7 @@ test('cadastro real substitui a apresentação em consulta, sem duplicar ou alte
   assert.equal(catalog.length, 8);
   assert.equal(catalog[0], registered);
   assert.equal(catalog.filter(isConsultation).length, 7);
-  assert.equal(filterCatalog(catalog, 'Sono', 'passiflora', 'relevancia')[0].preco, 59.9);
+  assert.equal(filterCatalog(catalog, 'Todos', 'passiflora', 'relevancia')[0].preco, 59.9);
 });
 
 test('fórmula, concentração e apresentação diferentes mantêm a própria foto', () => {
@@ -75,15 +75,15 @@ test('ordenação usa os preços exibidos, preservando o preço do cadastro real
   const second = { ...registered, id: 102, nome: 'Outro produto', preco: 19.9 };
   const catalog = buildCatalog([registered, second]);
   const displayedPrice = p => isConsultation(p) ? p.precoDemonstrativo : p.preco;
-  const expected = [19.9, 39.9, 49.9, 59.9, 59.9, 59.9, 69.9, 79.9, 129.9];
+  const expected = [39.9, 49.9, 59.9, 59.9, 59.9, 69.9, 79.9, 129.9];
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'menor').map(displayedPrice), expected);
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'maior').map(displayedPrice), [...expected].reverse());
 });
 
-test('produtos ativos cadastrados entram na vitrine e podem ser filtrados por categoria', () => {
+test('produtos fora da linha natural não entram na vitrine pública', () => {
   const legacy = { ...registered, id: 103, nome: 'Creatina Monohidratada 300g', categoria: 'Academia' };
   const catalog = buildCatalog([registered, legacy]);
-  assert.equal(catalog.length, 9);
-  assert.equal(catalog.some(product => product.nome.includes('Creatina')), true);
-  assert.equal(filterCatalog(catalog, 'Academia', '', 'relevancia')[0].id, 103);
+  assert.equal(catalog.length, 8);
+  assert.equal(catalog.some(product => product.nome.includes('Creatina')), false);
+  assert.equal(filterCatalog(catalog, 'Academia', '', 'relevancia').length, 0);
 });
