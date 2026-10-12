@@ -17,7 +17,8 @@ export function ProductInformation({ produto, descricao }: { produto: Consultati
         </article>
         <article>
           <h3>Sobre o produto</h3>
-          <p className="product-description">{descricao || produto.descricao}</p>
+          <p className="product-description">{produto.descricao}</p>
+          {descricao && descricao !== produto.descricao && <p className="product-description-complement">{descricao}</p>}
           <p>A composição completa, os ingredientes e as orientações de uso devem ser conferidos no rótulo recebido ou com a equipe farmacêutica.</p>
           <a className="product-details-anchor" href={consultationHref(produto)}>Tirar dúvidas por e-mail <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
         </article>
