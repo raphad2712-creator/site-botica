@@ -1,5 +1,6 @@
 "use client";
 
+import { destinoLocal } from "@/lib/safe-redirect";
 import { FormEvent, useState } from "react";
 import type { Provider } from "@supabase/supabase-js";
 import { criarClienteSupabase } from "@/lib/supabase/client";
@@ -37,7 +38,7 @@ export default function LoginPage() {
 
   function destinoDepoisDoLogin() {
     const solicitado = new URLSearchParams(window.location.search).get("next");
-    return solicitado?.startsWith("/") && !solicitado.startsWith("//") ? solicitado : "/minha-conta";
+    return destinoLocal(solicitado);
   }
 
   async function enviar(event: FormEvent<HTMLFormElement>) {

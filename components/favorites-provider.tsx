@@ -1,5 +1,7 @@
 "use client";
 
+import { lerProdutosSalvos } from "@/lib/stored-products";
+import { useDrawer } from "./use-drawer";
 import { Icon } from "@/components/ui-icon";
 
 
@@ -22,10 +24,12 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favoritos, setFavoritos] = useState<Produto[]>([]);
   const [aberto, setAberto] = useState(false);
 
+  const drawer = useDrawer(aberto, () => setAberto(false));
+
   useEffect(() => {
     try {
       const salvo = window.localStorage.getItem(STORAGE_KEY);
-      if (salvo) setFavoritos(JSON.parse(salvo));
+      setFavoritos(lerProdutosSalvos(salvo));
     } catch { /* Navegador sem armazenamento disponível. */ }
   }, []);
 
@@ -49,8 +53,8 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     <FavoritesContext.Provider value={valor}>
       {children}
       {aberto && <button className="favorites-backdrop" onClick={() => setAberto(false)} aria-label="Fechar favoritos" />}
-      <aside className={`favorites-drawer ${aberto ? "open" : ""}`} aria-hidden={!aberto}>
-        <header><div><small>SALVOS PARA DEPOIS</small><h2>Meus favoritos</h2></div><button onClick={() => setAberto(false)} aria-label="Fechar">×</button></header>
+      <aside ref={drawer} className={`favorites-drawer ${aberto ? "open" : ""}`} role="dialog" aria-modal={aberto || undefined} aria-labelledby="favorites-title" aria-hidden={!aberto} inert={!aberto} tabIndex={-1}>
+        <header><div><small>SALVOS PARA DEPOIS</small><h2 id="favorites-title">Meus favoritos</h2></div><button onClick={() => setAberto(false)} aria-label="Fechar">×</button></header>
         {favoritos.length ? <div className="favorites-list">{favoritos.map((produto) => (
           <article key={produto.id}>
             <Link href={`/produto/${produto.id}`} onClick={() => setAberto(false)}>

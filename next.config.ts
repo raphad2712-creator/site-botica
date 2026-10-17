@@ -29,9 +29,9 @@ const nextConfig: NextConfig = {
     }, {
       source: "/api/:path*",
       headers: [{ key: "Cache-Control", value: "no-store, max-age=0" }],
-    }, ...["/admin/:path*", "/minha-conta/:path*", "/privacidade"].map((source) => ({
+    }, ...["/admin/:path*", "/minha-conta/:path*", "/privacidade", "/login", "/redefinir-senha", "/auth/:path*", "/checkout", "/pagamento/:path*"].map((source) => ({
       source,
-      headers: [{ key: "Cache-Control", value: "private, no-store, max-age=0" }],
+      headers: [{ key: "Cache-Control", value: "private, no-store, max-age=0" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }],
     }))];
   },
 };

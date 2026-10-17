@@ -622,3 +622,77 @@ html[data-theme="dark"] .catalog-count { color: #aebbb3; }
 @media (max-width: 340px) {
   .products { grid-template-columns: 1fr !important; }
 }
+
+/* Loja: navegação acessível, leitura confortável e controles consistentes. */
+.skip-link { position: fixed; z-index: 10000; left: 16px; top: 12px; padding: 14px 22px; border-radius: 8px; background: #124b39; color: white; transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); }
+:where(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid #759c47; outline-offset: 4px; }
+:where(button, a, input, select, textarea) { -webkit-tap-highlight-color: transparent; }
+#conteudo { outline: none; }
+.hero h1 em { font-weight: inherit; color: #54733c; }
+body > header .search { padding: 0 0 0 4px; }
+body > header .search input { width: 100%; min-width: 0; padding-inline: 18px 6px; }
+body > header .search button { flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--botica-forest); color: white; margin-right: 3px; cursor: pointer; }
+.objective-grid button small { font: 400 11px/1.5 Arial, sans-serif; color: #647269; }
+.objective-grid button.active small { color: inherit; opacity: .85; }
+.catalog-search { min-width: 0; }
+.catalog-active-filters { max-width: 1200px; margin: -6px auto 22px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--botica-copy); }
+.catalog-active-filters > span { overflow-wrap: anywhere; }
+.catalog-active-filters button, .catalog-retry { min-height: 44px; flex-shrink: 0; border: 1px solid var(--botica-border); border-radius: 24px; padding: 8px 16px; background: white; color: var(--botica-forest); cursor: pointer; font-weight: 600; }
+.catalog-active-filters button span { margin-left: 10px; font-size: 18px; }
+.catalog-retry { margin: 8px 0 0 10px; }
+.carousel-playback { margin: 10px auto 0; min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 7px 14px; border: 0; border-radius: 22px; background: transparent; color: var(--botica-forest); cursor: pointer; font-size: 12px; }
+.carousel-playback .ui-icon { width: 16px; height: 16px; }
+.shopping-faq { width: min(1200px, calc(100% - 48px)); margin: 78px auto; display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(30px, 7vw, 100px); align-items: start; }
+.shopping-faq > div > small { color: #607d48; font-size: 11px; letter-spacing: .15em; font-weight: 700; }
+.shopping-faq h2 { color: var(--botica-forest); font: 400 clamp(32px, 3.2vw, 46px)/1.15 Georgia, serif; letter-spacing: -.025em; margin: 15px 0; }
+.shopping-faq p { color: var(--botica-copy); font-size: 14px; line-height: 1.8; }
+.shopping-faq a { color: var(--botica-forest); display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; padding-block: 8px; }
+.faq-items { border-top: 1px solid var(--botica-border); }
+.faq-items details { border-bottom: 1px solid var(--botica-border); padding-bottom: 4px; }
+.faq-items summary { padding: 22px 30px 22px 0; color: var(--botica-forest); font-size: 15px; font-weight: 600; cursor: pointer; list-style: none; position: relative; }
+.faq-items summary::-webkit-details-marker { display: none; }
+.faq-items summary::after { content: '+'; position: absolute; right: 4px; top: 17px; font-size: 24px; font-weight: 400; }
+.faq-items details[open] summary::after { content: '−'; }
+.faq-items details p { margin: 0 24px 14px 0; }
+.faq-items details > a { margin-bottom: 14px; }
+.rx-file:focus-within { outline: 3px solid #759c47; outline-offset: 4px; }
+.rx-file.selected { overflow-wrap: anywhere; }
+.drawer-quantity button:disabled { opacity: .4; cursor: not-allowed; }
+.cart-drawer, .favorites-drawer { overscroll-behavior: contain; }
+html[data-theme="dark"] .hero h1 em { color: #b5ce9b; }
+html[data-theme="dark"] .shopping-faq h2,
+html[data-theme="dark"] .shopping-faq a,
+html[data-theme="dark"] .faq-items summary,
+html[data-theme="dark"] .carousel-playback { color: #d5e8ca; }
+html[data-theme="dark"] .shopping-faq p,
+html[data-theme="dark"] .catalog-active-filters,
+html[data-theme="dark"] .objective-grid button small { color: #b4c3b9; }
+html[data-theme="dark"] .catalog-active-filters button,
+html[data-theme="dark"] .catalog-retry { background: #1b2d23; border-color: #415448; color: #d5e8ca; }
+html[data-theme="dark"] .faq-items,
+html[data-theme="dark"] .faq-items details { border-color: #35493d; }
+@media (max-width: 760px) {
+  .shopping-faq { grid-template-columns: 1fr; gap: 24px; margin-block: 50px; }
+}
+@media (max-width: 600px) {
+  .shopping-faq { width: calc(100% - 32px); }
+  .catalog-active-filters { align-items: start; font-size: 12px; }
+  .catalog-sort { width: 100%; }
+  .catalog-sort select { width: 100%; min-height: 48px; }
+  body .products .pharmacy-card > a h3 { font-size: 15px !important; line-height: 1.4 !important; min-height: 3em !important; }
+  body .products .pharmacy-card > p { font-size: 10px !important; }
+  body .products .pharmacy-card > small,
+  body .products .pharmacy-card > .product-brand-line { font-size: 11px !important; line-height: 1.5 !important; }
+  body .products .pharmacy-card > .buy,
+  .natural-buy.compact .buy { min-height: 48px !important; font-size: 10px !important; line-height: 1.4 !important; }
+  .campaign-controls > button, .campaign-dots > button { min-width: 44px; min-height: 44px; }
+  .rx-form input, .rx-form textarea, .newsletter input[type="email"] { font-size: 16px; }
+}
+@media (max-width: 380px) {
+  .products { grid-template-columns: 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .scroll-reveal { opacity: 1 !important; transform: none !important; }
+}

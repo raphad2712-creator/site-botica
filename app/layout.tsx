@@ -32,10 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <head><script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('botica-theme')||'auto';document.documentElement.dataset.theme=t==='dark'?'dark':'light';document.documentElement.dataset.themePreference=t}catch(e){}})()` }} /></head>
       <body>
+        <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
         <CartProvider>
           <FavoritesProvider>
             <Header />
-            <main>{children}</main>
+            <main id="conteudo" tabIndex={-1}>{children}</main>
             <section className="footer-benefits" aria-label="Vantagens da Botica">
               <article><span aria-hidden="true"><Icon name="shield" /></span><div><strong>Compra segura</strong><small>Ambiente protegido e confiável</small></div></article>
               <article><span aria-hidden="true"><Icon name="leaf" /></span><div><strong>Qualidade farmacêutica</strong><small>Cuidado em cada fórmula</small></div></article>

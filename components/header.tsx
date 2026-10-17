@@ -35,6 +35,7 @@ export function Header() {
           onClick={() => setMenu(!menu)}
           aria-label={menu ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menu}
+          aria-controls="store-navigation"
         >
           {menu ? (
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -46,7 +47,7 @@ export function Header() {
           <Image className="logo-light-image" src="/botica-logo-transparente.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
           <Image className="logo-dark-image" src="/botica-logo-dark-transparent.png" alt="Botica Bioenergética — Produtos Naturais" width={300} height={89} priority />
         </Link>
-        <form className="search" action="/#produtos"><span><Icon name="search" /></span><input name="busca" placeholder="O que você está buscando?" /></form>
+        <form className="search" action="/#produtos" role="search"><input name="busca" type="search" maxLength={120} placeholder="O que você está buscando?" aria-label="Buscar no catálogo" /><button type="submit" aria-label="Buscar produtos"><Icon name="search" /></button></form>
         <div className="head-actions">
           <button className="favorites-header" onClick={abrirFavoritos} aria-label={`Abrir ${favoritos.length} produtos favoritos`}>
             <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
@@ -62,7 +63,7 @@ export function Header() {
           </button>
         </div>
       </header>
-      <nav className={`nav ${menu ? "open" : ""}`}>
+      <nav id="store-navigation" aria-label="Navegação principal" className={`nav ${menu ? "open" : ""}`} onKeyDown={(event) => { if (event.key === "Escape") { setMenu(false); document.querySelector<HTMLButtonElement>(".hamb")?.focus(); } }}>
         <a href="/#produtos" onClick={() => setMenu(false)}>Todos os produtos</a><a href="/?categoria=Emagrecimento#produtos" onClick={() => setMenu(false)}>Emagrecimento</a><a href="/?categoria=Academia#produtos" onClick={() => setMenu(false)}>Desempenho físico</a><a href="/?categoria=Vitaminas#produtos" onClick={() => setMenu(false)}>Saúde</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Queda capilar</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Beleza</a><a href="/#receita" onClick={() => setMenu(false)}>Envie sua receita</a><ThemeSelector />
       </nav>
       <nav className="mobile-bottom-nav" aria-label="Navegação rápida">

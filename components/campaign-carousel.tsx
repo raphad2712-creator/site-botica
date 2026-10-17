@@ -106,6 +106,7 @@ export function CampaignCarousel() {
         <div className="campaign-dots">{banners.map((banner, index) => <button type="button" key={banner.slug} onClick={() => { setPaused(true); setActive(index); }} aria-label={`Ver banner ${banner.nome}`} aria-controls="campaign-slides" aria-current={index === active ? "true" : undefined} />)}</div>
         <button type="button" onClick={() => move(1)} aria-label="Próximo banner" aria-controls="campaign-slides"><Icon name="arrow-right" /></button>
       </div>
+      {!reducedMotion && <button type="button" className="carousel-playback" aria-controls="campaign-slides" onClick={() => setPaused(current => !current)}><Icon name={paused ? "play" : "pause"} />{paused ? "Reproduzir destaques" : "Pausar destaques"}</button>}
       <p className="carousel-status" aria-live={playing ? "off" : "polite"} aria-atomic="true">{active + 1} / {banners.length} · {banners[active].nome}</p>
     </section>
   );

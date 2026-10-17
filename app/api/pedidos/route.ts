@@ -5,7 +5,7 @@ import { enviarEmail, escaparHtml } from "@/lib/email";
 import { consultarFrete } from "@/lib/frete";
 import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
-type ItemRecebido = { produto_id: number; quantidade: number };
+import { validarItens, validarCliente, type ItemRecebido } from "@/lib/checkout-validation";
 type ClienteRecebido = { nome?: string; email?: string; cpf?: string; telefone?: string; cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
 
 async function avisarLojaNovoPedido({ pedidoId, cliente, itens, subtotal, frete, total, pagamento }: { pedidoId: number; cliente: ClienteRecebido; itens: Array<{ nome: string; quantidade: number; preco_unitario: number }>; subtotal: number; frete: number; total: number; pagamento: string }) {
@@ -46,8 +46,16 @@ export async function POST(request: Request) {
   const accessToken = process.env.PAGBANK_TOKEN;
   const modoPedidoTeste = process.env.MODO_PEDIDO_TESTE === "true" && !!process.env.ADMIN_EMAIL && auth.user.email?.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
   if (!accessToken && !modoPedidoTeste) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
-  const body = (await request.json()) as { itens?: ItemRecebido[]; cliente?: ClienteRecebido; metodo_pagamento?: "pix" | "cartao" };
-  if (!body.itens?.length) return NextResponse.json({ erro: "Carrinho vazio." }, { status: 400 });
+  let body: { itens: ItemRecebido[]; cliente: ReturnType<typeof validarCliente>; metodo_pagamento: unknown };
+  try {
+    if (Number(request.headers.get("content-length")) > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
+    const text = await request.text();
+    if (new TextEncoder().encode(text).length > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
+    const recebido = JSON.parse(text);
+    body = { itens: validarItens(recebido?.itens), cliente: validarCliente(recebido?.cliente), metodo_pagamento: recebido?.metodo_pagamento };
+  } catch (erro) {
+    return NextResponse.json({ erro: erro instanceof SyntaxError ? "Pedido inválido." : erro instanceof Error ? erro.message : "Confira os dados do pedido." }, { status: 400 });
+  }
   if (body.metodo_pagamento !== "pix" && body.metodo_pagamento !== "cartao") return NextResponse.json({ erro: "Escolha Pix ou cartão de crédito." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
   let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
@@ -66,7 +74,7 @@ export async function POST(request: Request) {
     let subtotal = 0;
     const itensPedido = body.itens.map((item) => {
       const produto = produtos.find((p) => Number(p.id) === Number(item.produto_id))!;
-      const quantidade = Math.max(1, Math.floor(Number(item.quantidade)));
+      const quantidade = item.quantidade;
       if (!Number.isFinite(quantidade) || quantidade > Number(produto.estoque)) throw new Error(`ESTOQUE:${produto.nome}`);
       subtotal += Number(produto.preco) * quantidade;
       return { produto_id: produto.id, nome: produto.nome, quantidade, preco_unitario: Number(produto.preco) };

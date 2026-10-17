@@ -24,6 +24,11 @@ export async function limiteExcedido(request: Request, escopo: string, limite: n
   } catch { /* O limitador local mantém proteção antes da migração do banco. */ }
 
   const agora = Date.now();
+  // Bound the serverless fallback even under requests from many different IPs.
+  if (memoria.size >= 5000) {
+    for (const [chave, valor] of memoria) if (valor.expiraEm <= agora) memoria.delete(chave);
+    if (memoria.size >= 5000 && !memoria.has(identificador)) return true;
+  }
   const atual = memoria.get(identificador);
   if (!atual || atual.expiraEm <= agora) {
     memoria.set(identificador, { quantidade: 1, expiraEm: agora + janelaSegundos * 1000 });

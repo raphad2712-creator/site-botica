@@ -1,5 +1,7 @@
 "use client";
 
+import { lerProdutosSalvos } from "@/lib/stored-products";
+import { useDrawer } from "./use-drawer";
 import { Icon } from "@/components/ui-icon";
 
 
@@ -29,40 +31,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [aberto, setAberto] = useState(false);
   const [aviso, setAviso] = useState("");
 
+  const drawer = useDrawer(aberto, () => setAberto(false));
+
   useEffect(() => {
     try {
       const salvo = localStorage.getItem("botica-carrinho");
-      if (salvo) setItens(JSON.parse(salvo));
-    } finally { setPronto(true); }
+      setItens(lerProdutosSalvos(salvo, true));
+    } catch { /* A compra também funciona sem armazenamento local. */ } finally { setPronto(true); }
   }, []);
-  useEffect(() => { if (pronto) localStorage.setItem("botica-carrinho", JSON.stringify(itens)); }, [itens, pronto]);
+  useEffect(() => { if (pronto) { try { localStorage.setItem("botica-carrinho", JSON.stringify(itens)); } catch { /* Carrinho mantido em memória. */ } } }, [itens, pronto]);
   useEffect(() => {
     const supabase = criarClienteSupabase();
     const { data } = supabase.auth.onAuthStateChange((evento) => {
       if (evento === "SIGNED_OUT") {
         setItens([]);
         setAberto(false);
-        localStorage.removeItem("botica-carrinho");
+        try { localStorage.removeItem("botica-carrinho"); } catch { /* noop */ }
       }
     });
     return () => data.subscription.unsubscribe();
   }, []);
-  useEffect(() => { document.body.style.overflow = aberto ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [aberto]);
+
 
   function adicionar(produto: Produto, quantidade = 1) {
+    if (!Number.isSafeInteger(quantidade) || quantidade < 1 || produto.estoque < 1) return;
+    const limite = Math.min(100, produto.estoque);
     setItens((atuais) => {
       const existente = atuais.find((item) => item.id === produto.id);
       return existente
-        ? atuais.map((item) => item.id === produto.id ? { ...item, quantidade: item.quantidade + quantidade } : item)
-        : [...atuais, { ...produto, quantidade }];
+        ? atuais.map((item) => item.id === produto.id ? { ...produto, quantidade: Math.min(limite, item.quantidade + quantidade) } : item)
+        : [...atuais, { ...produto, quantidade: Math.min(limite, quantidade) }];
     });
     setAviso(`${produto.nome} foi adicionado.`);
     window.setTimeout(() => setAviso(""), 2300);
     setAberto(true);
   }
   function alterarQuantidade(id: number, quantidade: number) {
+    if (!Number.isSafeInteger(quantidade)) return;
     if (quantidade < 1) return remover(id);
-    setItens((atuais) => atuais.map((item) => item.id === id ? { ...item, quantidade } : item));
+    setItens((atuais) => atuais.map((item) => item.id === id ? { ...item, quantidade: Math.min(100, item.estoque, quantidade) } : item));
   }
   function remover(id: number) { setItens((atuais) => atuais.filter((item) => item.id !== id)); }
 
@@ -74,8 +81,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     <CartContext.Provider value={value}>
       {children}
       <div className={`cart-drawer-backdrop ${aberto ? "open" : ""}`} onClick={() => setAberto(false)} />
-      <aside className={`cart-drawer ${aberto ? "open" : ""}`} aria-hidden={!aberto}>
-        <div className="drawer-head"><div><h2>Carrinho</h2><small>{totalItens} {totalItens === 1 ? "item" : "itens"} no carrinho</small></div><button onClick={() => setAberto(false)}>×</button></div>
+      <aside ref={drawer} className={`cart-drawer ${aberto ? "open" : ""}`} role="dialog" aria-modal={aberto || undefined} aria-labelledby="cart-title" aria-hidden={!aberto} inert={!aberto} tabIndex={-1}>
+        <div className="drawer-head"><div><h2 id="cart-title">Carrinho</h2><small>{totalItens} {totalItens === 1 ? "item" : "itens"} no carrinho</small></div><button onClick={() => setAberto(false)} aria-label="Fechar carrinho">×</button></div>
         {!!itens.length && <div className={`free-shipping ${total >= 210 ? "complete" : ""}`}><span>{total >= 210 ? "Você ganhou frete grátis" : `Faltam ${moeda(210 - total)} para o frete grátis`}</span><div><i style={{ "--progress": `${Math.min(100, total / 2.1)}%` } as React.CSSProperties} /><b>{Math.min(100, Math.round(total / 2.1))}%</b></div></div>}
         <div className="drawer-items">
           {!itens.length && <div className="drawer-empty"><b>Sua sacola está vazia</b><p>Adicione produtos para continuar.</p><a href="/#produtos" onClick={() => setAberto(false)}>VER PRODUTOS</a></div>}
@@ -85,7 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 <ProductImage nome={item.nome} imagemAtual={item.imagem_url} />
               </Link>
               <div className="drawer-item-copy"><Link href={`/produto/${item.id}`} onClick={() => setAberto(false)}><b>{item.nome}</b></Link><small>{item.categoria}</small><strong>{moeda(Number(item.preco))}</strong><button onClick={() => remover(item.id)}>Remover</button></div>
-              <div className="drawer-quantity"><button onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>
+              <div className="drawer-quantity"><button aria-label={`Diminuir quantidade de ${item.nome}`} onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button aria-label={`Aumentar quantidade de ${item.nome}`} disabled={item.quantidade >= Math.min(100, item.estoque)} onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>
             </article>
           ))}
         </div>
