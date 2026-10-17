@@ -10,6 +10,7 @@ import "./shop-polish.css";
 import "./catalog-refresh.css";
 import "./natural-catalog.css";
 import "./responsive-refresh.css";
+import "./account.css";
 import { CartProvider } from "@/components/cart-provider";
 import { Header } from "@/components/header";
 import { FavoritesProvider } from "@/components/favorites-provider";

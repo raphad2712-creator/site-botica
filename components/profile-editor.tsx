@@ -1,6 +1,7 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
+import { ProfilePhoto } from "./profile-photo";
 import { Icon } from "./ui-icon";
 
 export type PerfilCliente = { nome?: string | null; email?: string | null; foto_url?: string | null; cpf?: string | null; telefone?: string | null; nascimento?: string | null; genero?: string | null; cep?: string | null; rua?: string | null; numero?: string | null; complemento?: string | null; bairro?: string | null; cidade?: string | null; estado?: string | null };
@@ -8,37 +9,7 @@ export type PerfilCliente = { nome?: string | null; email?: string | null; foto_
 export function ProfileEditor({ perfil, inicial }: { perfil: PerfilCliente; inicial: string }) {
   const [editando, setEditando] = useState(false);
   const [salvando, setSalvando] = useState(false);
-  const [enviandoFoto, setEnviandoFoto] = useState(false);
   const [mensagem, setMensagem] = useState("");
-  const [foto, setFoto] = useState(perfil.foto_url ?? "");
-  const fotoInput = useRef<HTMLInputElement>(null);
-
-  async function enviarFoto(event: ChangeEvent<HTMLInputElement>) {
-    const arquivo = event.target.files?.[0];
-    if (!arquivo) return;
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type)) { setMensagem("Escolha uma imagem JPG, PNG ou WebP."); return; }
-    if (arquivo.size > 3 * 1024 * 1024) { setMensagem("A foto deve ter no máximo 3 MB."); return; }
-    const previa = URL.createObjectURL(arquivo); setFoto(previa); setEnviandoFoto(true); setMensagem("");
-    const dados = new FormData(); dados.append("foto", arquivo);
-    try {
-      const resposta = await fetch("/api/perfil/foto", { method: "POST", body: dados });
-      const resultado = await resposta.json();
-      if (!resposta.ok) throw new Error(resultado.erro || "Não foi possível enviar a foto.");
-      setFoto(resultado.foto_url); window.dispatchEvent(new CustomEvent("botica-profile-photo", { detail: resultado.foto_url })); setMensagem("Foto de perfil atualizada.");
-    } catch (erro) { setFoto(perfil.foto_url ?? ""); setMensagem(erro instanceof Error ? erro.message : "Não foi possível enviar a foto."); }
-    finally { URL.revokeObjectURL(previa); setEnviandoFoto(false); event.target.value = ""; }
-  }
-
-  async function removerFoto() {
-    if (enviandoFoto) return; setEnviandoFoto(true); setMensagem("");
-    try {
-      const resposta = await fetch("/api/perfil/foto", { method: "DELETE" }); const resultado = await resposta.json();
-      if (!resposta.ok) throw new Error(resultado.erro || "Não foi possível remover a foto.");
-      setFoto(""); window.dispatchEvent(new CustomEvent("botica-profile-photo", { detail: "" })); setMensagem("Foto removida.");
-    } catch (erro) { setMensagem(erro instanceof Error ? erro.message : "Não foi possível remover a foto."); }
-    finally { setEnviandoFoto(false); }
-  }
-
   async function salvar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setSalvando(true); setMensagem("");
     const dados = Object.fromEntries(new FormData(event.currentTarget));
@@ -52,11 +23,7 @@ export function ProfileEditor({ perfil, inicial }: { perfil: PerfilCliente; inic
   }
 
   return <section className="account-profile" id="dados">
-    <div className="profile-photo-area">
-      <button type="button" className="account-profile-avatar" onClick={() => fotoInput.current?.click()} disabled={enviandoFoto} aria-label={foto ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>{foto ? <img src={foto} alt="Foto de perfil" /> : <span>{inicial}</span>}<i>{enviandoFoto ? <span className="profile-uploading" /> : <Icon name="upload" />}</i></button>
-      <div><button type="button" onClick={() => fotoInput.current?.click()} disabled={enviandoFoto}>{enviandoFoto ? "ENVIANDO..." : foto ? "TROCAR FOTO" : "ADICIONAR FOTO"}</button>{foto && <button type="button" className="remove-profile-photo" onClick={removerFoto} disabled={enviandoFoto}>REMOVER</button>}<small>JPG, PNG ou WebP • máximo 3 MB</small></div>
-      <input ref={fotoInput} className="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={enviarFoto} />
-    </div>
+    <ProfilePhoto fotoUrl={perfil.foto_url} inicial={inicial} />
     <small>SEUS DADOS</small><h2>Meus dados</h2>
     {!editando ? <>
       <dl>

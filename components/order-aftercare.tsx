@@ -47,8 +47,8 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
       </div>
       <div className="order-card-actions">
-        <button className="order-details-toggle" type="button" onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "OCULTAR DETALHES" : "VER PRODUTOS E ACOMPANHAR ENTREGA"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
-        {podeSolicitar ? <button className="aftercare-open" type="button" aria-expanded={aberto === pedido.id} onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "FECHAR SOLICITAÇÃO" : "TROCA, DEVOLUÇÃO OU REEMBOLSO"}</button> : <p className="aftercare-unavailable">Pós-venda disponível após o pagamento.</p>}
+        <button className="order-details-toggle" type="button" aria-expanded={detalhesAbertos === pedido.id} aria-controls={`order-details-${pedido.id}`} onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "Ocultar detalhes" : "Ver detalhes e entrega"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
+        {podeSolicitar ? <button className="aftercare-open" type="button" aria-expanded={aberto === pedido.id} onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "Fechar solicitação" : "Preciso de ajuda"}</button> : <p className="aftercare-unavailable">Pós-venda disponível após o pagamento.</p>}
       </div>
       {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
         <div className="aftercare-form-heading"><span>ATENDIMENTO DESTE PEDIDO</span><strong>{codigoPedido}</strong><p>Preencha os dados abaixo para nossa equipe analisar sua solicitação.</p></div>
@@ -61,7 +61,7 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
         {mensagem && <strong className="aftercare-message">{mensagem}</strong>}
         <Link href="/politica-de-trocas-e-devolucoes">Consultar política de trocas, devoluções e reembolso</Link>
       </form>}
-      {detalhesAbertos === pedido.id && <div className="order-expanded-content">
+      {detalhesAbertos === pedido.id && <div className="order-expanded-content" id={`order-details-${pedido.id}`}>
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image"><ProductImage nome={produto?.nome || "Produto Botica"} imagemAtual={produto?.imagem_url} /></div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>
       <div className="tracking-box">
         <div className="tracking-head"><div><small>ACOMPANHAMENTO DA ENTREGA</small><h3>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</h3></div>{pedido.codigo_rastreio && <button type="button" onClick={() => navigator.clipboard.writeText(pedido.codigo_rastreio!)}><Icon name="document" />Copiar código</button>}</div>

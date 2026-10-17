@@ -1,0 +1,141 @@
+/* Customer area: scoped to avoid changing the storefront and administration. */
+.account-dashboard {
+  --account-text: #1a4938;
+  --account-muted: #64776d;
+  --account-surface: #fff;
+  --account-soft: #f1f6ef;
+  --account-line: #dfe8e1;
+  width: min(1240px, calc(100% - 64px));
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  padding: 38px 0 76px !important;
+  color: var(--account-text);
+}
+.account-dashboard .account-dashboard-title { align-items: center; gap: 24px; margin-bottom: 28px; }
+.account-dashboard .account-breadcrumb { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; color: var(--account-muted); font-size: 12px; }
+.account-dashboard .account-breadcrumb span:last-child { color: var(--account-text); }
+.account-dashboard .account-dashboard-title small { display: block; font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #698b4c; }
+.account-dashboard .account-dashboard-title h1 { font: 400 clamp(38px, 4vw, 52px)/1.1 Georgia, serif !important; letter-spacing: -.025em; margin: 10px 0 12px !important; }
+.account-dashboard .account-dashboard-title p { max-width: 620px; margin: 0; color: var(--account-muted); font-size: 14px; line-height: 1.65; }
+.account-dashboard .account-dashboard-title > button { min-height: 44px; padding: 10px 24px; border: 1px solid var(--account-line); background: var(--account-surface); color: var(--account-text); font-size: 12px; }
+.account-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0 0 30px; }
+.account-overview article { display: flex; align-items: center; gap: 18px; padding: 22px 26px; border: 1px solid var(--account-line); border-radius: 16px; background: var(--account-surface); }
+.account-overview article > span { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 48px; border-radius: 14px; background: var(--account-soft); color: #628d4a; }
+.account-overview strong { display: block; font-size: 27px; font-weight: 600; line-height: 1.2; letter-spacing: -.04em; }
+.account-overview small { display: block; margin-top: 4px; font-size: 12px; color: var(--account-muted); }
+.account-dashboard .account-dashboard-grid { grid-template-columns: 305px minmax(0, 1fr); gap: 26px; }
+.account-dashboard .account-side { gap: 13px; top: 150px; min-width: 0; }
+.account-dashboard .account-side-welcome { display: block; padding: 24px 20px; border: 1px solid var(--account-line); border-radius: 18px; background: var(--account-surface); box-shadow: 0 8px 32px #143d2b06; }
+.account-dashboard .account-side > p { margin: 13px 8px 0; font: 600 11px/1.5 Arial, sans-serif; text-transform: uppercase; letter-spacing: .12em; color: var(--account-muted); }
+.account-dashboard .account-side nav { gap: 7px; }
+.account-dashboard .account-side nav :is(button, a) { min-height: 55px; padding: 10px 13px; border: 1px solid transparent; background: transparent; border-radius: 12px; color: var(--account-muted); cursor: pointer; }
+.account-dashboard .account-side nav :is(button, a):hover { background: var(--account-surface); border-color: var(--account-line); transform: none; }
+.account-dashboard .account-side nav button.active { background: #e9f1e4; border-color: #d3e2cb; color: var(--account-text); box-shadow: none; }
+.account-dashboard .account-side nav span { font-size: 13px; font-weight: 500; }
+.account-dashboard .account-side nav i { width: 34px; height: 34px; background: transparent; }
+.account-dashboard .account-side nav button.active i { background: var(--account-surface); }
+.account-dashboard .account-side nav button em { font-size: 11px; background: var(--account-surface); color: var(--account-text); }
+.account-dashboard .account-main { min-width: 0; scroll-margin-top: 150px; }
+.account-dashboard .account-history, .account-dashboard .account-profile { padding: 28px !important; border-radius: 20px; border: 1px solid var(--account-line); background: var(--account-surface); box-shadow: 0 8px 32px #143d2b05; }
+.account-dashboard .account-orders-head { display: flex !important; align-items: center !important; justify-content: space-between; gap: 18px !important; margin-bottom: 25px; }
+.account-dashboard .account-orders-head small, .account-dashboard .account-profile > small { font-size: 10px; letter-spacing: .12em; color: #6c8e50; }
+.account-dashboard .account-orders-head h2, .account-dashboard .account-profile h2 { font: 400 31px/1.15 Georgia, serif !important; color: var(--account-text); margin: 9px 0 !important; }
+.account-dashboard .account-orders-head p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--account-muted); }
+.account-dashboard .account-orders-head > span { background: var(--account-soft); color: var(--account-text); padding: 8px 12px !important; font-size: 11px !important; white-space: nowrap; }
+.account-dashboard .account-orders.order-list-modern { gap: 18px !important; }
+.account-dashboard .account-orders.order-list-modern > .order-card { border: 1px solid var(--account-line); border-radius: 14px !important; box-shadow: none !important; }
+.account-dashboard .order-card-header { background: var(--account-soft) !important; color: var(--account-text) !important; padding: 19px 22px !important; border-bottom: 1px solid var(--account-line) !important; }
+.account-dashboard .order-card-header small { font-size: 10px !important; color: var(--account-muted) !important; letter-spacing: .09em; }
+.account-dashboard .order-card-header h3 { color: var(--account-text) !important; font: 600 21px/1.3 Arial, sans-serif !important; letter-spacing: -.02em; }
+.account-dashboard .order-card-header > span { font-size: 10px !important; font-weight: 600; text-transform: none; background: #e2ecda; color: #416337 !important; padding: 8px 12px; }
+.account-dashboard .order-summary-row { padding: 22px !important; gap: 20px !important; }
+.account-dashboard .order-summary-row small { font-size: 10px !important; letter-spacing: .08em; color: var(--account-muted) !important; }
+.account-dashboard .order-summary-row :is(span, b) { font-size: 13px !important; }
+.account-dashboard .order-summary-row strong { font-size: 18px !important; }
+.account-dashboard .order-card-actions { display: flex; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--account-line); background: var(--account-surface); }
+.account-dashboard .order-card-actions > button { width: auto; min-height: 44px; margin: 0; padding: 10px 14px; border: 1px solid var(--account-line); border-radius: 8px; font-size: 11px !important; line-height: 1.45; font-weight: 600; text-transform: none; }
+.account-dashboard .order-card-actions > .order-details-toggle { flex: 1; background: var(--account-text); color: var(--account-surface); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.account-dashboard .order-details-toggle > b { background: #ffffff1f; color: inherit; flex-shrink: 0; }
+.account-dashboard .order-card-actions > .aftercare-open { flex: 1; background: var(--account-surface); color: var(--account-text); }
+.account-dashboard .aftercare-unavailable { font-size: 11px; background: transparent; border: 0; padding: 8px; }
+.account-dashboard .profile-photo-control { margin: 0 0 26px; padding: 0 0 26px; border-bottom: 1px solid var(--account-line); }
+.account-dashboard .profile-photo-content { display: flex; align-items: center; gap: 20px; min-width: 0; }
+.account-dashboard .profile-avatar-button { position: relative; display: grid; place-items: center; padding: 0; width: 92px; height: 92px; flex: 0 0 92px; border: 4px solid var(--account-surface); border-radius: 50%; background: #e5eedf; box-shadow: 0 0 0 1px var(--account-line); color: #456a36; font: 400 35px Georgia, serif; cursor: pointer; }
+.account-dashboard .profile-avatar-button img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.account-dashboard .profile-avatar-button > i { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; bottom: -2px; right: -2px; border: 2px solid var(--account-surface); border-radius: 50%; background: #1a4938; color: white; }
+.account-dashboard .profile-avatar-button > i .ui-icon { width: 13px; height: 13px; }
+.account-dashboard .profile-photo-copy { min-width: 0; }
+.account-dashboard .profile-photo-copy > b { display: block; max-width: none; white-space: normal; overflow-wrap: anywhere; color: var(--account-text); font-size: 15px; font-weight: 600; line-height: 1.5; }
+.account-dashboard .profile-photo-copy > span { display: block; margin-top: 5px; color: var(--account-muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.account-dashboard .profile-photo-copy > small { display: block; color: var(--account-muted); font-size: 9px; letter-spacing: .06em; margin: 0 0 7px; }
+.account-dashboard .profile-photo-buttons { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; }
+.account-dashboard .profile-photo-buttons button { padding: 5px 0; min-height: 32px; border: 0; background: transparent; color: var(--account-text); font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.account-dashboard .profile-photo-buttons .profile-photo-remove { color: var(--account-muted); font-weight: 400; }
+.account-dashboard .profile-photo-copy > .profile-photo-hint { font-size: 10px; letter-spacing: 0; margin: 6px 0 0; }
+.account-dashboard .profile-photo-control.compact { border: 0; padding: 0; margin: 0; }
+.account-dashboard .profile-photo-control.compact .profile-photo-content { display: flex; flex-direction: column; align-items: start; gap: 16px; }
+.account-dashboard .profile-photo-control.compact .profile-avatar-button { width: 76px; height: 76px; flex-basis: 76px; font-size: 30px; }
+.account-dashboard .profile-photo-message { font-size: 12px; line-height: 1.6; margin: 12px 0 0; color: #416c33; }
+.account-dashboard .profile-photo-message.error { color: #ab3939; }
+.account-dashboard .profile-avatar-button:disabled, .account-dashboard .profile-photo-buttons button:disabled { opacity: .6; cursor: wait; }
+.account-dashboard .account-profile dl > div { padding: 16px 0; grid-template-columns: 130px minmax(0, 1fr); gap: 20px; border-color: var(--account-line); }
+.account-dashboard .account-profile dt { color: var(--account-muted); font-size: 12px; }
+.account-dashboard .account-profile dd { color: var(--account-text); font-size: 14px; font-weight: 500; }
+.account-dashboard .profile-edit-button { min-height: 46px; margin-top: 24px; font-size: 12px; }
+.account-dashboard .profile-form label { font-size: 12px; }
+.account-dashboard .profile-form :is(input, select) { font-size: 15px; min-height: 46px; border-radius: 8px; }
+html[data-theme="dark"] .account-dashboard { --account-text: #dfebe2; --account-muted: #acbeb2; --account-surface: #17261d; --account-soft: #213328; --account-line: #354a3c; }
+html[data-theme="dark"] .account-dashboard .account-side nav button.active { background: #294632 !important; border-color: #46664c !important; }
+html[data-theme="dark"] .account-dashboard .order-card-header > span { background: #344c35; color: #c6deb8 !important; }
+html[data-theme="dark"] .account-dashboard .order-card-actions > .order-details-toggle { background: #b7d3a5; color: #17261d; }
+html[data-theme="dark"] .account-dashboard .profile-avatar-button { background: #324e35; color: #d0e3c3; }
+html[data-theme="dark"] .account-dashboard .profile-photo-message { color: #b7d3a5; }
+html[data-theme="dark"] .account-dashboard .profile-photo-message.error { color: #ffafaf; }
+@media (max-width: 1000px) {
+  .account-dashboard { width: calc(100% - 40px); }
+  .account-dashboard .account-dashboard-grid { grid-template-columns: 255px minmax(0, 1fr); gap: 20px; }
+  .account-dashboard .account-history, .account-dashboard .account-profile { padding: 22px !important; }
+  .account-dashboard .order-card-actions { flex-direction: column; }
+}
+@media (max-width: 760px) {
+  .account-dashboard { width: calc(100% - 28px); padding: 24px 0 45px !important; }
+  .account-dashboard .account-dashboard-title { align-items: start; gap: 10px; }
+  .account-dashboard .account-breadcrumb { margin-bottom: 20px; }
+  .account-dashboard .account-dashboard-title h1 { font-size: 36px !important; }
+  .account-dashboard .account-dashboard-title p { font-size: 13px; }
+  .account-dashboard .account-dashboard-title > button { padding-inline: 14px; margin-top: 36px; }
+  .account-overview { gap: 8px; margin-bottom: 22px; }
+  .account-overview article { display: block; padding: 15px 12px; border-radius: 12px; }
+  .account-overview article > span { width: 32px; height: 32px; margin-bottom: 12px; border-radius: 9px; }
+  .account-overview strong { font-size: 23px; }
+  .account-overview small { font-size: 11px; line-height: 1.5; }
+  .account-dashboard .account-dashboard-grid { display: block; }
+  .account-dashboard .account-side { position: static; display: block; }
+  .account-dashboard .account-side-welcome { padding: 20px; }
+  .account-dashboard .profile-photo-control.compact .profile-photo-content { flex-direction: row; align-items: center; gap: 18px; }
+  .account-dashboard .profile-photo-control.compact .profile-avatar-button { width: 70px; height: 70px; flex-basis: 70px; }
+  .account-dashboard .account-side > p { margin: 24px 0 12px; }
+  .account-dashboard .account-side nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; overflow: visible; gap: 8px; }
+  .account-dashboard .account-side nav :is(button, a) { width: 100%; min-width: 0; min-height: 52px; padding: 10px; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 7px; background: var(--account-surface); border-color: var(--account-line); }
+  .account-dashboard .account-side nav i { width: 24px; height: 28px; }
+  .account-dashboard .account-side nav b { display: none; }
+  .account-dashboard .account-side nav span { font-size: 11px; line-height: 1.5; }
+  .account-dashboard .account-main { margin-top: 24px !important; scroll-margin-top: 140px; }
+  .account-dashboard .account-history, .account-dashboard .account-profile { padding: 20px 15px !important; border-radius: 16px; }
+  .account-dashboard .account-orders-head { align-items: start !important; gap: 10px !important; }
+  .account-dashboard .account-orders-head h2 { font-size: 28px !important; }
+  .account-dashboard .account-orders-head p { font-size: 12px; }
+  .account-dashboard .account-orders-head > span { font-size: 10px !important; padding: 7px 9px !important; }
+  .account-dashboard .order-card-header { padding: 16px !important; }
+  .account-dashboard .order-summary-row { padding: 18px 16px !important; gap: 18px !important; }
+  .account-dashboard .order-card-actions { padding: 12px; }
+  .account-dashboard .account-profile dl > div { grid-template-columns: 1fr; gap: 6px; }
+  .account-dashboard .profile-photo-content { align-items: start; gap: 15px; }
+  .account-dashboard .profile-avatar-button { width: 76px; height: 76px; flex-basis: 76px; }
+  .account-dashboard .profile-form :is(input, select) { font-size: 16px; }
+}
+@media (max-width: 360px) {
+  .account-dashboard .profile-photo-control.compact .profile-photo-content { flex-direction: column; align-items: start; }
+  .account-dashboard .account-side nav { grid-template-columns: 1fr; }
+}
+.account-dashboard .profile-photo-content input[hidden] { display: none !important; }
