@@ -2,20 +2,31 @@ import Link from "next/link";
 import { formatPrice, type ConsultationProduct } from "@/lib/consultation-products";
 import { NaturalProductBuy } from "./natural-product-buy";
 import { NaturalProductImage } from "./natural-product-image";
+import { CatalogCardDetails } from "./catalog-card-details";
 
 export function ConsultationProductCard({ produto }: { produto: ConsultationProduct }) {
   const href = `/produto/${produto.slug}`;
+  const destaque = produto.slug === "testo-plus-30caps";
   return (
-    <article className="card pharmacy-card consultation-card">
-      <Link href={href} className="photo" aria-label={`Ver ${produto.nome} ${produto.dose}`}>
-        <NaturalProductImage produto={produto} sizes="(max-width: 560px) 280px, (max-width: 1000px) 40vw, 300px" />
-      </Link>
-      <p>{produto.categoria}</p>
-      <Link href={href}><h3>{produto.nome} {produto.dose}</h3></Link>
-      <span className="product-brand-line">{produto.apresentacao} · Botica Bioenergética</span>
-      <strong>{formatPrice(produto.precoDemonstrativo)}</strong>
-      <small>Preço informado pela loja · disponibilidade a confirmar</small>
-      <NaturalProductBuy produto={produto} compact />
+    <article className={`card pharmacy-card consultation-card mockup-product-card${destaque ? " mockup-testo-card" : ""}`}>
+      <div className="mockup-product-visual">
+        <Link href={href} className="photo mockup-photo" aria-label={`Ver ${produto.nome} ${produto.dose}`}>
+          <NaturalProductImage produto={produto} sizes="(max-width: 600px) 45vw, (max-width: 1100px) 35vw, 330px" />
+        </Link>
+        <CatalogCardDetails nome={produto.nome} apresentacao={produto.apresentacao} />
+      </div>
+      <div className="mockup-product-copy">
+        <span className="mockup-category">{produto.categoria}</span>
+        <Link href={href} className="mockup-product-title"><h3>{produto.nome}{produto.dose ? ` ${produto.dose}` : ""}</h3></Link>
+        <span className="mockup-presentation">{produto.apresentacao}</span>
+        <div className="mockup-product-footer">
+          <div className="mockup-price-group">
+            <strong>{formatPrice(produto.precoDemonstrativo)}</strong>
+            <small>Disponibilidade a confirmar</small>
+          </div>
+          <NaturalProductBuy produto={produto} compact />
+        </div>
+      </div>
     </article>
   );
 }
