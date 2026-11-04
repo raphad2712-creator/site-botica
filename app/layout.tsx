@@ -11,6 +11,7 @@ import "./catalog-refresh.css";
 import "./natural-catalog.css";
 import "./responsive-refresh.css";
 import "./account.css";
+import "./mockup-product-cards.css";
 import { CartProvider } from "@/components/cart-provider";
 import { Header } from "@/components/header";
 import { FavoritesProvider } from "@/components/favorites-provider";
