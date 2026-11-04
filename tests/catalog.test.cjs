@@ -57,7 +57,7 @@ test('fórmula, concentração e apresentação diferentes mantêm a própria fo
     assert.equal(matchConsultationProduct(name), undefined, name);
     assert.equal(imagemCatalogo(name, '/foto-original.jpg'), '/foto-original.jpg', name);
   }
-  assert.equal(imagemCatalogo('PASSIFLORA 300 mg / 60 cápsulas - Botica Bioenergética'), '/produtos/novos/passiflora-300mg.svg');
+  assert.equal(imagemCatalogo('PASSIFLORA 300 mg / 60 cápsulas - Botica Bioenergética'), '/produtos/padrao/passiflora-300mg.webp');
 });
 
 test('cadastro explicitamente inativo não volta como item em consulta', () => {

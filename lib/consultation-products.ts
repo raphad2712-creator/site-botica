@@ -71,7 +71,7 @@ export function matchConsultationProduct(name: string) {
   return consultationProducts.find((product) => productKey(`${product.nome} ${product.dose}`) === key);
 }
 
-export const consultationImage = (product: ConsultationProduct) => `/produtos/novos/${product.slug}.svg`;
+export const consultationImage = (product: ConsultationProduct) => `/produtos/padrao/${product.slug}.webp`;
 export const consultationDarkImage = (product: ConsultationProduct) => consultationImage(product);
 export const consultationArtwork = (product: ConsultationProduct) => consultationImage(product);
 export const consultationDarkArtwork = (product: ConsultationProduct) => consultationImage(product);
