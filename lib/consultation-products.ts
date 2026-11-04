@@ -47,11 +47,10 @@ export function matchConsultationProduct(name: string) {
   return consultationProducts.find((product) => productKey(`${product.nome} ${product.dose}`) === key);
 }
 
-export const consultationImage = (product: ConsultationProduct) => product.slug in newProductSlugs ? `/produtos/novos/${product.slug}.svg` : `/produtos/linha-natural/${product.slug}.jpg`;
-const newProductSlugs: Record<string, true> = { "creatina-300g": true, "blend-magnesio-60caps": true, "floral-rescue-30ml": true, "testo-plus-30caps": true, "vit-b12-metilcobalamina": true, "vit-d-1000ui": true };
-export const consultationDarkImage = (product: ConsultationProduct) => product.slug in newProductSlugs ? `/produtos/novos/${product.slug}.svg` : `/produtos/linha-natural-dark/${product.slug}.jpg`;
-export const consultationArtwork = (product: ConsultationProduct) => product.slug in newProductSlugs ? `/produtos/novos/${product.slug}.svg` : `/produtos/artes/${product.slug}.jpg`;
-export const consultationDarkArtwork = (product: ConsultationProduct) => product.slug in newProductSlugs ? `/produtos/novos/${product.slug}.svg` : `/produtos/artes-dark/${product.slug}.jpg`;
+export const consultationImage = (product: ConsultationProduct) => `/produtos/novos/${product.slug}.svg`;
+export const consultationDarkImage = (product: ConsultationProduct) => consultationImage(product);
+export const consultationArtwork = (product: ConsultationProduct) => consultationImage(product);
+export const consultationDarkArtwork = (product: ConsultationProduct) => consultationImage(product);
 export const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function consultationHref(product: ConsultationProduct) {
