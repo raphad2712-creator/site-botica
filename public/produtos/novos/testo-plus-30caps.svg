@@ -1,17 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="TESTO+ FÓRMULA COMPOSTA 30 CÁPSULAS">
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#fafbf8"/><stop offset="1" stop-color="#ecf1eb"/></linearGradient><linearGradient id="jar" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#171719"/><stop offset=".48" stop-color="#303034"/><stop offset="1" stop-color="#111114"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="13" stdDeviation="15" flood-color="#14251c" flood-opacity=".22"/></filter></defs>
-<rect width="600" height="600" fill="#f1efea"/>
-<ellipse cx="300" cy="536" rx="157" ry="23" fill="#1a2820" opacity=".11"/>
-<g filter="url(#shadow)">
-<rect x="184" y="106" width="232" height="69" rx="18" fill="#151619" stroke="#c1c9c1" stroke-width="3"/>
-<path d="M192 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M201 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M210 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M219 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M228 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M237 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M246 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M255 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M264 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M273 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M282 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M291 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M300 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M309 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M318 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M327 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M336 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M345 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M354 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M363 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M372 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M381 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M390 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M399 115v48" stroke="#3d3f42" stroke-width="2"/><path d="M408 115v48" stroke="#3d3f42" stroke-width="2"/>
-<rect x="158" y="160" width="284" height="358" rx="46" fill="url(#jar)" stroke="#242528" stroke-width="3"/>
-<path d="M163 218h274v247H163z" fill="#101114"/>
-<rect x="173" y="229" width="254" height="8" rx="4" fill="#d9b36c"/>
-<text x="300" y="270" font-family="Arial,sans-serif" text-anchor="middle" fill="#e8d6a0" font-size="17" font-weight="700">BOTICA BIOENERGÉTICA</text>
-<path d="M291 280q-18-18-23-32q20 1 26 24q7-22 28-24q-5 21-25 32" fill="#d9b36c"/>
-<text x="300" y="356" text-anchor="middle" font-family="Arial,sans-serif" font-size="42" font-weight="900" fill="#d9b36c">TESTO+</text>
-<text x="300" y="389" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#ffffff">FÓRMULA COMPOSTA</text>
-<path d="M211 423h178" stroke="#d9b36c" stroke-width="2"/>
-<text x="300" y="454" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#ffffff">30 CÁPSULAS</text>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="TESTO+ FÓRMULA COMPOSTA Botica Bioenergética">
+ <defs>
+ <linearGradient id="glass" x1="0" x2="1"><stop stop-color="#171819"/><stop offset=".23" stop-color="#363637"/><stop offset=".72" stop-color="#252526"/><stop offset="1" stop-color="#101111"/></linearGradient>
+ <linearGradient id="amber" x1="0" x2="1"><stop stop-color="#512e18"/><stop offset=".45" stop-color="#b3753e"/><stop offset="1" stop-color="#4e2c1b"/></linearGradient>
+ <filter id="shade" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0e3622" flood-opacity=".17"/></filter>
+ <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7dbb52"/><stop offset="1" stop-color="#1e7339"/></linearGradient>
+ </defs>
+ <rect width="800" height="800" fill="#ffffff"/>
+ <ellipse cx="400" cy="650" rx="256" ry="28" fill="#21472e" opacity=".08"/>
+ <path d="M139 593Q64 509 112 416Q198 456 192 546Q185 570 139 593Z" fill="url(#leaf)" opacity=".85"/>
+ <path d="M137 584Q103 496 55 463Q61 553 137 584Z" fill="#3b8937" opacity=".92"/>
+ <path d="M670 592Q721 500 758 464Q758 569 670 592Z" fill="url(#leaf)" opacity=".85"/>
+ <path d="M676 594Q625 486 665 421Q743 487 676 594Z" fill="#63aa46" opacity=".9"/>
+ <g filter="url(#shade)">
+ <rect x="200" y="122" width="400" height="74" rx="20" fill="#171717" stroke="#333" stroke-width="4"/>
+ <path d="M209 132v53" stroke="#363636" stroke-width="2"/><path d="M218 132v53" stroke="#363636" stroke-width="2"/><path d="M227 132v53" stroke="#363636" stroke-width="2"/><path d="M236 132v53" stroke="#363636" stroke-width="2"/><path d="M245 132v53" stroke="#363636" stroke-width="2"/><path d="M254 132v53" stroke="#363636" stroke-width="2"/><path d="M263 132v53" stroke="#363636" stroke-width="2"/><path d="M272 132v53" stroke="#363636" stroke-width="2"/><path d="M281 132v53" stroke="#363636" stroke-width="2"/><path d="M290 132v53" stroke="#363636" stroke-width="2"/><path d="M299 132v53" stroke="#363636" stroke-width="2"/><path d="M308 132v53" stroke="#363636" stroke-width="2"/><path d="M317 132v53" stroke="#363636" stroke-width="2"/><path d="M326 132v53" stroke="#363636" stroke-width="2"/><path d="M335 132v53" stroke="#363636" stroke-width="2"/><path d="M344 132v53" stroke="#363636" stroke-width="2"/><path d="M353 132v53" stroke="#363636" stroke-width="2"/><path d="M362 132v53" stroke="#363636" stroke-width="2"/><path d="M371 132v53" stroke="#363636" stroke-width="2"/><path d="M380 132v53" stroke="#363636" stroke-width="2"/><path d="M389 132v53" stroke="#363636" stroke-width="2"/><path d="M398 132v53" stroke="#363636" stroke-width="2"/><path d="M407 132v53" stroke="#363636" stroke-width="2"/><path d="M416 132v53" stroke="#363636" stroke-width="2"/><path d="M425 132v53" stroke="#363636" stroke-width="2"/><path d="M434 132v53" stroke="#363636" stroke-width="2"/><path d="M443 132v53" stroke="#363636" stroke-width="2"/><path d="M452 132v53" stroke="#363636" stroke-width="2"/><path d="M461 132v53" stroke="#363636" stroke-width="2"/><path d="M470 132v53" stroke="#363636" stroke-width="2"/><path d="M479 132v53" stroke="#363636" stroke-width="2"/><path d="M488 132v53" stroke="#363636" stroke-width="2"/><path d="M497 132v53" stroke="#363636" stroke-width="2"/><path d="M506 132v53" stroke="#363636" stroke-width="2"/><path d="M515 132v53" stroke="#363636" stroke-width="2"/><path d="M524 132v53" stroke="#363636" stroke-width="2"/><path d="M533 132v53" stroke="#363636" stroke-width="2"/><path d="M542 132v53" stroke="#363636" stroke-width="2"/><path d="M551 132v53" stroke="#363636" stroke-width="2"/><path d="M560 132v53" stroke="#363636" stroke-width="2"/><path d="M569 132v53" stroke="#363636" stroke-width="2"/><path d="M578 132v53" stroke="#363636" stroke-width="2"/><path d="M587 132v53" stroke="#363636" stroke-width="2"/>
+ <rect x="166" y="180" width="470" height="440" rx="86" fill="url(#glass)" stroke="#2a2b2b" stroke-width="4"/>
+ <path d="M180 269Q398 258 624 269V543Q398 554 180 543Z" fill="#131416" stroke="#40403d" stroke-width="3"/>
+ <path d="M184 476Q380 526 627 390V536Q376 572 184 535Z" fill="#2a251a"/>
+ <path d="M183 528Q400 573 625 440V550Q400 596 183 562Z" fill="#493b22"/>
+ <path d="M182 535Q400 586 625 450" fill="none" stroke="#d9ae5d" stroke-width="18"/>
+ </g>
+ <g font-family="Arial,Helvetica,sans-serif" text-anchor="middle">
+ <path d="M399 292q-30-26-35-52q37 7 36 34q13-34 48-35q-6 40-45 53" fill="#d9ae5d"/>
+ <text x="402" y="323" fill="#f5eedc" font-size="24" letter-spacing="1">BOTICA</text>
+ <text x="402" y="346" fill="#f5eedc" font-size="19" letter-spacing="1.8">BIOENERGÉTICA</text>
+ <path d="M334 368h136" stroke="#d9ae5d" stroke-width="5" stroke-linecap="round"/>
+ <text x="402" y="444" fill="#f5eedc" font-size="70" font-weight="900" letter-spacing="-1.5">TESTO+</text>
+ <text x="402" y="485" fill="#d9ae5d" font-size="24" font-weight="800">FÓRMULA COMPOSTA</text>
+ <text x="402" y="517" fill="#f5eedc" font-size="16" font-weight="600">SUPLEMENTO ALIMENTAR</text>
+ <text x="402" y="596" fill="#f5e8c6" font-size="27" font-weight="800">30 CÁPSULAS</text>
+ </g>
+ </svg>
