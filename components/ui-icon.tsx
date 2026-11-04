@@ -17,6 +17,8 @@ const paths = {
   expand: "M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5",
   truck: "M3 6h11v10H3Zm11 4h4l3 3v3h-7ZM6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
   clock: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+  package: "m3 7 9-4 9 4v10l-9 4-9-4Zm0 0 9 5 9-5m-9 5v9",
+  "shopping-cart": "M3 4h2l2.5 11h11l2.5-8H6M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z",
 };
 
 export function Icon({ name, className = "" }: { name: keyof typeof paths; className?: string }) {
