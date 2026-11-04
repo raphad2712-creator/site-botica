@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { ConsultationProduct } from "@/lib/consultation-products";
 import { useCart } from "./cart-provider";
+import { CartGlyph } from "./catalog-card-details";
 
 export function NaturalProductBuy({ produto, compact = false }: { produto: ConsultationProduct; compact?: boolean }) {
   const { adicionar } = useCart();
@@ -28,7 +29,7 @@ export function NaturalProductBuy({ produto, compact = false }: { produto: Consu
   return <div className={compact ? "natural-buy compact" : "natural-buy"}>
     <div className={compact ? "" : "buy-box"}>
       {!compact && <div className="quantity"><button type="button" aria-label="Diminuir quantidade" onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button><b>{quantity}</b><button type="button" aria-label="Aumentar quantidade" onClick={() => setQuantity(q => Math.min(100, q + 1))}>+</button></div>}
-      <button type="button" className="buy" disabled={loading} onClick={add}>{loading ? "ADICIONANDO..." : "ADICIONAR AO CARRINHO"}</button>
+      <button type="button" className="buy" disabled={loading} onClick={add} aria-label={loading ? `Adicionando ${produto.nome}` : `Adicionar ${produto.nome} ao carrinho`}>{compact ? <CartGlyph /> : loading ? "ADICIONANDO..." : "ADICIONAR AO CARRINHO"}</button>
     </div>
     {error && <p role="alert">{error}</p>}
   </div>;
