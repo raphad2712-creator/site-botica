@@ -6,7 +6,7 @@ import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
 import { useFavorites } from "./favorites-provider";
 import { ProductImage } from "./product-image";
-import { CatalogCardDetails, CartGlyph } from "./catalog-card-details";
+import { CartGlyph } from "./catalog-card-details";
 
 const moeda = (valor: number) => Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -30,7 +30,6 @@ export function ProductCard({ produto }: { produto: Produto }) {
           {!!desconto && <span className="discount-badge">-{desconto}%</span>}
           <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
         </Link>
-        <CatalogCardDetails nome={produto.nome} apresentacao={apresentacao} />
         <button className={`favorite-button ${estaFavorito(produto.id) ? "active" : ""}`} onClick={() => alternarFavorito(produto)} aria-label={estaFavorito(produto.id) ? `Remover ${produto.nome} dos favoritos` : `Adicionar ${produto.nome} aos favoritos`}>
           <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
         </button>
