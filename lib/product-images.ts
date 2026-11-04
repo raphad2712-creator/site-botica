@@ -2,11 +2,11 @@ import type { Produto } from "@/lib/types";
 import { consultationImage, matchConsultationProduct } from "./consultation-products";
 
 const imagensCatalogo: Array<[RegExp, string]> = [
-  [/creatina monohidratada/, "/produtos/creatina-monohidratada-300g.jpg"],
+  [/creatina monohidratada/, "/produtos/novos/creatina-300g.svg"],
   [/melatonina.*gotas/, "/produtos/melatonina-gotas-20ml.jpg"],
-  [/floral rescue/, "/produtos/floral-rescue-30ml.jpg"],
-  [/vitamina b12/, "/produtos/vitamina-b12-1000mcg.jpg"],
-  [/vitamina d3/, "/produtos/vitamina-d3-2000ui.jpg"],
+  [/floral rescue/, "/produtos/novos/floral-rescue-30ml.svg"],
+  [/vit(?:amina)? b12|metilcobalamina/, "/produtos/novos/vit-b12-metilcobalamina.svg"],
+  [/vit(?:amina)? d(?:3)? 1000/, "/produtos/novos/vit-d-1000ui.svg"],
   [/psyllium/, "/produtos/psyllium-200g.jpg"],
   [/serum.*vitamina c/, "/produtos/serum-vitamina-c-30ml.jpg"],
 ];
