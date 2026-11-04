@@ -19,7 +19,7 @@ export function ProductArtwork({ produto }: { produto: ConsultationProduct }) {
     <div className="product-gallery-track" ref={track} tabIndex={0} aria-label="Galeria do produto; deslize para ver as informações"
       onScroll={() => { if (track.current) setActive(Math.round(track.current.scrollLeft / track.current.clientWidth)); }}
       onKeyDown={event => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); show(active === 0 ? 1 : 0); } }}>
-      {sources.map((source, index) => <div className="product-gallery-slide" key={source}>
+      {sources.map((source, index) => <div className="product-gallery-slide" key={`${source}-${index}`}>
         {index === 0 && <Image className="natural-image-dark" src={consultationDarkImage(produto)} alt={`${produto.nome} ${produto.dose}, ${produto.apresentacao}, foto do produto em fundo preto`} width={1254} height={1254} sizes="(max-width: 760px) 100vw, 650px" priority />}
         {index === 1 && <Image className="natural-info-dark" src={consultationDarkArtwork(produto)} alt={`Informações de ${produto.nome} ${produto.dose} em fundo preto`} width={1254} height={1254} sizes="(max-width: 760px) 100vw, 650px" />}
         <Image className={index === 0 ? "natural-image-light" : "natural-info-light"} src={source} alt={index === 0 ? `${produto.nome} ${produto.dose}, ${produto.apresentacao}, foto do produto` : `Informações de ${produto.nome} ${produto.dose}`} width={1254} height={1254} sizes="(max-width: 760px) 100vw, 650px" priority={index === 0} />
