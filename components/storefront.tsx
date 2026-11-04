@@ -153,7 +153,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         </div>
       </section>
       <section className="natural-line-intro scroll-reveal" aria-label="Diferenciais da linha natural">
-        <article><Icon name="leaf" /><div><strong>Seleção Botica</strong><span>Oito fórmulas em uma linha clara e fácil de escolher.</span></div></article>
+        <article><Icon name="leaf" /><div><strong>Seleção Botica</strong><span>Fórmulas, vitaminas e suplementos com informações claras.</span></div></article>
         <article><Icon name="document" /><div><strong>Informação completa</strong><span>Apresentação, concentração e detalhes de cada produto.</span></div></article>
         <article><Icon name="shield" /><div><strong>Compra segura</strong><span>Pagamento protegido e suporte durante todo o pedido.</span></div></article>
       </section>
