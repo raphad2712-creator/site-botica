@@ -1,3 +1,4 @@
+import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { NextResponse } from "next/server";
 import { consultarFrete, type ProdutoFrete } from "@/lib/frete";
 import { criarClienteServidor } from "@/lib/supabase/server";
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
         error = consultaLegada.error;
       }
       if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está disponível para calcular o frete." }, { status: 400 });
+      produtos = produtos.map(aplicarPrecoCatalogo);
       produtosFrete = itensRecebidos.map((item) => {
         const produto = produtos.find((atual) => Number(atual.id) === Number(item.produto_id))!;
         return {

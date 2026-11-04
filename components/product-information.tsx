@@ -10,7 +10,7 @@ export function ProductInformation({ produto, descricao }: { produto: Consultati
           <h3>Apresentação</h3>
           <dl>
             <div><dt>Produto</dt><dd>{produto.nome}</dd></div>
-            <div><dt>Concentração no rótulo</dt><dd>{produto.dose}</dd></div>
+            {produto.dose && <div><dt>Concentração no rótulo</dt><dd>{produto.dose}</dd></div>}
             <div><dt>Conteúdo</dt><dd>{produto.apresentacao}</dd></div>
             <div><dt>Marca</dt><dd>Botica Bioenergética</dd></div>
           </dl>
@@ -18,6 +18,10 @@ export function ProductInformation({ produto, descricao }: { produto: Consultati
         <article>
           <h3>Sobre o produto</h3>
           <p className="product-description">{produto.descricao}</p>
+          {produto.composicao && <div className="product-composition">
+            <h4>Formulação</h4>
+            <dl>{produto.composicao.map(({ ingrediente, quantidade }) => <div key={ingrediente}><dt>{ingrediente}</dt><dd>{quantidade}</dd></div>)}</dl>
+          </div>}
           {descricao && descricao !== produto.descricao && <p className="product-description-complement">{descricao}</p>}
           <p>A composição completa, os ingredientes e as orientações de uso devem ser conferidos no rótulo recebido ou com a equipe farmacêutica.</p>
           <a className="product-details-anchor" href={consultationHref(produto)}>Tirar dúvidas por e-mail <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>

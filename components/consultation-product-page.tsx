@@ -14,6 +14,7 @@ export function ConsultationProductPage({ produto }: { produto: ConsultationProd
       <div className="product-info">
         <small>BOTICA BIOENERGÉTICA</small>
         <h1>{produto.nome} <span>{produto.dose}</span></h1>
+        {produto.subtitulo && <p>{produto.subtitulo}</p>}
         <p className="product-presentation">{produto.apresentacao}</p>
         <strong className="demo-product-price">{formatPrice(produto.precoDemonstrativo)}</strong>
         <span className="demo-price-note">Preço informado pela loja · disponibilidade a confirmar</span>

@@ -222,3 +222,9 @@ html[data-theme="dark"] .botica-product-artwork-image img {
   filter:none!important;
 }
 .botica-product-artwork figcaption a{display:inline-flex;align-items:center;gap:8px}
+
+.mockup-product-subtitle { display:block; margin:2px 0 5px; font-size:12px; color:#527b57; }
+.product-composition { margin-top:20px; }
+.product-composition h4 { margin-bottom:10px; }
+.product-composition dl div { gap:12px; }
+.product-composition dd { white-space:nowrap; }

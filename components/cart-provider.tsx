@@ -1,5 +1,6 @@
 "use client";
 
+import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { lerProdutosSalvos } from "@/lib/stored-products";
 import { useDrawer } from "./use-drawer";
 import { Icon } from "@/components/ui-icon";
@@ -36,7 +37,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const salvo = localStorage.getItem("botica-carrinho");
-      setItens(lerProdutosSalvos(salvo, true));
+      setItens(lerProdutosSalvos(salvo, true).map(aplicarPrecoCatalogo));
     } catch { /* A compra também funciona sem armazenamento local. */ } finally { setPronto(true); }
   }, []);
   useEffect(() => { if (pronto) { try { localStorage.setItem("botica-carrinho", JSON.stringify(itens)); } catch { /* Carrinho mantido em memória. */ } } }, [itens, pronto]);

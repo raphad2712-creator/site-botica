@@ -27,14 +27,14 @@ function setup(rows = []) {
         : labels);
   return {call:slug=>route.POST({}, {params:Promise.resolve({slug})}),rows,get writes(){return writes;}};
 }
-test('os oito produtos recebem cadastros estáveis e não duplicam ao adicionar novamente',async()=>{
+test('os quatorze produtos recebem cadastros estáveis e não duplicam ao adicionar novamente',async()=>{
  const api=setup();
  for(const p of labels.consultationProducts){ const first=await api.call(p.slug); const again=await api.call(p.slug); assert.equal(first.status,200); assert.equal(first.body.id,again.body.id); assert.equal(first.body.preco,p.precoDemonstrativo); assert.equal(first.body.imagem_url,labels.consultationImage(p)); }
- assert.equal(api.rows.length,8); assert.equal(new Set(api.rows.map(p=>p.id)).size,8); assert.equal(api.writes,8);
+ assert.equal(api.rows.length,14); assert.equal(new Set(api.rows.map(p=>p.id)).size,14); assert.equal(api.writes,14);
 });
-test('cadastro existente mantém ID, valor, estoque e indisponibilidade',async()=>{
+test('cadastro existente recebe preço atualizado e mantém ID, estoque e indisponibilidade',async()=>{
  const row={id:45,nome:'Passiflora 300 mg',preco:65,estoque:4,ativo:true}; const api=setup([row]);
- assert.deepEqual((await api.call('passiflora-300mg')).body,row); assert.equal(api.writes,0);
+ assert.deepEqual((await api.call('passiflora-300mg')).body,{...row,preco:55.9,preco_antigo:null}); assert.equal(api.writes,0);
  row.ativo=false; assert.equal((await api.call('passiflora-300mg')).status,409); assert.equal(api.writes,0);
 });
 test('slug desconhecido não grava produtos',async()=>{const api=setup();assert.equal((await api.call('outro')).status,404);assert.equal(api.writes,0);});

@@ -1,5 +1,5 @@
 import type { Produto } from "./types";
-import { consultationProducts, matchConsultationProduct, normalizeCatalogText, type ConsultationProduct } from "./consultation-products";
+import { consultationProducts, aplicarPrecoCatalogo, matchConsultationProduct, normalizeCatalogText, type ConsultationProduct } from "./consultation-products";
 
 export type CatalogProduct = Produto | ConsultationProduct;
 export const isConsultation = (product: CatalogProduct): product is ConsultationProduct => "slug" in product;
@@ -7,7 +7,7 @@ export const isConsultation = (product: CatalogProduct): product is Consultation
 export function buildCatalog(products: Produto[]): CatalogProduct[] {
   return consultationProducts.flatMap<CatalogProduct>((label) => {
     const registered = products.find((product) => matchConsultationProduct(product.nome)?.slug === label.slug);
-    return registered ? (registered.ativo ? [registered] : []) : [label];
+    return registered ? (registered.ativo ? [aplicarPrecoCatalogo(registered)] : []) : [label];
   });
 }
 

@@ -16,6 +16,7 @@ export function ConsultationProductCard({ produto }: { produto: ConsultationProd
       <div className="mockup-product-copy">
         <span className="mockup-category">{produto.categoria}</span>
         <Link href={href} className="mockup-product-title"><h3>{produto.nome}{produto.dose ? ` ${produto.dose}` : ""}</h3></Link>
+        {produto.subtitulo && <small className="mockup-product-subtitle">{produto.subtitulo}</small>}
         <span className="mockup-presentation">{produto.apresentacao}</span>
         <div className="mockup-product-footer">
           <div className="mockup-price-group">

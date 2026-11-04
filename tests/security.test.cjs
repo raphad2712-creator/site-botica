@@ -54,6 +54,7 @@ test('checkout rejects duplicate stock bypass and malformed JSON without writing
     if (name.includes('supabase/server')) return { criarClienteServidor: async () => database };
     if (name.includes('supabase/admin')) return { criarClienteAdmin: () => database };
     if (name.includes('security')) return { limiteExcedido: async () => false, emailValido: value => value };
+    if (name.includes('consultation-products')) return load('lib/consultation-products.ts');
     if (name.includes('checkout-validation')) return validation;
     return {};
   });

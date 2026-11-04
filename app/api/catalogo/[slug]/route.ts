@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
-import { consultationProducts, consultationImage, matchConsultationProduct } from "@/lib/consultation-products";
+import { consultationProducts, consultationImage, matchConsultationProduct, aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 // Cadastro inicial da linha demonstrativa autorizada pela loja.
@@ -18,7 +18,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     if (!product) {
       const inserted = await admin.from("produtos").insert({
         nome: `${label.nome} ${label.dose}`, categoria: label.categoria,
-        descricao: `${label.nome} ${label.dose}, ${label.apresentacao}, Botica Bioenergética.`,
+        descricao: label.descricao,
         preco: label.precoDemonstrativo, preco_antigo: null, estoque: 100,
         imagem_url: consultationImage(label), ativo: true,
       }).select("*").single();
@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
       product = inserted.data;
     }
     if (!product.ativo || product.estoque < 1) return NextResponse.json({ erro: "Produto indisponível no momento." }, { status: 409 });
-    return NextResponse.json(product);
+    return NextResponse.json(aplicarPrecoCatalogo(product));
   } catch {
     return NextResponse.json({ erro: "Não foi possível adicionar o produto. Tente novamente em instantes." }, { status: 503 });
   }

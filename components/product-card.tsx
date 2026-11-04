@@ -6,6 +6,7 @@ import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
 import { useFavorites } from "./favorites-provider";
 import { ProductImage } from "./product-image";
+import { matchConsultationProduct } from "@/lib/consultation-products";
 import { CartGlyph } from "./catalog-card-details";
 
 const moeda = (valor: number) => Number(valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -22,7 +23,8 @@ export function ProductCard({ produto }: { produto: Produto }) {
   const desconto = produto.preco_antigo && Number(produto.preco_antigo) > Number(produto.preco)
     ? Math.round((1 - Number(produto.preco) / Number(produto.preco_antigo)) * 100) : 0;
   const testo = /testo\s*\+/i.test(produto.nome);
-  const apresentacao = produto.nome.match(/\b(?:\d+\s*(?:g|kg|ml|cápsulas|capsulas|ui|doses))\b/i)?.[0] ?? "";
+  const rotulo = matchConsultationProduct(produto.nome);
+  const apresentacao = rotulo?.apresentacao ?? produto.nome.match(/\b(?:\d+\s*(?:g|kg|ml|cápsulas|capsulas|ui|doses))\b/i)?.[0] ?? "";
   return (
     <article className={`card pharmacy-card mockup-product-card${testo ? " mockup-testo-card" : ""}`}>
       <div className="mockup-product-visual">

@@ -1,5 +1,5 @@
 import type { Produto } from "@/lib/types";
-import { consultationImage, matchConsultationProduct } from "./consultation-products";
+import { consultationImage, matchConsultationProduct, aplicarPrecoCatalogo } from "./consultation-products";
 
 const imagensCatalogo: Array<[RegExp, string]> = [
   [/creatina monohidratada/, "/produtos/novos/creatina-300g.svg"],
@@ -23,5 +23,5 @@ export function imagemCatalogo(nome: string, imagemAtual?: string | null) {
 }
 
 export function comImagemCatalogo(produto: Produto): Produto {
-  return { ...produto, imagem_url: imagemCatalogo(produto.nome, produto.imagem_url) };
+  return { ...aplicarPrecoCatalogo(produto), imagem_url: imagemCatalogo(produto.nome, produto.imagem_url) };
 }
