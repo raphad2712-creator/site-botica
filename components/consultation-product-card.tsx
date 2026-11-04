@@ -14,7 +14,7 @@ export function ConsultationProductCard({ produto }: { produto: ConsultationProd
       <Link href={href}><h3>{produto.nome} {produto.dose}</h3></Link>
       <span className="product-brand-line">{produto.apresentacao} · Botica Bioenergética</span>
       <strong>{formatPrice(produto.precoDemonstrativo)}</strong>
-      <small>Preço demonstrativo</small>
+      <small>Preço informado pela loja · disponibilidade a confirmar</small>
       <NaturalProductBuy produto={produto} compact />
     </article>
   );
