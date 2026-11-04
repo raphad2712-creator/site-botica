@@ -181,3 +181,44 @@ html[data-theme="dark"] body .products .mockup-product-card .mockup-price-group 
   }
 }
 @media(max-width:360px){body .catalog .products{grid-template-columns:1fr!important}}
+
+/* Fotografia única por item: sem faixas pretas, miniaturas paralelas ou corte. */
+body .catalog .products .mockup-product-card .mockup-product-visual,
+body .catalog .products .mockup-product-card .mockup-photo,
+html[data-theme="dark"] body .catalog .products .mockup-product-card .mockup-product-visual,
+html[data-theme="dark"] body .catalog .products .mockup-product-card .mockup-photo {
+  background:#fff!important;
+  border-radius:0!important;
+}
+body .catalog .products .mockup-product-card .mockup-photo .botica-single-product-image,
+html[data-theme="dark"] body .catalog .products .mockup-product-card .mockup-photo .botica-single-product-image {
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  object-fit:contain!important;
+  background:#fff!important;
+  filter:none!important;
+}
+body .catalog .products .mockup-product-card .natural-image-dark,
+body .catalog .products .mockup-product-card .natural-image-light{display:none!important}
+.botica-product-artwork-image,
+html[data-theme="dark"] .botica-product-artwork-image {
+  width:100%;
+  background:#fff!important;
+  overflow:hidden;
+}
+.botica-product-artwork-image img,
+html[data-theme="dark"] .botica-product-artwork-image img {
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  object-fit:contain!important;
+  padding:0!important;
+  background:#fff!important;
+  filter:none!important;
+}
+.botica-product-artwork figcaption a{display:inline-flex;align-items:center;gap:8px}
