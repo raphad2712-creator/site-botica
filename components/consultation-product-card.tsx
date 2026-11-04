@@ -2,7 +2,6 @@ import Link from "next/link";
 import { formatPrice, type ConsultationProduct } from "@/lib/consultation-products";
 import { NaturalProductBuy } from "./natural-product-buy";
 import { NaturalProductImage } from "./natural-product-image";
-import { CatalogCardDetails } from "./catalog-card-details";
 
 export function ConsultationProductCard({ produto }: { produto: ConsultationProduct }) {
   const href = `/produto/${produto.slug}`;
@@ -13,7 +12,6 @@ export function ConsultationProductCard({ produto }: { produto: ConsultationProd
         <Link href={href} className="photo mockup-photo" aria-label={`Ver ${produto.nome} ${produto.dose}`}>
           <NaturalProductImage produto={produto} sizes="(max-width: 600px) 45vw, (max-width: 1100px) 35vw, 330px" />
         </Link>
-        <CatalogCardDetails nome={produto.nome} apresentacao={produto.apresentacao} />
       </div>
       <div className="mockup-product-copy">
         <span className="mockup-category">{produto.categoria}</span>
