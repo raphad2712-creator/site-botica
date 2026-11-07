@@ -147,7 +147,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
           {categorias.map((item) => (
             <button className={!busca && categoria === item ? "active" : ""} key={item} onClick={() => { setBusca(""); setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={!busca && categoria === item}>
               <i><svg viewBox="0 0 24 24"><path d={icones[item]} /></svg></i>
-              <b>{item}</b><small>{filterCatalog(catalogo, item, "", "relevancia").length || "Em breve"}{filterCatalog(catalogo, item, "", "relevancia").length > 0 ? " produtos" : ""}</small>
+              <b>{item}</b><small>{filterCatalog(catalogo, item, "", "relevancia").length || "Em breve"}{filterCatalog(catalogo, item, "", "relevancia").length > 0 ? (filterCatalog(catalogo, item, "", "relevancia").length === 1 ? " produto" : " produtos") : ""}</small>
             </button>
           ))}
         </div>

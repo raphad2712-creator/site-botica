@@ -202,3 +202,15 @@ html[data-theme=dark] #conteudo .category-tabs button { color: #c3cdbb; border-c
   body #conteudo .products .mockup-product-card .mockup-price-group strong { font-size: 19px !important; }
 }
 @media (prefers-reduced-motion: reduce) { #conteudo * { transition-duration: .01ms !important; animation: none !important; } }
+#conteudo > .hero { animation: none !important; opacity: 1 !important; transform: none !important; }
+#conteudo .hero-copy { height: auto !important; max-width: none !important; }
+html[data-theme=dark] body > header .favorites-header,
+html[data-theme=dark] body > header .account-button,
+html[data-theme=dark] .nav > a { color: #d7e4ce !important; }
+html[data-theme=dark] .nav > a:hover { color: #b8d59d !important; }
+html[data-theme=dark] body > header .account-button small,
+html[data-theme=dark] .theme-selector, html[data-theme=dark] .theme-selector select { color: #c5d4bb !important; }
+html[data-theme=dark] .theme-selector { background: #233329 !important; border-color: #405342 !important; }
+html[data-theme=dark] .theme-selector select { background: #233329 !important; }
+html[data-theme=dark] #conteudo .quantity button { background: #25372b; color: #dfebd7; border-color: #42553c; }
+html[data-theme=dark] #conteudo .product-shipping input { background: #1e2c22; color: #e1e9db; border-color: #526149; }
