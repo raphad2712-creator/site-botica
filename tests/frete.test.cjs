@@ -26,3 +26,49 @@ test('frete grátis respeita o valor mínimo da compra', () => {
   assert.equal(cotacao.gratis, true);
   assert.equal(cotacao.destino, 'Manaus/AM');
 });
+
+async function comFetch(respostas, executar) {
+  const original = global.fetch;
+  const chamadas = [];
+  global.fetch = async (url) => {
+    chamadas.push(url);
+    const resposta = respostas.shift();
+    if (resposta instanceof Error) throw resposta;
+    return { ok: resposta.status === 200, status: resposta.status, json: async () => resposta.body };
+  };
+  try { await executar(chamadas); } finally { global.fetch = original; }
+}
+
+test('usa a BrasilAPI quando o ViaCEP falha e mantém a tarifa da região', async () => {
+  await comFetch([new Error('timeout'), {status:200,body:{cep:'30110000',city:'Belo Horizonte',state:'MG'}}], async (chamadas) => {
+    const cotacao = await moduleFrete.exports.consultarFrete('30110-000', 55.9);
+    assert.equal(cotacao.destino, 'Belo Horizonte/MG');
+    assert.equal(cotacao.valor, 24.9);
+    assert.match(chamadas[1], /^https:\/\/brasilapi.com.br\/api\/cep\/v2\/30110000$/);
+  });
+});
+
+test('não calcula para CEP inválido nem trata CEP inexistente como falha de rede', async () => {
+  await comFetch([], async (chamadas) => {
+    await assert.rejects(moduleFrete.exports.consultarFrete('123', 10), /CEP_INVALIDO/);
+    assert.equal(chamadas.length, 0);
+  });
+  await comFetch([{status:200,body:{erro:true}}], async (chamadas) => {
+    await assert.rejects(moduleFrete.exports.consultarFrete('00000000', 10), /CEP_NAO_ENCONTRADO/);
+    assert.equal(chamadas.length, 1);
+  });
+});
+
+test('informa indisponibilidade quando ambos os serviços falham', async () => {
+  await comFetch([new Error('timeout'), {status:503}], async () => {
+    await assert.rejects(moduleFrete.exports.consultarFrete('08180050', 10), /CEP_INDISPONIVEL/);
+  });
+});
+
+test('resposta de contingência preserva o frete grátis a partir de R$ 210', async () => {
+  await comFetch([{status:502}, {status:200,body:{cep:'69005000',city:'Manaus',state:'AM'}}], async () => {
+    const cotacao = await moduleFrete.exports.consultarFrete('69005000', 210);
+    assert.equal(cotacao.valor, 0);
+    assert.equal(cotacao.gratis, true);
+  });
+});

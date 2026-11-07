@@ -1,5 +1,6 @@
 "use client";
 
+import { ShippingCalculator } from "./shipping-calculator";
 import { useState } from "react";
 import type { Produto } from "@/lib/types";
 import { useCart } from "./cart-provider";
@@ -15,7 +16,7 @@ export function AddProduct({ produto }: { produto: Produto }) {
     window.setTimeout(() => setAdicionado(false), 1400);
   }
   return (
-    <div className="buy-box">
+    <><div className="buy-box">
       <div className="quantity">
         <button onClick={() => setQuantidade((q) => Math.max(1, q - 1))}>−</button>
         <b>{quantidade}</b>
@@ -24,6 +25,6 @@ export function AddProduct({ produto }: { produto: Produto }) {
       <button className={adicionado ? "added" : ""} onClick={adicionarProduto}>
         {adicionado ? "ADICIONADO AO CARRINHO" : "ADICIONAR AO CARRINHO"}
       </button>
-    </div>
+    </div><ShippingCalculator subtotal={Number(produto.preco) * quantidade} produtoId={Number(produto.id)} quantidade={quantidade} /></>
   );
 }

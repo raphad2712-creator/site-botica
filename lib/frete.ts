@@ -60,16 +60,42 @@ export function calcularValorFrete(endereco: EnderecoFrete, subtotal: number): C
   };
 }
 
+function regiaoPorEstado(uf: string) {
+  if (["SP", "RJ", "MG", "ES"].includes(uf)) return "Sudeste";
+  if (["PR", "SC", "RS"].includes(uf)) return "Sul";
+  if (["DF", "GO", "MT", "MS"].includes(uf)) return "Centro-Oeste";
+  if (["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"].includes(uf)) return "Nordeste";
+  return "Norte";
+}
+
 async function consultarEndereco(cepInformado: string): Promise<EnderecoFrete> {
   const cep = somenteNumerosCep(cepInformado);
   if (cep.length !== 8) throw new Error("CEP_INVALIDO");
-  const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-    headers: { Accept: "application/json" }, next: { revalidate: 86400 }, signal: AbortSignal.timeout(8000),
-  });
-  if (!resposta.ok) throw new Error("CEP_INDISPONIVEL");
-  const dados = (await resposta.json()) as ViaCepResposta;
-  if (dados.erro || !dados.cep || !dados.localidade || !dados.uf) throw new Error("CEP_NAO_ENCONTRADO");
-  return { cep: dados.cep, cidade: dados.localidade, estado: dados.uf, regiao: dados.regiao || "" };
+  try {
+    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+      headers: { Accept: "application/json" }, next: { revalidate: 86400 }, signal: AbortSignal.timeout(4000),
+    });
+    if (!resposta.ok) throw new Error("CEP_INDISPONIVEL");
+    const dados = (await resposta.json()) as ViaCepResposta;
+    if (dados.erro) throw new Error("CEP_NAO_ENCONTRADO");
+    if (!dados.cep || !dados.localidade || !dados.uf) throw new Error("CEP_INDISPONIVEL");
+    return { cep: dados.cep, cidade: dados.localidade, estado: dados.uf, regiao: dados.regiao || regiaoPorEstado(dados.uf) };
+  } catch (erro) {
+    if (erro instanceof Error && erro.message === "CEP_NAO_ENCONTRADO") throw erro;
+  }
+  try {
+    const resposta = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`, {
+      headers: { Accept: "application/json" }, next: { revalidate: 86400 }, signal: AbortSignal.timeout(6000),
+    });
+    if (resposta.status === 404) throw new Error("CEP_NAO_ENCONTRADO");
+    if (!resposta.ok) throw new Error("CEP_INDISPONIVEL");
+    const dados = await resposta.json() as { cep?: string; city?: string; state?: string };
+    if (!dados.cep || !dados.city || !dados.state) throw new Error("CEP_INDISPONIVEL");
+    return { cep: dados.cep, cidade: dados.city, estado: dados.state, regiao: regiaoPorEstado(dados.state) };
+  } catch (erro) {
+    if (erro instanceof Error && erro.message === "CEP_NAO_ENCONTRADO") throw erro;
+    throw new Error("CEP_INDISPONIVEL");
+  }
 }
 
 function possuiMedidas(produto: ProdutoFrete) {
