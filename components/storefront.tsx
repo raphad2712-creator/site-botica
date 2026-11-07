@@ -116,17 +116,16 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       <section className="hero">
         <div className="hero-copy">
           <span className="hero-eyebrow"><i /> FARMÁCIA DE MANIPULAÇÃO & PRODUTOS NATURAIS</span>
-          <h1>Seu cuidado,<br /><em>em boas mãos.</em></h1>
+          <h1>Seu cuidado,<br /><em>do seu jeito.</em></h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.
           </p>
-          <div className="hero-actions"><a href="#produtos">EXPLORAR PRODUTOS <Icon name="arrow-right" /></a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
+          <div className="hero-actions"><a href="#produtos">COMPRAR AGORA</a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
           <div className="hero-assurances"><span><Icon name="shield" /> Compra protegida</span><span><Icon name="check" /> Atendimento farmacêutico</span><span><Icon name="check" /> Entrega para todo o Brasil</span></div>
         </div>
         <div className="hero-img">
           <Image priority width={1698} height={926} sizes="(max-width: 760px) 100vw, 55vw" src="/botica-hero-v2.png" alt="Frascos, plantas e utensílios de uma farmácia de manipulação" />
-          <div className="hero-image-note"><Icon name="leaf" /><span>Natureza e conhecimento<strong>Cuidado em cada fórmula.</strong></span></div>
         </div>
       </section>
 
