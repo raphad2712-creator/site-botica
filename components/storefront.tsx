@@ -71,7 +71,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   }, [categoria, busca, ordem, filtrosProntos]);
 
   const catalogo = useMemo(() => buildCatalog(produtos), [produtos]);
-  const filtrados = useMemo(() => filterCatalog(catalogo, categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
+  const filtrados = useMemo(() => filterCatalog(catalogo, busca.trim() ? "Todos" : categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
 
   async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -116,16 +116,17 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       <section className="hero">
         <div className="hero-copy">
           <span className="hero-eyebrow"><i /> FARMÁCIA DE MANIPULAÇÃO & PRODUTOS NATURAIS</span>
-          <h1>Seu cuidado,<br /><em>do seu jeito.</em></h1>
+          <h1>Seu cuidado,<br /><em>em boas mãos.</em></h1>
           <p>
             Fórmulas personalizadas, suplementos e dermocosméticos com qualidade
             e acompanhamento farmacêutico.
           </p>
-          <div className="hero-actions"><a href="#produtos">COMPRAR AGORA</a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
+          <div className="hero-actions"><a href="#produtos">EXPLORAR PRODUTOS <Icon name="arrow-right" /></a><a className="hero-secondary" href="#receita">ENVIAR RECEITA</a></div>
           <div className="hero-assurances"><span><Icon name="shield" /> Compra protegida</span><span><Icon name="check" /> Atendimento farmacêutico</span><span><Icon name="check" /> Entrega para todo o Brasil</span></div>
         </div>
         <div className="hero-img">
           <Image priority width={1698} height={926} sizes="(max-width: 760px) 100vw, 55vw" src="/botica-hero-v2.png" alt="Frascos, plantas e utensílios de uma farmácia de manipulação" />
+          <div className="hero-image-note"><Icon name="leaf" /><span>Natureza e conhecimento<strong>Cuidado em cada fórmula.</strong></span></div>
         </div>
       </section>
 
@@ -136,7 +137,6 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         <article><b><svg viewBox="0 0 24 24"><path d="M5 11a7 7 0 0 1 14 0v5M5 13H3v4h4v-4H5ZM19 13h2v4h-4v-4h2ZM17 19c-1 1-2.7 2-5 2" /></svg></b><span><strong>Atendimento humano</strong><small>Conte com a nossa equipe</small></span></article>
       </section>
 
-      <CampaignCarousel />
       <section className="objectives scroll-reveal" id="objetivos">
         <div className="title">
           <small>LINHAS DA BOTICA</small>
@@ -145,34 +145,28 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         </div>
         <div className="objective-grid">
           {categorias.map((item) => (
-            <button className={categoria === item ? "active" : ""} key={item} onClick={() => { setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={categoria === item}>
+            <button className={!busca && categoria === item ? "active" : ""} key={item} onClick={() => { setBusca(""); setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={!busca && categoria === item}>
               <i><svg viewBox="0 0 24 24"><path d={icones[item]} /></svg></i>
               <b>{item}</b><small>{filterCatalog(catalogo, item, "", "relevancia").length || "Em breve"}{filterCatalog(catalogo, item, "", "relevancia").length > 0 ? " produtos" : ""}</small>
             </button>
           ))}
         </div>
       </section>
-      <section className="natural-line-intro scroll-reveal" aria-label="Diferenciais da linha natural">
-        <article><Icon name="leaf" /><div><strong>Seleção Botica</strong><span>Fórmulas, vitaminas e suplementos com informações claras.</span></div></article>
-        <article><Icon name="document" /><div><strong>Informação completa</strong><span>Apresentação, concentração e detalhes de cada produto.</span></div></article>
-        <article><Icon name="shield" /><div><strong>Compra segura</strong><span>Pagamento protegido e suporte durante todo o pedido.</span></div></article>
-      </section>
-
       <section className="catalog scroll-reveal" id="produtos">
-        <div className="catalog-head"><div><small>BOTICA BIOENERGÉTICA</small><h2>{categoria === "Naturais" ? "Nossa linha natural" : categoria}</h2><p>{categoria === "Naturais" ? "Fórmulas selecionadas em cápsulas para complementar a sua rotina de cuidado." : "Explore os produtos desta categoria e consulte a disponibilidade."}</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
+        <div className="catalog-head"><div><small>BOTICA BIOENERGÉTICA</small><h2>{busca.trim() ? "Resultados da busca" : categoria === "Naturais" ? "Um cuidado para cada rotina" : categoria}</h2><p>{busca.trim() ? "Encontre sua fórmula em todas as categorias da Botica." : "Conheça as apresentações, confira os detalhes e escolha com tranquilidade."}</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
         <div className="catalog-tools">
           <label className="catalog-search"><span><Icon name="search" /></span><input value={busca} onChange={(e) => setBusca(e.target.value)} type="search" maxLength={120} placeholder="Busque por produto ou objetivo" aria-label="Buscar produtos" />{busca && <button onClick={() => setBusca("")} aria-label="Limpar busca">×</button>}</label>
           <label className="catalog-sort"><span>Ordenar por</span><select value={ordem} onChange={(e) => setOrdem(e.target.value)}><option value="relevancia">Mais relevantes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="nome">Nome A–Z</option></select></label>
         </div>
         <div className="category-tabs" aria-label="Categorias de produtos">
-          {categorias.map((item) => <button key={item} className={categoria === item ? "active" : ""} aria-pressed={categoria === item} onClick={() => setCategoria(item)}>{item}</button>)}
+          {categorias.map((item) => <button key={item} className={!busca && categoria === item ? "active" : ""} aria-pressed={!busca && categoria === item} onClick={() => { setBusca(""); setCategoria(item); }}>{item}</button>)}
         </div>
-        {(busca || ordem !== "relevancia") && <div className="catalog-active-filters"><span>{busca ? `Busca por “${busca}” em ${categoria}` : `Ordenação personalizada em ${categoria}`}</span><button type="button" onClick={() => { setBusca(""); setOrdem("relevancia"); }}>Limpar filtros <span aria-hidden="true">×</span></button></div>}
+        {(busca || ordem !== "relevancia") && <div className="catalog-active-filters"><span>{busca ? `Busca por “${busca}” no catálogo` : `Ordenação personalizada em ${categoria}`}</span><button type="button" onClick={() => { setBusca(""); setOrdem("relevancia"); }}>Limpar filtros <span aria-hidden="true">×</span></button></div>}
         {erro && <div className="notice error" role="status">Não foi possível carregar os preços e a disponibilidade agora. Você pode consultar os produtos abaixo ou tentar novamente em instantes. <button className="catalog-retry" type="button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}
         {filtrados.length ? <div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>{busca ? "Nenhum produto encontrado" : "Categoria sem produtos"}</b><p>{busca ? "Tente buscar pelo nome da fórmula ou pela concentração." : "Novos produtos serão adicionados em breve."}</p>{busca && <button onClick={() => setBusca("")}>LIMPAR BUSCA</button>}</div>}
       </section>
 
-      <section className="campaign scroll-reveal"><div><small>CUIDADO COMPLETO</small><h2>Seu bem-estar começa com escolhas melhores.</h2><p>Encontre suplementos, vitaminas e dermocosméticos selecionados para a sua rotina.</p><a href="#produtos">CONHECER PRODUTOS</a></div></section>
+      <CampaignCarousel />
       <section className="about-botica scroll-reveal" id="sobre">
         <div className="about-botica-copy"><small>CONHEÇA A BOTICA</small><h2>Cuidado próximo, seguro e personalizado.</h2><p>A Botica Bioenergética reúne manipulação, produtos naturais e atendimento farmacêutico para tornar cada etapa mais simples — da escolha do produto ao acompanhamento do pedido.</p><a href="#receita">FALAR SOBRE UMA FÓRMULA</a></div>
         <div className="about-botica-points"><article><b>01</b><div><strong>Orientação responsável</strong><p>Informações claras para você comprar com mais confiança.</p></div></article><article><b>02</b><div><strong>Experiência completa</strong><p>Conta, pagamento, pedidos e suporte em um só lugar.</p></div></article><article><b>03</b><div><strong>Atendimento humano</strong><p>Uma equipe preparada para acompanhar suas necessidades.</p></div></article></div>

@@ -28,7 +28,7 @@ export function Header() {
 
   return (
     <>
-      <div className="promo"><span>Frete grátis acima de R$ 210</span><span>Até 6x sem juros</span><span>Compra segura</span></div>
+      <div className="promo"><span>Frete grátis a partir de R$ 210</span><span>Até 6x sem juros</span><span>Compra segura</span></div>
       <header>
         <button
           className="hamb"
@@ -64,7 +64,7 @@ export function Header() {
         </div>
       </header>
       <nav id="store-navigation" aria-label="Navegação principal" className={`nav ${menu ? "open" : ""}`} onKeyDown={(event) => { if (event.key === "Escape") { setMenu(false); document.querySelector<HTMLButtonElement>(".hamb")?.focus(); } }}>
-        <a href="/#produtos" onClick={() => setMenu(false)}>Todos os produtos</a><a href="/?categoria=Emagrecimento#produtos" onClick={() => setMenu(false)}>Emagrecimento</a><a href="/?categoria=Academia#produtos" onClick={() => setMenu(false)}>Desempenho físico</a><a href="/?categoria=Vitaminas#produtos" onClick={() => setMenu(false)}>Saúde</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Queda capilar</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Beleza</a><a href="/#receita" onClick={() => setMenu(false)}>Envie sua receita</a><ThemeSelector />
+        <a href="/?categoria=Naturais#produtos" onClick={() => setMenu(false)}>Linha natural</a><a href="/?categoria=Academia#produtos" onClick={() => setMenu(false)}>Academia</a><a href="/?categoria=Vitaminas#produtos" onClick={() => setMenu(false)}>Vitaminas</a><a href="/?categoria=Florais#produtos" onClick={() => setMenu(false)}>Florais</a><a href="/?categoria=Beleza#produtos" onClick={() => setMenu(false)}>Beleza</a><a className="nav-prescription" href="/#receita" onClick={() => setMenu(false)}><Icon name="document" /> Envie sua receita</a><ThemeSelector />
       </nav>
       <nav className="mobile-bottom-nav" aria-label="Navegação rápida">
         <Link href="/" aria-label="Início"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" /></svg><span>Início</span></Link>
