@@ -22,7 +22,7 @@ const avaliacoes = [
 function ReviewCard({ avaliacao }: { avaliacao: (typeof avaliacoes)[number] }) {
   const iniciais = avaliacao.nome.split(" ").slice(0, 2).map((parte) => parte[0]).join("").toUpperCase();
   return <figure className="customer-review-card">
-    <figcaption><span className="review-avatar" aria-hidden="true">{iniciais}</span><div><strong>{avaliacao.nome}</strong><small>Avaliação no Google</small></div></figcaption>
+    <figcaption><span className="review-avatar" aria-hidden="true">{iniciais}</span><div><strong>{avaliacao.nome}</strong><small>Avaliação no Google</small></div><span className="review-google-mark" aria-hidden="true">G</span></figcaption>
     <div className="review-stars" role="img" aria-label="5 de 5 estrelas">{Array.from({ length: 5 }, (_, index) => <svg key={index} viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 7 .9-5.1 4.9 1.2 6.9-6.2-3.3-6.2 3.3 1.2-6.9L2 9.2l6.9-.9Z" /></svg>)}</div>
     <blockquote>{avaliacao.texto}</blockquote>
     {avaliacao.trecho && <small className="review-excerpt">Trecho da avaliação</small>}
@@ -34,19 +34,19 @@ export function CustomerReviews() {
     <section className="customer-reviews" id="avaliacoes" aria-labelledby="reviews-title">
       <div className="customer-reviews-copy">
         <small>AVALIAÇÕES DE CLIENTES</small>
-        <h2 id="reviews-title">A experiência de quem escolhe a Botica.</h2>
-        <p>Conheça uma seleção de avaliações publicadas no Google por clientes da Botica.</p>
+        <h2 id="reviews-title">A confiança de quem<br /><em>já comprou na Botica.</em></h2>
+        <p>Atendimento próximo, cuidado em cada pedido. Veja o que nossos clientes contam no Google.</p>
         <a className="reviews-primary-link" href={perfilGoogle} target="_blank" rel="noopener noreferrer">VER AVALIAÇÕES NO GOOGLE <Icon name="arrow-up-right" /><span className="reviews-sr-only"> (abre em uma nova aba)</span></a>
       </div>
       <div className="customer-reviews-profile">
-        <span className="reviews-platform">Google Maps</span>
+        <span className="reviews-platform"><span className="review-google-mark" aria-hidden="true">G</span> AVALIAÇÕES NO GOOGLE</span><div className="reviews-selection"><strong>{avaliacoes.length}</strong><span>avaliações reais<br />nesta seleção</span></div>
         <h3>Botica Bioenergética</h3>
         <p>Farmácia de manipulação</p>
         <address>Rua Sol da Meia-Noite, 990<br />São Miguel Paulista — São Paulo/SP</address>
-        <a href={`https://search.google.com/local/writereview?placeid=${placeId}`} target="_blank" rel="noopener noreferrer">Já conhece a Botica? Conte sua experiência <Icon name="arrow-up-right" /><span className="reviews-sr-only"> (abre em uma nova aba)</span></a>
+        <a href={`https://search.google.com/local/writereview?placeid=${placeId}`} target="_blank" rel="noopener noreferrer">Avaliar a Botica <Icon name="arrow-up-right" /><span className="reviews-sr-only"> (abre em uma nova aba)</span></a>
       </div>
-      <div className="customer-review-list">{avaliacoes.slice(0, 6).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div>
-      <details className="customer-reviews-more"><summary>Ver mais {avaliacoes.length - 6} avaliações</summary><div className="customer-review-list">{avaliacoes.slice(6).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div></details>
+      <div className="customer-review-list">{avaliacoes.slice(0, 3).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div>
+      <details className="customer-reviews-more"><summary><span className="reviews-more-closed">Ver mais {avaliacoes.length - 3} avaliações</span><span className="reviews-more-open">Mostrar menos avaliações</span><Icon name="arrow-right" /></summary><div className="customer-review-list">{avaliacoes.slice(3).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div></details>
     </section>
   );
 }
