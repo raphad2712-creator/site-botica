@@ -50,7 +50,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
             <CartGlyph /><span aria-live="polite">{produto.estoque < 1 ? "Indisponível" : adicionado ? "Adicionado" : "Adicionar"}</span>
           </button>
         </div>
-        <Link className="catalog-details-link" href={`/produto/${produto.id}`}>Conhecer o produto <span aria-hidden="true">↗</span></Link>
+        <Link className="catalog-details-link" href={`/produto/${produto.id}`}>Conhecer o produto</Link>
         {produto.estoque > 0 && produto.estoque <= 5 && <em className="mockup-low-stock">Restam poucas unidades</em>}
       </div>
     </article>
