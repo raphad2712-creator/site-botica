@@ -34,19 +34,19 @@ export function CustomerReviews() {
     <section className="customer-reviews" id="avaliacoes" aria-labelledby="reviews-title">
       <div className="customer-reviews-copy">
         <small>AVALIAÇÕES DE CLIENTES</small>
-        <h2 id="reviews-title">Cuidado que faz a diferença.<br /><em>Quem conhece, recomenda.</em></h2>
-        <p>Conheça uma seleção de avaliações publicadas no Google por clientes da Botica.</p>
+        <h2 id="reviews-title">A confiança de quem<br /><em>já comprou na Botica.</em></h2>
+        <p>Atendimento próximo, cuidado em cada pedido. Veja o que nossos clientes contam no Google.</p>
         <a className="reviews-primary-link" href={perfilGoogle} target="_blank" rel="noopener noreferrer">VER AVALIAÇÕES NO GOOGLE <Icon name="arrow-up-right" /><span className="reviews-sr-only"> (abre em uma nova aba)</span></a>
       </div>
       <div className="customer-reviews-profile">
-        <span className="reviews-platform"><span className="review-google-mark" aria-hidden="true">G</span> AVALIAÇÕES NO GOOGLE</span><div className="reviews-selection"><strong>{avaliacoes.length}</strong><span>depoimentos de clientes<br />selecionados para você</span></div>
+        <span className="reviews-platform"><span className="review-google-mark" aria-hidden="true">G</span> AVALIAÇÕES NO GOOGLE</span><div className="reviews-selection"><strong>{avaliacoes.length}</strong><span>avaliações reais<br />nesta seleção</span></div>
         <h3>Botica Bioenergética</h3>
         <p>Farmácia de manipulação</p>
         <address>Rua Sol da Meia-Noite, 990<br />São Miguel Paulista — São Paulo/SP</address>
         <a href={`https://search.google.com/local/writereview?placeid=${placeId}`} target="_blank" rel="noopener noreferrer">Avaliar a Botica <Icon name="arrow-up-right" /><span className="reviews-sr-only"> (abre em uma nova aba)</span></a>
       </div>
-      <div className="customer-review-list">{avaliacoes.slice(0, 6).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div>
-      <details className="customer-reviews-more"><summary><span className="reviews-more-closed">Ver mais {avaliacoes.length - 6} avaliações</span><span className="reviews-more-open">Mostrar menos avaliações</span><Icon name="arrow-right" /></summary><div className="customer-review-list">{avaliacoes.slice(6).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div></details>
+      <div className="customer-review-list">{avaliacoes.slice(0, 3).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div>
+      <details className="customer-reviews-more"><summary><span className="reviews-more-closed">Ver mais {avaliacoes.length - 3} avaliações</span><span className="reviews-more-open">Mostrar menos avaliações</span><Icon name="arrow-right" /></summary><div className="customer-review-list">{avaliacoes.slice(3).map((avaliacao) => <ReviewCard key={avaliacao.nome} avaliacao={avaliacao} />)}</div></details>
     </section>
   );
 }
