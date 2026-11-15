@@ -112,7 +112,7 @@ async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, p
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json",
-      "User-Agent": process.env.MELHOR_ENVIO_USER_AGENT || "Botica Bioenergetica (contato@boticabioenergetica.com.br)",
+      "User-Agent": process.env.MELHOR_ENVIO_USER_AGENT || "Botica Bioenergetica (flavio_farmaceutico@hotmail.com)",
     },
     body: JSON.stringify({
       from: { postal_code: somenteNumerosCep(process.env.CEP_ORIGEM_FRETE || CEP_ORIGEM_PADRAO) },

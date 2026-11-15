@@ -34,3 +34,7 @@ A alteração está preparada na branch local preparar-publicacao-botica. O envi
 ## Avaliações
 
 A seção reproduz 11 avaliações dos prints do Google enviados pela loja, com os nomes e as cinco estrelas visíveis. Os textos completos legíveis foram transcritos sem reescrita. A avaliação de Rosana Amorim usa apenas o trecho completo “Sempre satisfatória!”, identificado como trecho, pois o restante estava cortado. Avaliações duplicadas nos prints aparecem apenas uma vez. Não são reproduzidas fotos de perfil ou datas relativas, nem calculada uma nota geral com a seleção. Seis depoimentos ficam visíveis e os demais podem ser abertos em “Ver mais 5 avaliações”. Os links do Google foram preservados. Os depoimentos são estáticos, sem sincronização automática.
+
+## E-mail da empresa
+
+O contato público, o destino das notificações de novos pedidos, receitas, pós-venda e privacidade, e o Reply-To dos e-mails da aplicação usam flavio_farmaceutico@hotmail.com. Configurar LOJA_EMAIL e NEXT_PUBLIC_SUPPORT_EMAIL na Vercel. O EMAIL_REMETENTE deve continuar sendo um remetente autorizado pelo Brevo; para usar também o Hotmail como From, validar previamente esse endereço no Brevo. ADMIN_EMAIL e permissões do banco permanecem separados das notificações. Alterar o endereço sugerido no login administrativo não cria conta nem concede acesso. E-mails de autenticação são enviados pelo Supabase, cuja configuração SMTP não é alterada por estas variáveis.

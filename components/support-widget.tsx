@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui-icon";
 import Link from "next/link";
 import { useState } from "react";
 
-const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "contato@boticabioenergetica.com.br";
+const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
 
 export function SupportWidget() {
   const [aberto, setAberto] = useState(false);

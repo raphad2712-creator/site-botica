@@ -15,6 +15,7 @@ export async function enviarEmail({ para, assunto, html }: Email) {
     body: JSON.stringify({
       sender: { name: "Botica Bioenergética", email: remetente },
       to: [{ email: para }],
+      replyTo: { name: "Botica Bioenergética", email: process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com" },
       subject: assunto,
       htmlContent: html,
     }),

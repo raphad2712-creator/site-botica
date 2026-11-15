@@ -10,7 +10,7 @@ import { validarItens, validarCliente, type ItemRecebido } from "@/lib/checkout-
 type ClienteRecebido = { nome?: string; email?: string; cpf?: string; telefone?: string; cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; estado?: string };
 
 async function avisarLojaNovoPedido({ pedidoId, cliente, itens, subtotal, frete, total, pagamento }: { pedidoId: number; cliente: ClienteRecebido; itens: Array<{ nome: string; quantidade: number; preco_unitario: number }>; subtotal: number; frete: number; total: number; pagamento: string }) {
-  const emailLoja = process.env.ADMIN_EMAIL || process.env.EMAIL_REMETENTE;
+  const emailLoja = process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
   if (!emailLoja) return;
   const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const lista = itens.map((item) => `<tr><td style="padding:8px;border-bottom:1px solid #ddd">${escaparHtml(item.nome)}</td><td style="padding:8px;border-bottom:1px solid #ddd">${item.quantidade}</td><td style="padding:8px;border-bottom:1px solid #ddd">${moeda(item.preco_unitario * item.quantidade)}</td></tr>`).join("");

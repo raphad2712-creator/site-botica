@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   }).select("id,status").single();
   if (error) return NextResponse.json({ erro: "Não foi possível registrar a solicitação." }, { status: 500 });
 
-  const admin = process.env.ADMIN_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
+  const admin = process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
   const nome = auth.user.user_metadata.nome || auth.user.email?.split("@")[0] || "Cliente";
   if (admin) await enviarEmail({
     para: admin,

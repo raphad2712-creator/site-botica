@@ -78,7 +78,7 @@ export const consultationDarkArtwork = (product: ConsultationProduct) => consult
 export const formatPrice = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function consultationHref(product: ConsultationProduct) {
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "contato@boticabioenergetica.com.br";
+  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
   const name = `${product.nome} ${product.dose} — ${product.apresentacao}`;
   return `mailto:${email}?subject=${encodeURIComponent(`Consulta sobre ${name}`)}&body=${encodeURIComponent(`Olá! Gostaria de consultar o preço e a disponibilidade de ${name}.`)}`;
 }

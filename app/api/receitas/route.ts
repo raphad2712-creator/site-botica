@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       throw bancoError;
     }
 
-    const emailAdmin = process.env.ADMIN_EMAIL;
+    const emailAdmin = process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
     if (emailAdmin) await enviarEmail({ para: emailAdmin, assunto: `Nova receita #${receita.id} para análise`, html: `<h2>Nova receita recebida</h2><p><b>Cliente:</b> ${escaparHtml(auth.user.email)}</p><p><b>Observação:</b> ${escaparHtml(observacao || "Não informada")}</p><p>Acesse a aba Receitas no painel administrativo para visualizar o arquivo e responder.</p>` });
     return NextResponse.json({ mensagem: `Receita #${receita.id} enviada com sucesso. Nossa equipe fará a análise.` });
   } catch (error) {

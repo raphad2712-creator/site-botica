@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   if (!tipos.has(tipo) || detalhes.length < 10) return NextResponse.json({ erro: "Escolha o direito e descreva sua solicitação." }, { status: 400 });
   const { data, error } = await supabase.from("solicitacoes_lgpd").insert({ usuario_id: auth.user.id, tipo, detalhes }).select("id,status,criado_em").single();
   if (error) return NextResponse.json({ erro: "A Central de Privacidade precisa ser ativada no banco de dados." }, { status: 503 });
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_REMETENTE;
+  const adminEmail = process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
   if (adminEmail) await enviarEmail({ para: adminEmail, assunto: `Solicitação LGPD #${data.id}`, html: `<h2>Nova solicitação de privacidade</h2><p><b>Tipo:</b> ${escaparHtml(tipo)}</p><p><b>Titular:</b> ${escaparHtml(auth.user.email)}</p><p><b>Detalhes:</b> ${escaparHtml(detalhes)}</p><p>A solicitação foi registrada no Supabase com o protocolo #${data.id}.</p>` });
   if (auth.user.email) await enviarEmail({ para: auth.user.email, assunto: `Recebemos sua solicitação de privacidade #${data.id}`, html: `<h2>Solicitação recebida</h2><p>Seu pedido sobre <b>${escaparHtml(tipo)}</b> foi registrado com o protocolo <b>#${data.id}</b>.</p><p>A Botica poderá solicitar informações adicionais para confirmar sua identidade.</p>` });
   return NextResponse.json({ mensagem: "Solicitação registrada. A Botica fará a verificação de identidade antes do atendimento.", solicitacao: data }, { status: 201 });
