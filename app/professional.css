@@ -178,3 +178,23 @@ html[data-theme="dark"] .customer-reviews-profile { background: #213b30; border-
 html[data-theme="dark"] .customer-reviews-profile address, html[data-theme="dark"] .reviews-platform { color: #c8d8cc; }
 html[data-theme="dark"] .customer-reviews-profile a { color: #d9ebc5; }
 @media (max-width: 700px) { .customer-reviews { grid-template-columns: 1fr; width: calc(100% - 32px); margin: 40px auto; gap: 24px; border-radius: 22px; } .customer-reviews-profile { padding: 22px; } .reviews-primary-link { width: 100%; box-sizing: border-box; } }
+
+.customer-review-list { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.customer-review-card { margin: 0; min-width: 0; padding: 24px; border: 1px solid #dce7d8; border-radius: 20px; background: #fff; color: #214a3c; }
+.customer-review-card figcaption { display: flex; align-items: center; gap: 12px; }
+.review-avatar { width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; background: #e6eedf; color: #174f3e; font-size: 13px; font-weight: 700; }
+.customer-review-card figcaption strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.customer-review-card figcaption small { display: block; margin-top: 4px; color: #58695e; font-size: 12px; }
+.review-stars { display: flex; gap: 3px; margin: 20px 0 14px; }
+.review-stars svg { width: 18px; height: 18px; fill: #b57b10; }
+.customer-review-card blockquote { margin: 0; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.review-excerpt { display: block; margin-top: 12px; color: #58695e; }
+.customer-reviews-more { grid-column: 1 / -1; min-width: 0; }
+.customer-reviews-more summary { width: fit-content; margin: 0 auto; padding: 12px 22px; cursor: pointer; font-size: 14px; font-weight: 700; text-underline-offset: 4px; }
+.customer-reviews-more summary:focus-visible { outline: 3px solid #a78832; outline-offset: 4px; }
+.customer-reviews-more[open] summary { margin-bottom: 24px; }
+html[data-theme="dark"] .customer-review-card { background: #213b30; border-color: #466451; color: #edf4e9; }
+html[data-theme="dark"] .customer-review-card figcaption small, html[data-theme="dark"] .review-excerpt { color: #c8d8cc; }
+html[data-theme="dark"] .review-stars svg { fill: #f5c65b; }
+@media (max-width: 960px) { .customer-review-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .customer-review-list { grid-template-columns: minmax(0, 1fr); gap: 14px; } .customer-review-card { padding: 20px; } }
