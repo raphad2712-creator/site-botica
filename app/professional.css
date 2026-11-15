@@ -391,3 +391,17 @@ body :is(.cart-drawer,.favorites-drawer):not(.open) { visibility: hidden!importa
   body #conteudo #produtos .products::before,
   body #conteudo #produtos .products::after { content: ""!important; display: block!important; position: static!important; flex: 0 0 max(0px, calc((100% - var(--mobile-card-width)) / 2 - 18px)); width: auto!important; height: 1px!important; background: none!important; transform: none!important; }
 }
+
+/* Identificação visual das formas de pagamento. */
+.official-style-footer .footer-payment-methods { width: 100%; max-width: 350px; margin: 0 0 18px; }
+.official-style-footer .footer-payment-list { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; list-style: none; padding: 0; margin: 0; }
+.official-style-footer .footer-payment-list li { min-width: 0; text-align: center; }
+.official-style-footer .footer-payment-logo { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 56px; padding: 10px; border: 1px solid #e2e8e0; border-radius: 9px; background: #fff; box-shadow: none; }
+.official-style-footer .footer-payment-logo svg { display: block; width: 62px; height: 38px; flex-shrink: 0; }
+.official-style-footer .footer-payment-pix { color: #263c35; font: 600 22px/1 Arial,sans-serif; letter-spacing: -.8px; }
+.official-style-footer .footer-payment-pix svg { width: 26px; height: 26px; fill: #32bcad; }
+.official-style-footer .footer-payment-visa { color: #1434cb; font: italic 900 25px/1 Arial,sans-serif; letter-spacing: -1.5px; }
+.official-style-footer .footer-payment-name { display: block; padding-top: 9px; color: #e2ebe4; font-size: 12px; line-height: 1.4; }
+.official-style-footer .footer-payment-processor { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px; margin: 16px 0 0; color: #b9cec1; font-size: 12px; line-height: 1.5; }
+.official-style-footer .footer-payment-processor strong { color: #dceba4; font-size: 14px; }
+@media(max-width:750px) { .official-style-footer .footer-payment-methods { max-width: 360px; } .official-style-footer .footer-payment-logo { height: 60px; } }
