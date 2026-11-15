@@ -25,7 +25,7 @@ test('order quantities are aggregated before stock checks; invalid lines are rej
   for (const input of [null, {}, [], [null], [{ produto_id: 1, quantidade: 0 }], [{ produto_id: 1, quantidade: 1.5 }], [{ produto_id: '1', quantidade: 1 }], [{ produto_id: 1, quantidade: -1 }], [{ produto_id: 1, quantidade: 101 }], [{ produto_id: 1, quantidade: 60 }, { produto_id: 1, quantidade: 60 }], Array(101).fill({ produto_id: 1, quantidade: 1 })]) assert.throws(() => validarItens(input));
 });
 
-const address = { nome: 'Ana Silva', email: 'ana@example.test', cpf: '12345678901', cep: '08180-050', rua: 'Rua A', numero: '10', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP' };
+const address = { nome: 'Ana Silva', email: 'ana@example.test', cpf: '529.982.247-25', cep: '08180-050', rua: 'Rua A', numero: '10', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP' };
 test('buyer fields have type and length limits and require a complete Brazilian address', () => {
   assert.equal(validarCliente(address).cidade, 'São Paulo');
   for (const value of [null, [], { ...address, rua: {} }, { ...address, numero: '' }, { ...address, estado: 'ZZ' }, { ...address, cep: '123' }, { ...address, complemento: 'x'.repeat(121) }]) assert.throws(() => validarCliente(value));
@@ -74,4 +74,22 @@ test('checkout rejects duplicate stock bypass and malformed JSON without writing
     console.error = error;
     if (previous === undefined) delete process.env.PAGBANK_TOKEN; else process.env.PAGBANK_TOKEN = previous;
   }
+});
+
+ test('checkout validates CPF check digits and buyer identity before creating orders', () => {
+  assert.equal(validation.cpfValido('529.982.247-25'), true);
+  for (const cpf of ['11111111111', '00000000000', '52998224724', '123', '']) {
+    assert.equal(validation.cpfValido(cpf), false);
+    assert.throws(() => validarCliente({ ...address, cpf }), /CPF/);
+  }
+  for (const fields of [{ nome: '' }, { nome: 'AB' }, { email: 'invalido' }, { email: '' }]) {
+    assert.throws(() => validarCliente({ ...address, ...fields }), /nome/);
+  }
+});
+
+test('retired demo checkout never reports a successful purchase', async () => {
+  const route = load('app/api/checkout/route.ts', () => ({ NextResponse: { json: (body, options) => ({ body, status: options.status }) } }));
+  const result = await route.POST();
+  assert.equal(result.status, 410);
+  assert.equal(result.body.sucesso, undefined);
 });

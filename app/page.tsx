@@ -4,6 +4,7 @@ import type { Produto } from "@/lib/types";
 import { comImagemCatalogo } from "@/lib/product-images";
 
 export const revalidate = 0;
+export const metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   let produtos: Produto[] = [];

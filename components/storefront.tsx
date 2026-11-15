@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Produto } from "@/lib/types";
 import { ProductCard } from "./product-card";
 import { CampaignCarousel } from "./campaign-carousel";
+import { CustomerReviews } from "./customer-reviews";
 import { ConsultationProductCard } from "./consultation-product-card";
 import { buildCatalog, filterCatalog, isConsultation, type CatalogProduct } from "@/lib/catalog";
 
@@ -166,6 +167,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
       </section>
 
       <CampaignCarousel />
+      <CustomerReviews />
       <section className="about-botica scroll-reveal" id="sobre">
         <div className="about-botica-copy"><small>CONHEÇA A BOTICA</small><h2>Cuidado próximo, seguro e personalizado.</h2><p>A Botica Bioenergética reúne manipulação, produtos naturais e atendimento farmacêutico para tornar cada etapa mais simples — da escolha do produto ao acompanhamento do pedido.</p><a href="#receita">FALAR SOBRE UMA FÓRMULA</a></div>
         <div className="about-botica-points"><article><b>01</b><div><strong>Orientação responsável</strong><p>Informações claras para você comprar com mais confiança.</p></div></article><article><b>02</b><div><strong>Experiência completa</strong><p>Conta, pagamento, pedidos e suporte em um só lugar.</p></div></article><article><b>03</b><div><strong>Atendimento humano</strong><p>Uma equipe preparada para acompanhar suas necessidades.</p></div></article></div>
