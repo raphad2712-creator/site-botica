@@ -38,3 +38,5 @@ A seção reproduz 11 avaliações dos prints do Google enviados pela loja, com 
 ## E-mail da empresa
 
 O contato público, o destino das notificações de novos pedidos, receitas, pós-venda e privacidade, e o Reply-To dos e-mails da aplicação usam flavio_farmaceutico@hotmail.com. Configurar LOJA_EMAIL e NEXT_PUBLIC_SUPPORT_EMAIL na Vercel. O EMAIL_REMETENTE deve continuar sendo um remetente autorizado pelo Brevo; para usar também o Hotmail como From, validar previamente esse endereço no Brevo. ADMIN_EMAIL e permissões do banco permanecem separados das notificações. Alterar o endereço sugerido no login administrativo não cria conta nem concede acesso. E-mails de autenticação são enviados pelo Supabase, cuja configuração SMTP não é alterada por estas variáveis.
+
+Atualização mobile: emoji decorativo removido do depoimento de Wellington a pedido da loja; o restante do texto foi preservado.
