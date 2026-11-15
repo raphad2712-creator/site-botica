@@ -25,6 +25,7 @@ export function ConsultationProductCard({ produto }: { produto: ConsultationProd
           </div>
           <NaturalProductBuy produto={produto} compact />
         </div>
+        <Link className="catalog-details-link" href={href}>Conhecer o produto <span aria-hidden="true">↗</span></Link>
       </div>
     </article>
   );
