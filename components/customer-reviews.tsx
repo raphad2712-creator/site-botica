@@ -7,7 +7,7 @@ const perfilGoogle = "https://www.google.com/search?hl=pt_BR&q=avalia%C3%A7%C3%B
 // Transcrição dos prints do Google enviados pela loja. Sem atualização automática.
 const avaliacoes = [
   { nome: "Heloisa Barbosa", texto: "Atendimento muito bom, tanto presencial como online. São bem prestativos e educados. Comprarei sempre que precisar" },
-  { nome: "Wellington Oliveira", texto: "foi ótima, atendimento incrível e a entrega super rápida 🫶🏻" },
+  { nome: "Wellington Oliveira", texto: "foi ótima, atendimento incrível e a entrega super rápida" },
   { nome: "Maria Neves Neri", texto: "Um excelente atendimento comprei medicamentos várias vezes, tudo certinho, bem embalado. Vou continuar comprando. Super indico." },
   { nome: "Capoeira Andrade", texto: "Farmácia de manipulação incrível, profissionais super respeitosos e atenciosos!" },
   { nome: "Chuck Gomes", texto: "Excelente atendimento." },
