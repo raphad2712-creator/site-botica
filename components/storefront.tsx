@@ -43,7 +43,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
     const restaurarFiltros = () => {
       const params = new URLSearchParams(window.location.search);
       const inicial = params.get("categoria");
-      setCategoria(inicial && categorias.includes(inicial) ? inicial : "Naturais");
+      setCategoria(inicial && ["Todos", ...categorias].includes(inicial) ? inicial : "Naturais");
       setBusca((params.get("busca") || "").slice(0, 120));
       const ordenacao = params.get("ordem") || "relevancia";
       setOrdem(["menor", "maior", "nome"].includes(ordenacao) ? ordenacao : "relevancia");
@@ -72,6 +72,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
   }, [categoria, busca, ordem, filtrosProntos]);
 
   const catalogo = useMemo(() => buildCatalog(produtos), [produtos]);
+  const contagens = useMemo(() => Object.fromEntries(["Todos", ...categorias].map(item => [item, filterCatalog(catalogo, item, "", "relevancia").length])), [catalogo]);
   const filtrados = useMemo(() => filterCatalog(catalogo, busca.trim() ? "Todos" : categoria, busca, ordem), [catalogo, categoria, busca, ordem]);
 
   async function cadastrarNewsletter(event: React.FormEvent<HTMLFormElement>) {
@@ -153,17 +154,17 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         </div>
       </section>
       <section className="catalog scroll-reveal" id="produtos">
-        <div className="catalog-head"><div><small>BOTICA BIOENERGÉTICA</small><h2>{busca.trim() ? "Resultados da busca" : categoria === "Naturais" ? "Um cuidado para cada rotina" : categoria}</h2><p>{busca.trim() ? "Encontre sua fórmula em todas as categorias da Botica." : "Conheça as apresentações, confira os detalhes e escolha com tranquilidade."}</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
+        <div className="catalog-head"><div><small>ENCONTRE SEU PRÓXIMO CUIDADO</small><h2>{busca.trim() ? "Resultados da busca" : categoria === "Todos" ? "Catálogo completo" : categoria === "Naturais" ? "Um cuidado para cada rotina" : categoria}</h2><p>{busca.trim() ? "Encontre sua fórmula em todas as categorias da Botica." : "Conheça as apresentações, confira os detalhes e escolha com tranquilidade."}</p><span className="catalog-count" aria-live="polite">{filtrados.length} {filtrados.length === 1 ? "produto encontrado" : "produtos encontrados"}</span></div></div>
         <div className="catalog-tools">
           <label className="catalog-search"><span><Icon name="search" /></span><input value={busca} onChange={(e) => setBusca(e.target.value)} type="search" maxLength={120} placeholder="Busque por produto ou objetivo" aria-label="Buscar produtos" />{busca && <button onClick={() => setBusca("")} aria-label="Limpar busca">×</button>}</label>
           <label className="catalog-sort"><span>Ordenar por</span><select value={ordem} onChange={(e) => setOrdem(e.target.value)}><option value="relevancia">Mais relevantes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="nome">Nome A–Z</option></select></label>
         </div>
         <div className="category-tabs" aria-label="Categorias de produtos">
-          {categorias.map((item) => <button key={item} className={!busca && categoria === item ? "active" : ""} aria-pressed={!busca && categoria === item} onClick={() => { setBusca(""); setCategoria(item); }}>{item}</button>)}
+          {["Todos", ...categorias].map((item) => <button key={item} className={!busca && categoria === item ? "active" : ""} aria-pressed={!busca && categoria === item} onClick={() => { setBusca(""); setCategoria(item); }}>{item}<span className="catalog-category-count">{contagens[item]}</span></button>)}
         </div>
         {(busca || ordem !== "relevancia") && <div className="catalog-active-filters"><span>{busca ? `Busca por “${busca}” no catálogo` : `Ordenação personalizada em ${categoria}`}</span><button type="button" onClick={() => { setBusca(""); setOrdem("relevancia"); }}>Limpar filtros <span aria-hidden="true">×</span></button></div>}
         {erro && <div className="notice error" role="status">Não foi possível carregar os preços e a disponibilidade agora. Você pode consultar os produtos abaixo ou tentar novamente em instantes. <button className="catalog-retry" type="button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}
-        {filtrados.length ? <div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div> : <div className="catalog-empty"><b>{busca ? "Nenhum produto encontrado" : "Categoria sem produtos"}</b><p>{busca ? "Tente buscar pelo nome da fórmula ou pela concentração." : "Novos produtos serão adicionados em breve."}</p>{busca && <button onClick={() => setBusca("")}>LIMPAR BUSCA</button>}</div>}
+        {filtrados.length ? <><p className="catalog-mobile-hint">Deslize para explorar os produtos <Icon name="arrow-right" /></p><div className="products">{filtrados.map((produto) => <CatalogCard key={isConsultation(produto) ? produto.slug : produto.id} produto={produto} />)}</div></> : <div className="catalog-empty"><Icon name="search" /><b>{busca ? "Nenhum produto encontrado" : "Categoria sem produtos"}</b><p>{busca ? "Tente buscar pelo nome da fórmula ou pela concentração." : "Novos produtos serão adicionados em breve."}</p>{busca && <button onClick={() => { setBusca(""); setCategoria("Todos"); }}>VER TODOS OS PRODUTOS</button>}</div>}
       </section>
 
       <CampaignCarousel />

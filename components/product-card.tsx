@@ -32,7 +32,7 @@ export function ProductCard({ produto }: { produto: Produto }) {
           {!!desconto && <span className="discount-badge">-{desconto}%</span>}
           <ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} />
         </Link>
-        <button className={`favorite-button ${estaFavorito(produto.id) ? "active" : ""}`} onClick={() => alternarFavorito(produto)} aria-label={estaFavorito(produto.id) ? `Remover ${produto.nome} dos favoritos` : `Adicionar ${produto.nome} aos favoritos`}>
+        <button className={`favorite-button ${estaFavorito(produto.id) ? "active" : ""}`} onClick={() => alternarFavorito(produto)} aria-pressed={estaFavorito(produto.id)} aria-label={estaFavorito(produto.id) ? `Remover ${produto.nome} dos favoritos` : `Adicionar ${produto.nome} aos favoritos`}>
           <svg viewBox="0 0 24 24"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z" /></svg>
         </button>
       </div>
@@ -47,9 +47,10 @@ export function ProductCard({ produto }: { produto: Produto }) {
             <small>{produto.estoque > 0 ? "Disponível" : "Indisponível"}</small>
           </div>
           <button type="button" className={`buy mockup-cart-button ${adicionado ? "added" : ""}`} disabled={produto.estoque < 1} onClick={adicionarProduto} aria-label={produto.estoque < 1 ? `${produto.nome} indisponível` : `Adicionar ${produto.nome} ao carrinho`}>
-            <CartGlyph />
+            <CartGlyph /><span aria-live="polite">{produto.estoque < 1 ? "Indisponível" : adicionado ? "Adicionado" : "Adicionar"}</span>
           </button>
         </div>
+        <Link className="catalog-details-link" href={`/produto/${produto.id}`}>Conhecer o produto <span aria-hidden="true">↗</span></Link>
         {produto.estoque > 0 && produto.estoque <= 5 && <em className="mockup-low-stock">Restam poucas unidades</em>}
       </div>
     </article>
