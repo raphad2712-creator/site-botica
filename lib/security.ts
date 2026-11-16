@@ -5,14 +5,13 @@ import { criarClienteAdmin } from "@/lib/supabase/admin";
 const memoria = new Map<string, { quantidade: number; expiraEm: number }>();
 
 function ipDaRequisicao(request: Request) {
-  return request.headers.get("cf-connecting-ip")
-    || request.headers.get("x-real-ip")
-    || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || "desconhecido";
+  // A Vercel sobrescreve este cabeçalho. Não aceitar cf-connecting-ip enviado pelo visitante.
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "desconhecido";
 }
 
 export async function limiteExcedido(request: Request, escopo: string, limite: number, janelaSegundos: number) {
-  const segredo = process.env.RATE_LIMIT_SECRET || process.env.PAGBANK_TOKEN || "botica-rate-limit";
+  const segredo = process.env.RATE_LIMIT_SECRET || process.env.PAGBANK_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!segredo) return true;
   const identificador = createHash("sha256").update(`${segredo}:${escopo}:${ipDaRequisicao(request)}`).digest("hex");
   try {
     const { data, error } = await criarClienteAdmin().rpc("consumir_limite_api", {
@@ -21,7 +20,8 @@ export async function limiteExcedido(request: Request, escopo: string, limite: n
       p_janela_segundos: janelaSegundos,
     });
     if (!error && typeof data === "boolean") return !data;
-  } catch { /* O limitador local mantém proteção antes da migração do banco. */ }
+  } catch { /* Sem banco, produção falha fechada para não permitir abuso entre instâncias. */ }
+  if (process.env.NODE_ENV === "production") return true;
 
   const agora = Date.now();
   // Bound the serverless fallback even under requests from many different IPs.

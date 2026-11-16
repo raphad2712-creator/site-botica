@@ -1,3 +1,4 @@
+import { segurancaBancoPronta, mensagemManutencao } from "@/lib/launch-readiness";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
@@ -11,6 +12,7 @@ export async function POST(request: Request) {
     const nomeNormalizado = String(nome ?? "").trim().slice(0, 100);
     const tamanhoMinimo = acao === "cadastro" ? 8 : 6;
     if (!emailNormalizado || !["login", "cadastro"].includes(String(acao)) || senha.length < tamanhoMinimo || senha.length > 128 || (acao === "cadastro" && nomeNormalizado.length < 3)) return NextResponse.json({ erro: "Confira e-mail, nome e senha. Novas senhas devem ter pelo menos 8 caracteres." }, { status: 400 });
+    if (acao === "cadastro" && !await segurancaBancoPronta()) return NextResponse.json({ erro: mensagemManutencao }, { status: 503 });
     const supabase = await criarClienteServidor();
     const origem = new URL(request.url).origin;
     const resposta = acao === "cadastro"

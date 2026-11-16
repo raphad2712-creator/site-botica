@@ -11,7 +11,7 @@ import { formatarCep, type CotacaoFrete } from "@/lib/frete";
 const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export default function CheckoutPage() {
-  const { itens, total, limpar } = useCart();
+  const { itens, total } = useCart();
   const consultaFrete = useRef(0);
   const chaveCarrinho = JSON.stringify(itens.map(({ id, quantidade }) => [id, quantidade]));
   const [mensagem, setMensagem] = useState("");
@@ -77,12 +77,6 @@ export default function CheckoutPage() {
         return;
       }
       if (!resposta.ok) return setMensagem(dados.erro ?? "Não foi possível finalizar.");
-      if (dados.tipo === "teste") {
-        limpar();
-        setMensagem("Pedido de teste concluído. Abrindo sua conta...");
-        window.location.assign(`/minha-conta?pedido=${dados.pedido_id}#pedidos`);
-        return;
-      }
       if (!dados.checkout_url) return setMensagem("O checkout de pagamento não foi disponibilizado.");
       setMensagem(`Abrindo o pagamento por ${metodoPagamento === "pix" ? "Pix" : "cartão de crédito"}...`);
       window.location.assign(dados.checkout_url);

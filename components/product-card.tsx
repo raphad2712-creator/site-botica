@@ -14,8 +14,10 @@ const moeda = (valor: number) => Number(valor).toLocaleString("pt-BR", { style: 
 export function ProductCard({ produto }: { produto: Produto }) {
   const { adicionar } = useCart();
   const { estaFavorito, alternarFavorito } = useFavorites();
+  const disponivel = produto.estoque_confirmado === true && produto.estoque > 0;
   const [adicionado, setAdicionado] = useState(false);
   function adicionarProduto() {
+    if (!disponivel) return;
     adicionar(produto);
     setAdicionado(true);
     window.setTimeout(() => setAdicionado(false), 1400);
@@ -44,14 +46,14 @@ export function ProductCard({ produto }: { produto: Produto }) {
           <div className="mockup-price-group">
             {!!desconto && <del>{moeda(produto.preco_antigo!)}</del>}
             <strong>{moeda(produto.preco)}</strong>
-            <small>{produto.estoque > 0 ? "Disponível" : "Indisponível"}</small>
+            <small>{disponivel ? "Disponível" : produto.estoque_confirmado !== true ? "Disponibilidade a confirmar" : "Indisponível"}</small>
           </div>
-          <button type="button" className={`buy mockup-cart-button ${adicionado ? "added" : ""}`} disabled={produto.estoque < 1} onClick={adicionarProduto} aria-label={produto.estoque < 1 ? `${produto.nome} indisponível` : `Adicionar ${produto.nome} ao carrinho`}>
-            <CartGlyph /><span aria-live="polite">{produto.estoque < 1 ? "Indisponível" : adicionado ? "Adicionado" : "Adicionar"}</span>
+          <button type="button" className={`buy mockup-cart-button ${adicionado ? "added" : ""}`} disabled={!disponivel} onClick={adicionarProduto} aria-label={!disponivel ? `${produto.nome} indisponível` : `Adicionar ${produto.nome} ao carrinho`}>
+            <CartGlyph /><span aria-live="polite">{!disponivel ? "Indisponível" : adicionado ? "Adicionado" : "Adicionar"}</span>
           </button>
         </div>
         <Link className="catalog-details-link" href={`/produto/${produto.id}`}>Conhecer o produto</Link>
-        {produto.estoque > 0 && produto.estoque <= 5 && <em className="mockup-low-stock">Restam poucas unidades</em>}
+        {disponivel && produto.estoque <= 5 && <em className="mockup-low-stock">Restam poucas unidades</em>}
       </div>
     </article>
   );

@@ -1,3 +1,4 @@
+import { usuarioAdminAutorizado } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -7,8 +8,7 @@ async function adminAutenticado() {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return null;
-  const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).maybeSingle();
-  return perfil?.funcao === "admin" ? criarClienteAdmin() : null;
+  return await usuarioAdminAutorizado(auth.user, supabase) ? criarClienteAdmin() : null;
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {

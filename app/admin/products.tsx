@@ -70,12 +70,12 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
     try {
       const resposta = await fetch("/api/admin/produtos", {
         method: "PATCH", credentials: "same-origin", headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ id: produto.id, peso_kg: Number(form.get("peso_kg")), altura_cm: Number(form.get("altura_cm")), largura_cm: Number(form.get("largura_cm")), comprimento_cm: Number(form.get("comprimento_cm")) }),
+        body: JSON.stringify({ id: produto.id, estoque: Number(form.get("estoque")), estoque_confirmado: true, peso_kg: Number(form.get("peso_kg")), altura_cm: Number(form.get("altura_cm")), largura_cm: Number(form.get("largura_cm")), comprimento_cm: Number(form.get("comprimento_cm")) }),
       });
       const resultado = await lerResposta(resposta);
       if (!resposta.ok) return setMensagem(resultado.erro || "Não foi possível salvar as medidas.");
       setProdutos((atuais) => atuais.map((atual) => atual.id === produto.id ? resultado.produto as Produto : atual));
-      setMensagem(`Peso e dimensões de ${produto.nome} foram atualizados.`);
+      setMensagem(`Peso e dimensões de ${produto.nome} e o estoque foram conferidos.`);
     } catch {
       setMensagem("Falha de conexão. Tente novamente.");
     } finally {
@@ -105,15 +105,15 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         {produtos.map((produto) => (
           <article key={produto.id}>
             <div className="admin-product-thumb"><ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} /></div>
-            <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque} unidades</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em></div>
+            <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque_confirmado ? `${produto.estoque} unidades conferidas` : "Estoque precisa de conferência"}</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em></div>
             <strong>R$ {Number(produto.preco).toFixed(2).replace(".", ",")}</strong>
             <button onClick={() => alternar(produto)}>{produto.ativo ? "DESATIVAR" : "ATIVAR"}</button>
-            <form className="admin-shipping-form" onSubmit={(event) => salvarMedidas(event, produto)}>
+            <form className="admin-shipping-form" onSubmit={(event) => salvarMedidas(event, produto)}><label>Estoque físico conferido<input name="estoque" type="number" min="0" max="100000" step="1" defaultValue={produto.estoque_confirmado ? produto.estoque : ""} placeholder="Informe a quantidade real" required /></label>
               <label>Peso (kg)<input name="peso_kg" type="number" min="0.001" step="0.001" defaultValue={produto.peso_kg ?? ""} required /></label>
               <label>Altura (cm)<input name="altura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.altura_cm ?? ""} required /></label>
               <label>Largura (cm)<input name="largura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.largura_cm ?? ""} required /></label>
               <label>Comprimento (cm)<input name="comprimento_cm" type="number" min="0.1" step="0.1" defaultValue={produto.comprimento_cm ?? ""} required /></label>
-              <button disabled={salvando}>SALVAR MEDIDAS</button>
+              <button disabled={salvando}>CONFIRMAR ESTOQUE E MEDIDAS</button>
             </form>
           </article>
         ))}

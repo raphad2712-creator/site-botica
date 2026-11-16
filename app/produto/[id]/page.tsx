@@ -48,7 +48,7 @@ export default async function ProdutoPage({ params }: { params: Promise<{ id: st
         <p>{produto.descricao}</p>
         {produto.preco_antigo && <del>{moeda(produto.preco_antigo)}</del>}
         <strong>{moeda(produto.preco)}</strong>
-        <span>{produto.estoque} unidades disponíveis</span>
+        <span>{produto.estoque_confirmado === true ? `${produto.estoque} unidades disponíveis` : "Disponibilidade a confirmar com a farmácia"}</span>
         <AddProduct produto={produto} />
         <div className="product-benefits"><span><b><Icon name="check" /></b> Compra segura</span><span><b><Icon name="truck" /></b> Frete calculado pelo CEP</span><span><b><Icon name="heart" /></b> Cuidado selecionado</span></div>
         <div className="care-note">

@@ -1,3 +1,4 @@
+import { segurancaBancoPronta } from "@/lib/launch-readiness";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -13,11 +14,14 @@ function assinaturaValida(payload: string, assinatura: string | null, token: str
 export async function POST(request: Request) {
   try {
     const token = process.env.PAGBANK_TOKEN;
-    if (!token) throw new Error("PAGBANK_NAO_CONFIGURADO");
+    if (!token) return NextResponse.json({ erro: "Serviço temporariamente indisponível." }, { status: 503 });
+    if (Number(request.headers.get("content-length")) > 65536) return NextResponse.json({ erro: "Notificação muito grande." }, { status: 413 });
     const payload = await request.text();
+    if (new TextEncoder().encode(payload).length > 65536) return NextResponse.json({ erro: "Notificação muito grande." }, { status: 413 });
     if (!assinaturaValida(payload, request.headers.get("x-authenticity-token"), token)) {
       return NextResponse.json({ erro: "Notificação inválida." }, { status: 401 });
     }
+    if (!await segurancaBancoPronta()) return NextResponse.json({ erro: "Serviço temporariamente indisponível." }, { status: 503 });
     const body = JSON.parse(payload);
     const cobrancas = Array.isArray(body?.charges) ? body.charges : [];
     const cobrancaPaga = cobrancas.find((cobranca: { status?: string }) => cobranca.status === "PAID");
