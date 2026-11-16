@@ -1,3 +1,4 @@
+import { segurancaBancoPronta, mensagemManutencao } from "@/lib/launch-readiness";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -12,6 +13,7 @@ export async function POST(request: Request) {
     const supabase = await criarClienteServidor();
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta para enviar a receita." }, { status: 401 });
+    if (!await segurancaBancoPronta()) return NextResponse.json({ erro: mensagemManutencao }, { status: 503 });
     const admin = criarClienteAdmin();
     const { data: perfil } = await admin.from("perfil_clientes").select("nome,cpf,telefone,cep,rua,numero,bairro,cidade,estado").eq("usuario_id", auth.user.id).maybeSingle();
     const camposObrigatorios = [
@@ -20,18 +22,19 @@ export async function POST(request: Request) {
     ] as const;
     const faltando = camposObrigatorios.filter(([campo]) => !String(perfil?.[campo] ?? "").trim()).map(([, rotulo]) => rotulo);
     if (faltando.length) return NextResponse.json({ erro: `Antes de enviar, preencha em Minha conta: ${faltando.join(", ")}.`, cadastro_incompleto: true }, { status: 400 });
+    if (Number(request.headers.get("content-length")) > 4 * 1024 * 1024) return NextResponse.json({ erro: "O arquivo deve ter no máximo 3 MB." }, { status: 413 });
     const form = await request.formData();
     const arquivo = form.get("arquivo");
     const observacao = String(form.get("observacao") ?? "").trim().slice(0, 600);
     if (!(arquivo instanceof File) || !arquivo.size) return NextResponse.json({ erro: "Selecione um arquivo." }, { status: 400 });
     if (!tiposPermitidos.has(arquivo.type)) return NextResponse.json({ erro: "Envie um arquivo PDF, JPG ou PNG." }, { status: 400 });
-    if (arquivo.size > 10 * 1024 * 1024) return NextResponse.json({ erro: "O arquivo deve ter no máximo 10 MB." }, { status: 400 });
+    if (arquivo.size > 3 * 1024 * 1024) return NextResponse.json({ erro: "O arquivo deve ter no máximo 3 MB." }, { status: 400 });
     if (!await assinaturaArquivoValida(arquivo)) return NextResponse.json({ erro: "O conteúdo do arquivo não corresponde ao formato informado." }, { status: 400 });
 
     const bucket = "receitas-privadas";
     const { data: bucketAtual } = await admin.storage.getBucket(bucket);
     if (!bucketAtual) {
-      const { error: bucketError } = await admin.storage.createBucket(bucket, { public: false, fileSizeLimit: 10 * 1024 * 1024, allowedMimeTypes: [...tiposPermitidos] });
+      const { error: bucketError } = await admin.storage.createBucket(bucket, { public: false, fileSizeLimit: 3 * 1024 * 1024, allowedMimeTypes: [...tiposPermitidos] });
       if (bucketError && !bucketError.message.toLowerCase().includes("already")) throw bucketError;
     }
     const extensao = arquivo.type === "application/pdf" ? "pdf" : arquivo.type === "image/png" ? "png" : "jpg";

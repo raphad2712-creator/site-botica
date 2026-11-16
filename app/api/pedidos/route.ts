@@ -1,3 +1,4 @@
+import { comprasLiberadas } from "@/lib/launch-readiness";
 import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
@@ -33,6 +34,7 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "CHECKOUT_RECUSADO") return "Não foi possível abrir o pagamento. Tente novamente em instantes ou fale com a Botica.";
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento online está temporariamente indisponível. Fale com a Botica para receber ajuda.";
   if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
+  if (detalhe === "FRETE_NAO_HOMOLOGADO") return "A entrega para este pedido precisa ser confirmada pela Botica antes do pagamento.";
   if (detalhe === "CEP_INDISPONIVEL") return "Não foi possível confirmar o frete agora. Tente novamente.";
   if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Não foi possível iniciar o pedido. Tente novamente em instantes ou fale com a Botica.";
   if (codigo === "42P01" || codigo === "PGRST205") return "Não foi possível registrar o pedido agora. Tente novamente em instantes.";
@@ -45,8 +47,7 @@ export async function POST(request: Request) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
   const accessToken = process.env.PAGBANK_TOKEN;
-  const modoPedidoTeste = process.env.MODO_PEDIDO_TESTE === "true" && !!process.env.ADMIN_EMAIL && auth.user.email?.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
-  if (!accessToken && !modoPedidoTeste) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
+  if (!await comprasLiberadas()) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
   let body: { itens: ItemRecebido[]; cliente: ReturnType<typeof validarCliente>; metodo_pagamento: unknown };
   try {
     if (Number(request.headers.get("content-length")) > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
@@ -59,10 +60,10 @@ export async function POST(request: Request) {
   }
   if (body.metodo_pagamento !== "pix" && body.metodo_pagamento !== "cartao") return NextResponse.json({ erro: "Escolha Pix ou cartão de crédito." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
-  let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
+  let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,estoque_confirmado,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
   if (error) {
     const consultaLegada = await supabase.from("produtos").select("id,nome,preco,estoque,ativo").in("id", ids).eq("ativo", true);
-    produtos = consultaLegada.data?.map((produto) => ({ ...produto, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null })) ?? null;
+    produtos = consultaLegada.data?.map((produto) => ({ ...produto, estoque_confirmado: false, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null })) ?? null;
     error = consultaLegada.error;
   }
   if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
     const itensPedido = body.itens.map((item) => {
       const produto = produtos.find((p) => Number(p.id) === Number(item.produto_id))!;
       const quantidade = item.quantidade;
-      if (!Number.isFinite(quantidade) || quantidade > Number(produto.estoque)) throw new Error(`ESTOQUE:${produto.nome}`);
+      if (produto.estoque_confirmado !== true || !Number.isFinite(quantidade) || quantidade > Number(produto.estoque)) throw new Error(`ESTOQUE:${produto.nome}`);
       subtotal += Number(produto.preco) * quantidade;
       return { produto_id: produto.id, nome: produto.nome, quantidade, preco_unitario: Number(produto.preco) };
     });
@@ -94,6 +95,7 @@ export async function POST(request: Request) {
         comprimento_cm: produto.comprimento_cm === null ? null : Number(produto.comprimento_cm),
       };
     }));
+    if (cotacaoFrete.estimado && process.env.FRETE_TABELA_APROVADA !== "true") throw new Error("FRETE_NAO_HOMOLOGADO");
     const frete = cotacaoFrete.valor;
 
     etapa = "salvar os dados do comprador";
@@ -114,31 +116,16 @@ export async function POST(request: Request) {
     if (perfilError) throw perfilError;
 
     etapa = "salvar o endereço";
-    const { data: endereco, error: enderecoError } = await supabase.from("enderecos").insert({ usuario_id: auth.user.id, cep: cliente.cep, rua: cliente.rua, numero: cliente.numero, complemento: cliente.complemento || null, bairro: cliente.bairro, cidade: cliente.cidade, estado: cliente.estado.toUpperCase() }).select("id").single();
+    const { data: endereco, error: enderecoError } = await admin.from("enderecos").insert({ usuario_id: auth.user.id, cep: cliente.cep, rua: cliente.rua, numero: cliente.numero, complemento: cliente.complemento || null, bairro: cliente.bairro, cidade: cliente.cidade, estado: cliente.estado.toUpperCase() }).select("id").single();
     if (enderecoError) throw enderecoError;
     const total = Number((subtotal + frete).toFixed(2));
     etapa = "criar o pedido";
-    const { data: pedido, error: pedidoError } = await supabase.from("pedidos").insert({ usuario_id: auth.user.id, endereco_id: endereco.id, total, frete, transportadora: `${cotacaoFrete.transportadora} — ${cotacaoFrete.servico}`, status: "aguardando_pagamento" }).select("id").single();
+    const { data: pedido, error: pedidoError } = await admin.from("pedidos").insert({ usuario_id: auth.user.id, endereco_id: endereco.id, total, frete, transportadora: `${cotacaoFrete.transportadora} — ${cotacaoFrete.servico}`, status: "aguardando_pagamento" }).select("id").single();
     if (pedidoError) throw pedidoError;
     pedidoId = Number(pedido.id);
     etapa = "salvar os produtos do pedido";
-    const { error: itensError } = await supabase.from("itens_pedido").insert(itensPedido.map(({ nome: _nome, ...item }) => ({ ...item, pedido_id: pedido.id })));
+    const { error: itensError } = await admin.from("itens_pedido").insert(itensPedido.map(({ nome: _nome, ...item }) => ({ ...item, pedido_id: pedido.id })));
     if (itensError) throw itensError;
-
-    // O modo de teste do administrador sempre tem prioridade, mesmo quando já
-    // existe uma credencial do PagBank configurada na Vercel.
-    if (modoPedidoTeste) {
-      etapa = "confirmar o pedido de teste";
-      const { error: testeError } = await admin.from("pedidos").update({
-        status: "pago",
-        pagamento_id: `TESTE-${pedido.id}`,
-        pago_em: new Date().toISOString(),
-        status_entrega: "preparando",
-      }).eq("id", pedido.id);
-      if (testeError) throw testeError;
-      await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: "Pedido de teste confirmado" });
-      return NextResponse.json({ pedido_id: pedido.id, tipo: "teste", mensagem: "Pedido de teste finalizado sem cobrança." });
-    }
 
     const cpf = String(cliente.cpf ?? "").replace(/\D/g, "");
     const email = emailValido(cliente.email);
@@ -205,14 +192,7 @@ export async function POST(request: Request) {
   } catch (erro) {
     console.error("ERRO_CRIAR_PEDIDO", { etapa, pedidoId, erro });
     if (pedidoId) { try { await criarClienteAdmin().from("pedidos").update({ status: "cancelado" }).eq("id", pedidoId); } catch { /* mantém o erro original */ } }
-    const detalhe = erro instanceof Error
-      ? erro.message
-      : typeof erro === "object" && erro && "message" in erro
-        ? String(erro.message)
-        : "erro desconhecido";
-    const mensagem = modoPedidoTeste
-      ? `Teste — falha ao ${etapa}: ${detalhe}`
-      : mensagemErro(erro);
+    const mensagem = mensagemErro(erro);
     return NextResponse.json({ erro: mensagem }, { status: 400 });
   }
 }

@@ -1,3 +1,4 @@
+import { usuarioAdminAutorizado } from "@/lib/admin-access";
 import { redirect } from "next/navigation";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { AdminProducts } from "./products";
@@ -14,8 +15,7 @@ export default async function AdminPage() {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) redirect("/admin/login");
 
-  const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).single();
-  if (perfil?.funcao !== "admin") redirect("/admin/login");
+  if (!await usuarioAdminAutorizado(auth.user, supabase)) redirect("/admin/login");
 
   const { data } = await supabase.from("produtos").select("*").order("id");
   const admin = criarClienteAdmin();

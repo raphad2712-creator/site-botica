@@ -1,3 +1,5 @@
+import { criarClienteAdmin } from "@/lib/supabase/admin";
+import { segurancaBancoPronta, mensagemManutencao } from "@/lib/launch-readiness";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { enviarEmail, escaparHtml } from "@/lib/email";
@@ -9,6 +11,7 @@ export async function POST(request: Request) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na conta para solicitar." }, { status: 401 });
 
+  if (!await segurancaBancoPronta()) return NextResponse.json({ erro: mensagemManutencao }, { status: 503 });
   const body = await request.json();
   const pedidoId = Number(body.pedido_id);
   const codigoInformado = String(body.codigo_pedido ?? "").trim().toUpperCase();
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "O código informado não corresponde a este pedido. Confira o código exibido no topo." }, { status: 400 });
   }
 
-  const { data: solicitacao, error } = await supabase.from("solicitacoes_pos_venda").insert({
+  const { data: solicitacao, error } = await criarClienteAdmin().from("solicitacoes_pos_venda").insert({
     pedido_id: pedidoId,
     usuario_id: auth.user.id,
     tipo,

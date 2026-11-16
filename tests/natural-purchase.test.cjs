@@ -21,20 +21,21 @@ function setup(rows = []) {
   const route = moduleFrom('app/api/catalogo/[slug]/route.ts', name => name==='next/server'
     ? {NextResponse:{json:(body,options={})=>({body,status:options.status||200})}}
     : name.includes('supabase')
-      ? {criarClienteAdmin:()=>admin}
+      ? {criarClienteServidor:async()=>admin}
       : name.includes('security')
         ? {limiteExcedido:async()=>false,respostaMuitasTentativas:()=>({status:429})}
         : labels);
   return {call:slug=>route.POST({}, {params:Promise.resolve({slug})}),rows,get writes(){return writes;}};
 }
-test('os quatorze produtos recebem cadastros estáveis e não duplicam ao adicionar novamente',async()=>{
+test('produto sem cadastro não inventa estoque nem grava produtos',async()=>{
  const api=setup();
- for(const p of labels.consultationProducts){ const first=await api.call(p.slug); const again=await api.call(p.slug); assert.equal(first.status,200); assert.equal(first.body.id,again.body.id); assert.equal(first.body.preco,p.precoDemonstrativo); assert.equal(first.body.imagem_url,labels.consultationImage(p)); }
- assert.equal(api.rows.length,14); assert.equal(new Set(api.rows.map(p=>p.id)).size,14); assert.equal(api.writes,14);
+ for(const p of labels.consultationProducts) assert.equal((await api.call(p.slug)).status,409);
+ assert.equal(api.rows.length,0); assert.equal(api.writes,0);
 });
 test('cadastro existente recebe preço atualizado e mantém ID, estoque e indisponibilidade',async()=>{
- const row={id:45,nome:'Passiflora 300 mg',preco:65,estoque:4,ativo:true}; const api=setup([row]);
+ const row={id:45,nome:'Passiflora 300 mg',preco:65,estoque:4,estoque_confirmado:true,ativo:true}; const api=setup([row]);
  assert.deepEqual((await api.call('passiflora-300mg')).body,{...row,preco:55.9,preco_antigo:null}); assert.equal(api.writes,0);
+ row.estoque_confirmado=false; assert.equal((await api.call('passiflora-300mg')).status,409); row.estoque_confirmado=true;
  row.ativo=false; assert.equal((await api.call('passiflora-300mg')).status,409); assert.equal(api.writes,0);
 });
 test('slug desconhecido não grava produtos',async()=>{const api=setup();assert.equal((await api.call('outro')).status,404);assert.equal(api.writes,0);});

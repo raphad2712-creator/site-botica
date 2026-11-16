@@ -45,12 +45,13 @@ test('checkout rejects duplicate stock bypass and malformed JSON without writing
   const database = {
     auth: { getUser: async () => ({ data: { user: { id: 'user-1', email: 'ana@example.test' } } }) },
     from: () => ({
-      select: () => ({ in: (_, ids) => { queriedIds = ids; return { eq: async () => ({ data: [{ id: 4, nome: 'Produto', preco: 10, estoque: 5, ativo: true }] }) }; } }),
+      select: () => ({ in: (_, ids) => { queriedIds = ids; return { eq: async () => ({ data: [{ id: 4, nome: 'Produto', preco: 10, estoque: 5, estoque_confirmado: true, ativo: true }] }) }; } }),
       insert: () => { writes++; throw new Error('unexpected write'); },
     }),
   };
   const route = load('app/api/pedidos/route.ts', name => {
     if (name === 'next/server') return { NextResponse: { json: (body, options = {}) => ({ body, status: options.status || 200 }) } };
+    if (name.includes('launch-readiness')) return { comprasLiberadas: async () => true };
     if (name.includes('supabase/server')) return { criarClienteServidor: async () => database };
     if (name.includes('supabase/admin')) return { criarClienteAdmin: () => database };
     if (name.includes('security')) return { limiteExcedido: async () => false, emailValido: value => value };

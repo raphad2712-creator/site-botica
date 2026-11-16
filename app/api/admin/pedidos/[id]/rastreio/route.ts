@@ -1,3 +1,4 @@
+import { usuarioAdminAutorizado } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -7,8 +8,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Não autenticado." }, { status: 401 });
-  const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).maybeSingle();
-  if (perfil?.funcao !== "admin") return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
+  if (!await usuarioAdminAutorizado(auth.user, supabase)) return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
 
   const id = Number((await params).id);
   const body = await request.json();
@@ -41,8 +41,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Não autenticado." }, { status: 401 });
-  const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).maybeSingle();
-  if (perfil?.funcao !== "admin") return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
+  if (!await usuarioAdminAutorizado(auth.user, supabase)) return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
   const id = Number((await params).id);
   if (!Number.isInteger(id)) return NextResponse.json({ erro: "Pedido inválido." }, { status: 400 });
   const admin = criarClienteAdmin();

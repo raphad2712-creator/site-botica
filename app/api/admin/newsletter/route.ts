@@ -1,3 +1,4 @@
+import { usuarioAdminAutorizado } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -8,8 +9,7 @@ export async function POST(request: Request) {
     const supabase = await criarClienteServidor();
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return NextResponse.json({ erro: "Faça login como administrador." }, { status: 401 });
-    const { data: perfil } = await supabase.from("perfis").select("funcao").eq("id", auth.user.id).maybeSingle();
-    if (perfil?.funcao !== "admin") return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
+      if (!await usuarioAdminAutorizado(auth.user, supabase)) return NextResponse.json({ erro: "Acesso restrito." }, { status: 403 });
 
     const body = await request.json();
     const assunto = String(body.assunto ?? "").trim().slice(0, 120);

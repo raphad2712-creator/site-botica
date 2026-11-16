@@ -405,3 +405,6 @@ body :is(.cart-drawer,.favorites-drawer):not(.open) { visibility: hidden!importa
 .official-style-footer .footer-payment-processor { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px; margin: 16px 0 0; color: #b9cec1; font-size: 12px; line-height: 1.5; }
 .official-style-footer .footer-payment-processor strong { color: #dceba4; font-size: 14px; }
 @media(max-width:750px) { .official-style-footer .footer-payment-methods { max-width: 360px; } .official-style-footer .footer-payment-logo { height: 60px; } }
+
+.natural-buy .consultation-contact { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; padding: 12px 18px; border-radius: 8px; background: #174f3e; color: #fff; font-size: 13px; font-weight: 700; text-align: center; }
+body #conteudo #produtos .products .mockup-product-card .mockup-product-footer .consultation-contact { height: auto!important; min-height: 48px!important; padding: 12px!important; font-size: 12px!important; }

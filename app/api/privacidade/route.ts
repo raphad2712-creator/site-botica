@@ -1,3 +1,4 @@
+import { segurancaBancoPronta, mensagemManutencao } from "@/lib/launch-readiness";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -33,11 +34,12 @@ export async function POST(request: Request) {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na conta para enviar a solicitação." }, { status: 401 });
+  if (!await segurancaBancoPronta()) return NextResponse.json({ erro: mensagemManutencao }, { status: 503 });
   const body = await request.json();
   const tipo = String(body.tipo ?? "");
   const detalhes = String(body.detalhes ?? "").trim().slice(0, 2000);
   if (!tipos.has(tipo) || detalhes.length < 10) return NextResponse.json({ erro: "Escolha o direito e descreva sua solicitação." }, { status: 400 });
-  const { data, error } = await supabase.from("solicitacoes_lgpd").insert({ usuario_id: auth.user.id, tipo, detalhes }).select("id,status,criado_em").single();
+  const { data, error } = await criarClienteAdmin().from("solicitacoes_lgpd").insert({ usuario_id: auth.user.id, tipo, detalhes }).select("id,status,criado_em").single();
   if (error) return NextResponse.json({ erro: "A Central de Privacidade precisa ser ativada no banco de dados." }, { status: 503 });
   const adminEmail = process.env.LOJA_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com";
   if (adminEmail) await enviarEmail({ para: adminEmail, assunto: `Solicitação LGPD #${data.id}`, html: `<h2>Nova solicitação de privacidade</h2><p><b>Tipo:</b> ${escaparHtml(tipo)}</p><p><b>Titular:</b> ${escaparHtml(auth.user.email)}</p><p><b>Detalhes:</b> ${escaparHtml(detalhes)}</p><p>A solicitação foi registrada no Supabase com o protocolo #${data.id}.</p>` });

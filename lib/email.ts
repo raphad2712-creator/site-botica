@@ -9,6 +9,7 @@ export async function enviarEmail({ para, assunto, html }: Email) {
   const remetente = process.env.EMAIL_REMETENTE;
   if (!apiKey || !remetente) return { enviado: false, motivo: "EMAIL_NAO_CONFIGURADO" };
 
+  try {
   const resposta = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: { "Content-Type": "application/json", "api-key": apiKey },
@@ -23,4 +24,5 @@ export async function enviarEmail({ para, assunto, html }: Email) {
   });
   if (!resposta.ok) return { enviado: false, motivo: `BREVO_${resposta.status}` };
   return { enviado: true };
+  } catch { return { enviado: false, motivo: "BREVO_INDISPONIVEL" }; }
 }

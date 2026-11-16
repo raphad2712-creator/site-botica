@@ -6,6 +6,7 @@ export type Produto = {
   preco: number;
   preco_antigo: number | null;
   estoque: number;
+  estoque_confirmado?: boolean;
   imagem_url: string | null;
   ativo: boolean;
   peso_kg: number | null;

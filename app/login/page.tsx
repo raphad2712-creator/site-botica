@@ -17,6 +17,7 @@ function comTempoLimite<T>(promessa: PromiseLike<T>): Promise<T> {
 
 function traduzirErro(mensagem = "") {
   const erro = mensagem.toLowerCase();
+  if (erro.includes("estamos finalizando")) return mensagem;
   if (erro.includes("e-mail ou senha incorretos")) return "E-mail ou senha incorretos.";
   if (erro.includes("confirme seu e-mail")) return "Confirme seu e-mail antes de entrar.";
   if (erro.includes("muitas tentativas")) return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
