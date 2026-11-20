@@ -55,8 +55,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 
   function adicionar(produto: Produto, quantidade = 1) {
-    if (!Number.isSafeInteger(quantidade) || quantidade < 1 || produto.estoque < 1) return;
-    const limite = Math.min(100, produto.estoque);
+    if (!Number.isSafeInteger(quantidade) || quantidade < 1 || (produto.estoque_confirmado === true && produto.estoque < 1)) return;
+    const limite = produto.estoque_confirmado === true ? Math.min(100, produto.estoque) : 100;
     setItens((atuais) => {
       const existente = atuais.find((item) => item.id === produto.id);
       return existente
@@ -70,7 +70,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   function alterarQuantidade(id: number, quantidade: number) {
     if (!Number.isSafeInteger(quantidade)) return;
     if (quantidade < 1) return remover(id);
-    setItens((atuais) => atuais.map((item) => item.id === id ? { ...item, quantidade: Math.min(100, item.estoque, quantidade) } : item));
+    setItens((atuais) => atuais.map((item) => item.id === id ? { ...item, quantidade: Math.min(item.estoque_confirmado === true ? item.estoque : 100, quantidade) } : item));
   }
   function remover(id: number) { setItens((atuais) => atuais.filter((item) => item.id !== id)); }
 
@@ -84,6 +84,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       <div className={`cart-drawer-backdrop ${aberto ? "open" : ""}`} onClick={() => setAberto(false)} />
       <aside ref={drawer} className={`cart-drawer ${aberto ? "open" : ""}`} role="dialog" aria-modal={aberto || undefined} aria-labelledby="cart-title" aria-hidden={!aberto} inert={!aberto} tabIndex={-1}>
         <div className="drawer-head"><div><h2 id="cart-title">Carrinho</h2><small>{totalItens} {totalItens === 1 ? "item" : "itens"} no carrinho</small></div><button onClick={() => setAberto(false)} aria-label="Fechar carrinho">×</button></div>
+        {itens.some((item) => item.estoque_confirmado !== true) && <p role="status" className="cart-stock-notice">Há produtos com disponibilidade a confirmar. Você pode guardá-los no carrinho; o pagamento será liberado após a conferência do estoque pela Botica.</p>}
         {!!itens.length && <div className={`free-shipping ${total >= 210 ? "complete" : ""}`}><span>{total >= 210 ? "Você ganhou frete grátis" : `Faltam ${moeda(210 - total)} para o frete grátis`}</span><div><i style={{ "--progress": `${Math.min(100, total / 2.1)}%` } as React.CSSProperties} /><b>{Math.min(100, Math.round(total / 2.1))}%</b></div></div>}
         <div className="drawer-items">
           {!itens.length && <div className="drawer-empty"><b>Sua sacola está vazia</b><p>Adicione produtos para continuar.</p><a href="/#produtos" onClick={() => setAberto(false)}>VER PRODUTOS</a></div>}
@@ -93,7 +94,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 <ProductImage nome={item.nome} imagemAtual={item.imagem_url} />
               </Link>
               <div className="drawer-item-copy"><Link href={`/produto/${item.id}`} onClick={() => setAberto(false)}><b>{item.nome}</b></Link><small>{item.categoria}</small><strong>{moeda(Number(item.preco))}</strong><button onClick={() => remover(item.id)}>Remover</button></div>
-              <div className="drawer-quantity"><button aria-label={`Diminuir quantidade de ${item.nome}`} onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button aria-label={`Aumentar quantidade de ${item.nome}`} disabled={item.quantidade >= Math.min(100, item.estoque)} onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>
+              <div className="drawer-quantity"><button aria-label={`Diminuir quantidade de ${item.nome}`} onClick={() => alterarQuantidade(item.id, item.quantidade - 1)}>−</button><b>{item.quantidade}</b><button aria-label={`Aumentar quantidade de ${item.nome}`} disabled={item.quantidade >= (item.estoque_confirmado === true ? Math.min(100, item.estoque) : 100)} onClick={() => alterarQuantidade(item.id, item.quantidade + 1)}>+</button></div>
             </article>
           ))}
         </div>
