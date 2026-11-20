@@ -64,7 +64,7 @@ export default function CheckoutPage() {
 
   async function finalizar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (processando) return;
+    if (processando || itens.some((item) => item.estoque_confirmado !== true)) return;
     const form = Object.fromEntries(new FormData(event.currentTarget));
     if (cotacaoFrete === null) return setMensagem("Calcule o frete antes de confirmar o pedido.");
     setProcessando(true);
@@ -90,6 +90,9 @@ export default function CheckoutPage() {
   if (verificandoLogin) return <section className="checkout-auth-loading"><span className="auth-spinner" /><h1>Verificando sua conta</h1><p>Aguarde um instante para continuar com segurança.</p></section>;
 
   if (!itens.length) return <section className="empty-page"><h1>Seu carrinho está vazio</h1><p>Adicione pelo menos um produto para iniciar a finalização.</p><a href="/">VER PRODUTOS</a></section>;
+
+  const pendentes = itens.filter((item) => item.estoque_confirmado !== true);
+  if (pendentes.length) return <section className="empty-page"><h1>Estoque a confirmar</h1><p>{pendentes.map((item) => item.nome).join(", ")} {pendentes.length === 1 ? "está" : "estão"} no seu carrinho. A Botica precisa confirmar a disponibilidade antes de liberar o pagamento.</p><a href="/carrinho">VOLTAR AO CARRINHO</a></section>;
 
   return (
     <div className="checkout-page">
