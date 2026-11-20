@@ -21,7 +21,7 @@ export default async function AdminPage() {
   const { data } = await supabase.from("produtos").select("*").order("id");
   const admin = criarClienteAdmin();
   const [{ data: pedidos }, { data: solicitacoes }, { count: totalInscritos }, { data: receitas, error: receitasError }] = await Promise.all([
-    admin.from("pedidos").select("id,usuario_id,endereco_id,total,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em,endereco:enderecos(cep,rua,numero,complemento,bairro,cidade,estado)").order("criado_em", { ascending: false }).limit(50),
+    admin.from("pedidos").select("id,usuario_id,endereco_id,total,status,pagamento_id,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em,endereco:enderecos(cep,rua,numero,complemento,bairro,cidade,estado)").order("criado_em", { ascending: false }).limit(50),
     admin.from("solicitacoes_pos_venda").select("id,pedido_id,tipo,motivo,detalhes,status,resposta_admin,criado_em").order("criado_em", { ascending: false }).limit(50),
     admin.from("newsletter_inscritos").select("id", { count: "exact", head: true }).eq("ativo", true),
     admin.from("receitas").select("id,usuario_id,observacao,resposta_admin,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em").order("criado_em", { ascending: false }).limit(50),
