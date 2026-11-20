@@ -24,6 +24,10 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
   const [perfil, setPerfil] = useState<PerfilCliente>({});
 
   useEffect(() => {
+    if (modoTeste) {
+      setVerificandoLogin(false);
+      return;
+    }
     let ativo = true;
     criarClienteSupabase().auth.getUser().then(async ({ data }) => {
       if (!ativo) return;
@@ -35,7 +39,7 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
       setVerificandoLogin(false);
     }).catch(() => window.location.replace("/login?next=/checkout"));
     return () => { ativo = false; };
-  }, []);
+  }, [modoTeste]);
 
   useEffect(() => { consultaFrete.current++; setCalculando(false); setCotacaoFrete(null); }, [total, chaveCarrinho]);
   useEffect(() => () => { consultaFrete.current++; }, []);
