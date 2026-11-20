@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { Icon } from "@/components/ui-icon";
 
 type PedidoAdmin = {
-  id: number; total: number; status: string; status_entrega?: string | null; transportadora?: string | null; codigo_rastreio?: string | null; link_rastreio?: string | null; criado_em: string;
+  id: number; total: number; status: string; pagamento_id?: string | null; status_entrega?: string | null; transportadora?: string | null; codigo_rastreio?: string | null; link_rastreio?: string | null; criado_em: string;
   cliente?: { nome?: string | null; email?: string | null; cpf?: string | null; telefone?: string | null };
   endereco?: { cep?: string | null; rua?: string | null; numero?: string | null; complemento?: string | null; bairro?: string | null; cidade?: string | null; estado?: string | null } | null;
 };
@@ -44,9 +44,9 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
   return <div className="admin-aftercare">
     {mensagem && <p className="admin-toast" role="status">{mensagem}</p>}
     <section id="entregas-admin"><div className="admin-panel-heading"><div><small>LOGÍSTICA</small><h2>Entregas e rastreamento</h2><p>Escolha a etapa, informe o código e o cliente receberá a atualização por e-mail.</p></div><span>{pedidosAtivos.length} PEDIDOS</span></div>
-      <div className="admin-cards admin-delivery-cards">{pedidosAtivos.length ? pedidosAtivos.map((pedido) => { const codigo = String(pedido.id).padStart(6, "0"); return <form key={pedido.id} onSubmit={(e) => salvarRastreio(e, pedido.id)}>
-        <header><div><small>CÓDIGO DO PEDIDO</small><h3>{codigo}</h3></div><span className={`delivery-badge delivery-${pedido.status_entrega || "preparando"}`}>{(pedido.status_entrega || "preparando").replaceAll("_", " ")}</span></header>
-        <div className="admin-order-meta"><span><small>DATA</small>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span><span><small>TOTAL</small>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><span><small>PAGAMENTO</small>{pedido.status.replaceAll("_", " ")}</span></div>
+      <div className="admin-cards admin-delivery-cards">{pedidosAtivos.length ? pedidosAtivos.map((pedido) => { const codigo = String(pedido.id).padStart(6, "0"); const teste = pedido.pagamento_id?.startsWith("TESTE-") === true; return <form key={pedido.id} onSubmit={(e) => salvarRastreio(e, pedido.id)}>
+        <header><div><small>CÓDIGO DO PEDIDO</small><h3>{codigo}</h3>{teste && <small>PEDIDO DE TESTE — SEM COBRANÇA</small>}</div><span className={`delivery-badge delivery-${pedido.status_entrega || "preparando"}`}>{teste ? "Teste" : (pedido.status_entrega || "preparando").replaceAll("_", " ")}</span></header>
+        <div className="admin-order-meta"><span><small>DATA</small>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span><span><small>TOTAL</small>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span><span><small>PAGAMENTO</small>{teste ? "Sem pagamento (teste)" : pedido.status.replaceAll("_", " ")}</span></div>
         <details className="admin-customer-details">
           <summary><span><Icon name="document" /></span><b>Dados do comprador e entrega</b><small>CLIQUE PARA VER</small></summary>
           <div className="admin-customer-grid">
@@ -58,7 +58,7 @@ export function AdminAftercare({ pedidos, solicitacoes, receitasAprovadas }: { p
         <div className="admin-form-grid"><label>Transportadora<input name="transportadora" defaultValue={pedido.transportadora || ""} placeholder="Ex.: Correios" /></label><label>Código de rastreamento<input name="codigo_rastreio" defaultValue={pedido.codigo_rastreio || ""} placeholder="Ex.: AA123456789BR" /></label></div>
         <label>Link para acompanhar<input name="link_rastreio" type="url" defaultValue={pedido.link_rastreio || ""} placeholder="https://..." /></label>
         <div className="admin-email-note"><span><Icon name="document" /></span><p><b>Notificação automática</b><br />Ao salvar, o comprador receberá a nova etapa e o código no e-mail cadastrado.</p></div>
-        <button disabled={salvando === `pedido-${pedido.id}`}>{salvando === `pedido-${pedido.id}` ? "SALVANDO..." : "SALVAR E AVISAR CLIENTE"}</button>
+        <button disabled={teste || salvando === `pedido-${pedido.id}`}>{teste ? "PEDIDO DE TESTE" : salvando === `pedido-${pedido.id}` ? "SALVANDO..." : "SALVAR E AVISAR CLIENTE"}</button>
         <button type="button" className="admin-delete-order" disabled={salvando === `excluir-${pedido.id}`} onClick={() => excluirPedido(pedido.id)}>{salvando === `excluir-${pedido.id}` ? "EXCLUINDO..." : "EXCLUIR PEDIDO"}</button>
       </form>; }) : <div className="admin-none">Nenhum pedido encontrado.</div>}</div>
     </section>
