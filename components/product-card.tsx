@@ -16,10 +16,9 @@ export function ProductCard({ produto }: { produto: Produto }) {
   const { estaFavorito, alternarFavorito } = useFavorites();
   const disponivel = produto.estoque_confirmado === true && produto.estoque > 0;
   const pendente = produto.estoque_confirmado !== true;
-  const contato = `mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "flavio_farmaceutico@hotmail.com"}?subject=${encodeURIComponent(`Disponibilidade de ${produto.nome}`)}&body=${encodeURIComponent(`Olá! Gostaria de confirmar a disponibilidade de ${produto.nome}.`)}`;
   const [adicionado, setAdicionado] = useState(false);
   function adicionarProduto() {
-    if (!disponivel) return;
+    if (!disponivel && !pendente) return;
     adicionar(produto);
     setAdicionado(true);
     window.setTimeout(() => setAdicionado(false), 1400);
@@ -50,10 +49,9 @@ export function ProductCard({ produto }: { produto: Produto }) {
             <strong>{moeda(produto.preco)}</strong>
             <small>{disponivel ? "Disponível" : pendente ? "Disponibilidade a confirmar" : "Sem estoque"}</small>
           </div>
-          {pendente ? <a className="buy mockup-cart-button" href={contato} aria-label={`Consultar disponibilidade de ${produto.nome}`}>Consultar disponibilidade</a> :
-            <button type="button" className={`buy mockup-cart-button ${adicionado ? "added" : ""}`} disabled={!disponivel} onClick={adicionarProduto} aria-label={disponivel ? `Adicionar ${produto.nome} ao carrinho` : `${produto.nome} sem estoque`}>
-              <CartGlyph /><span aria-live="polite">{!disponivel ? "Sem estoque" : adicionado ? "Adicionado" : "Adicionar"}</span>
-            </button>}
+          <button type="button" className={`buy mockup-cart-button ${adicionado ? "added" : ""}`} disabled={!disponivel && !pendente} onClick={adicionarProduto} aria-label={disponivel || pendente ? `Adicionar ${produto.nome} ao carrinho` : `${produto.nome} sem estoque`}>
+            <CartGlyph /><span aria-live="polite">{!disponivel && !pendente ? "Sem estoque" : adicionado ? "Adicionado" : "Adicionar ao carrinho"}</span>
+          </button>
         </div>
         <Link className="catalog-details-link" href={`/produto/${produto.id}`}>Conhecer o produto</Link>
         {disponivel && produto.estoque <= 5 && <em className="mockup-low-stock">Restam poucas unidades</em>}
