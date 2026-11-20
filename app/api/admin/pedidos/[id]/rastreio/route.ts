@@ -17,6 +17,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (!Number.isInteger(id) || !permitidos.has(status)) return NextResponse.json({ erro: "Dados inválidos." }, { status: 400 });
 
   const admin = criarClienteAdmin();
+  const { data: pedidoAtual, error: consultaError } = await admin.from("pedidos").select("pagamento_id").eq("id", id).single();
+  if (consultaError || !pedidoAtual) return NextResponse.json({ erro: "Pedido não encontrado." }, { status: 404 });
+  if (pedidoAtual.pagamento_id?.startsWith("TESTE-")) return NextResponse.json({ erro: "Pedidos de teste não podem ser enviados." }, { status: 409 });
   const alteracao = {
     transportadora: String(body.transportadora ?? "").trim() || null,
     codigo_rastreio: String(body.codigo_rastreio ?? "").trim() || null,
