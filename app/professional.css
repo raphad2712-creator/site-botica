@@ -435,3 +435,16 @@ body #conteudo #produtos .products .mockup-product-card .mockup-product-footer .
   line-height: 1.5;
 }
 .cart-page > .cart-stock-notice { margin: 16px 0; }
+
+.admin-launch-status {
+  margin: 24px 0;
+  padding: 22px 26px;
+  background: #f3f7f1;
+  border: 1px solid #d4e3d7;
+  border-radius: 12px;
+  color: #244d3a;
+}
+.admin-launch-status h2 { margin: 0 0 10px; font-size: 21px; }
+.admin-launch-status p { margin: 10px 0; line-height: 1.5; }
+.admin-launch-status ul { padding-left: 22px; line-height: 1.7; }
+.admin-launch-status a { display: inline-block; margin: 3px 0 10px; font-weight: 800; text-decoration: underline; }
