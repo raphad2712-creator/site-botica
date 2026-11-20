@@ -11,12 +11,14 @@ const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currenc
 
 export default function CarrinhoPage() {
   const { itens, total, alterarQuantidade, remover, limpar } = useCart();
+  const pendentes = itens.filter((item) => item.estoque_confirmado !== true);
 
   if (!itens.length) return <section className="empty-page"><h1>Seu carrinho está vazio</h1><Link href="/">Ver produtos</Link></section>;
 
   return (
     <section className="cart-page cart-page-modern">
       <div className="cart-page-head"><div><small>SUA COMPRA</small><h1>Meu carrinho</h1><p>Revise os produtos e as quantidades antes de continuar.</p></div><Link href="/#produtos"><Icon name="arrow-left" /> Continuar comprando</Link></div>
+      {!!pendentes.length && <p role="status" className="cart-stock-notice">Os produtos {pendentes.map((item) => item.nome).join(", ")} estão no carrinho, mas a compra só poderá ser finalizada após a Botica confirmar o estoque.</p>}
       <div className="cart-page-layout"><div className="cart-page-items">
       <div className={`cart-shipping-card ${total >= 210 ? "complete" : ""}`}><div><b>{total >= 210 ? "Frete grátis conquistado" : `Faltam ${moeda(210 - total)} para o frete grátis`}</b><small>Frete grátis nas compras a partir de R$ 210</small></div><span>{Math.min(100, Math.round(total / 2.1))}%</span></div>
       {itens.map((item) => (
