@@ -20,7 +20,7 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
   const [calculando, setCalculando] = useState(false);
   const [processando, setProcessando] = useState(false);
   const [metodoPagamento, setMetodoPagamento] = useState<"pix" | "cartao">("pix");
-  const [verificandoLogin, setVerificandoLogin] = useState(true);
+  const [verificandoLogin, setVerificandoLogin] = useState(!modoTeste);
   const [perfil, setPerfil] = useState<PerfilCliente>({});
 
   useEffect(() => {
