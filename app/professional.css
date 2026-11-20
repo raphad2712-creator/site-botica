@@ -424,3 +424,14 @@ body #conteudo #produtos .products .mockup-product-card .mockup-product-footer .
   font-weight: 800;
   text-align: center;
 }
+
+.cart-stock-notice {
+  margin: 16px 18px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #eef4eb;
+  color: #294d3b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.cart-page > .cart-stock-notice { margin: 16px 0; }
