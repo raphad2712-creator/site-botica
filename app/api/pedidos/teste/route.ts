@@ -16,11 +16,15 @@ export async function POST(request: Request) {
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta para registrar o pedido de teste." }, { status: 401 });
 
   let itens: ReturnType<typeof validarItens>;
+  let metodoPagamento: "pix" | "cartao";
   try {
     if (Number(request.headers.get("content-length")) > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
     const body = await request.text();
     if (new TextEncoder().encode(body).length > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
-    itens = validarItens(JSON.parse(body)?.itens);
+    const dados = JSON.parse(body);
+    itens = validarItens(dados?.itens);
+    if (dados?.metodo_pagamento !== "pix" && dados?.metodo_pagamento !== "cartao") throw new Error("Método inválido");
+    metodoPagamento = dados.metodo_pagamento;
   } catch {
     return NextResponse.json({ erro: "Confira os produtos e as quantidades do carrinho." }, { status: 400 });
   }
@@ -38,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "Não foi possível confirmar os preços dos produtos." }, { status: 400 });
   }
   const total = Number(linhas.reduce((soma, linha) => soma + linha.preco_unitario * linha.quantidade, 0).toFixed(2));
-  const marcador = `TESTE-${crypto.randomUUID()}`;
+  const marcador = `TESTE-${metodoPagamento.toUpperCase()}-${crypto.randomUUID()}`;
   const { data: pedido, error: pedidoError } = await admin.from("pedidos")
     .insert({ usuario_id: auth.user.id, status: "cancelado", pagamento_id: marcador, total, frete: 0 })
     .select("id").single();
