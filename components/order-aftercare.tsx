@@ -6,7 +6,7 @@ import { Icon } from "./ui-icon";
 import { ProductImage } from "./product-image";
 
 type Pedido = {
-  id: number; total: number; status: string; criado_em: string;
+  id: number; total: number; status: string; pagamento_id?: string | null; criado_em: string;
   transportadora?: string | null; codigo_rastreio?: string | null; link_rastreio?: string | null;
   status_entrega?: string | null; rastreio_atualizado_em?: string | null;
   itens_pedido?: Array<{ quantidade: number; preco_unitario: number; produto?: { id: number; nome: string; imagem_url?: string | null; categoria?: string | null } | Array<{ id: number; nome: string; imagem_url?: string | null; categoria?: string | null }> | null }>;
@@ -37,13 +37,14 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
   return <div className="account-orders order-list-modern">{pedidosComProdutos.map((pedido) => {
     const indice = Math.max(0, etapas.indexOf(pedido.status_entrega || "preparando"));
     const codigoPedido = String(pedido.id).padStart(6, "0");
+    const teste = pedido.pagamento_id?.startsWith("TESTE-") === true;
     const podeSolicitar = ["pago", "aprovado", "preparando", "enviado", "entregue"].includes(pedido.status);
     return <article className="order-card" key={pedido.id}>
-      <header className="order-card-header"><div><small>CÓDIGO DO PEDIDO</small><h3>{codigoPedido}</h3></div><span>{rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</span></header>
+      <header className="order-card-header"><div><small>{teste ? "PEDIDO DE TESTE — SEM COBRANÇA" : "CÓDIGO DO PEDIDO"}</small><h3>{codigoPedido}</h3></div><span>{teste ? "Teste concluído" : rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</span></header>
       <div className="order-summary-row">
         <div className="order-number"><small>PEDIDO</small><b>#{pedido.id}</b></div>
         <div><small>DATA</small><span>{new Date(pedido.criado_em).toLocaleDateString("pt-BR")}</span></div>
-        <div><small>PAGAMENTO</small><span className={`order-status status-${pedido.status}`}>{pedido.status.replaceAll("_", " ")}</span></div>
+        <div><small>PAGAMENTO</small><span className={`order-status status-${pedido.status}`}>{teste ? "Teste sem cobrança" : pedido.status.replaceAll("_", " ")}</span></div>
         <div className="order-total"><small>TOTAL</small><strong>{Number(pedido.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>
       </div>
       <div className="order-card-actions">
