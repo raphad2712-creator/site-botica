@@ -20,14 +20,10 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
   const [calculando, setCalculando] = useState(false);
   const [processando, setProcessando] = useState(false);
   const [metodoPagamento, setMetodoPagamento] = useState<"pix" | "cartao">("pix");
-  const [verificandoLogin, setVerificandoLogin] = useState(!modoTeste);
+  const [verificandoLogin, setVerificandoLogin] = useState(true);
   const [perfil, setPerfil] = useState<PerfilCliente>({});
 
   useEffect(() => {
-    if (modoTeste) {
-      setVerificandoLogin(false);
-      return;
-    }
     let ativo = true;
     criarClienteSupabase().auth.getUser().then(async ({ data }) => {
       if (!ativo) return;
@@ -45,10 +41,6 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
   useEffect(() => () => { consultaFrete.current++; }, []);
 
   async function calcularFrete() {
-    if (modoTeste) {
-      setMensagem("O frete será calculado quando a entrega estiver configurada para vendas reais.");
-      return;
-    }
     const atual = ++consultaFrete.current;
     setCotacaoFrete(null);
     setCalculando(true);
@@ -74,16 +66,18 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
     event.preventDefault();
     if (processando) return;
     if (modoTeste) {
+      const form = Object.fromEntries(new FormData(event.currentTarget));
+      if (cotacaoFrete === null) return setMensagem("Calcule o frete antes de confirmar o pedido.");
       setProcessando(true);
-      setMensagem("Registrando pedido de teste...");
+      setMensagem("Registrando seu pedido...");
       try {
         const resposta = await fetch("/api/pedidos/teste", {
           method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ metodo_pagamento: metodoPagamento, itens: itens.map(({ id, quantidade }) => ({ produto_id: id, quantidade })) }),
+          body: JSON.stringify({ cliente: form, metodo_pagamento: metodoPagamento, itens: itens.map(({ id, quantidade }) => ({ produto_id: id, quantidade })) }),
         });
         const dados = await resposta.json();
         if (resposta.status === 401) { window.location.assign("/login?next=/checkout"); return; }
-        if (!resposta.ok) { setMensagem(dados.erro || "Não foi possível registrar o pedido de teste."); return; }
+        if (!resposta.ok) { setMensagem(dados.erro || "Não foi possível registrar o pedido."); return; }
         if (!dados.checkout_url) { setMensagem("O pedido foi salvo, mas não foi possível abrir o comprovante."); return; }
         window.location.assign(dados.checkout_url);
       } catch {
@@ -125,16 +119,16 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
 
   return (
     <div className="checkout-page">
-      <div className="checkout-title"><small>{modoTeste ? "PRÉVIA DE TESTE" : "COMPRA SEGURA"}</small><h1>{modoTeste ? "Teste do pagamento" : "Finalizar compra"}</h1><p>{modoTeste ? "Confira como será a finalização da compra. Esta prévia não gera cobrança." : "Confira os dados e escolha como deseja pagar."}</p><div className="checkout-progress" aria-label="Etapas da finalização"><span className="active"><b>1</b>Identificação</span><i /><span className="active"><b>2</b>Entrega</span><i /><span><b>3</b>Pagamento</span></div></div>
-      {modoTeste && <div className="checkout-test-notice" role="status"><strong>Modo de teste</strong><p>O pagamento real ainda não está configurado. Você pode explorar e simular a tela; um pedido marcado como TESTE será salvo, sem cobrança e sem baixa de estoque.</p>{!!pendentes.length && <p>Há produtos no carrinho com estoque a confirmar pela Botica.</p>}</div>}
-      <form onSubmit={finalizar} noValidate={modoTeste} className="checkout-layout">
+      <div className="checkout-title"><small>COMPRA SEGURA</small><h1>Finalizar compra</h1><p>Confira os dados, o frete e escolha como deseja pagar.</p><div className="checkout-progress" aria-label="Etapas da finalização"><span className="active"><b>1</b>Identificação</span><i /><span className="active"><b>2</b>Entrega</span><i /><span><b>3</b>Pagamento</span></div></div>
+      {modoTeste && <div className="checkout-test-notice" role="status"><strong>Pagamento online em configuração</strong><p>Você pode registrar o pedido agora. O pagamento não será cobrado nesta etapa; a Botica entrará em contato para orientar a finalização.</p>{!!pendentes.length && <p>Há produtos no carrinho com estoque a confirmar pela Botica.</p>}</div>}
+      <form onSubmit={finalizar}  className="checkout-layout">
         <div className="checkout-forms">
           <section><header><b>1</b><div><h2>Seus dados</h2><small>Preenchidos pela sua conta e editáveis antes do pagamento</small></div></header><div className="form-grid"><label>Nome completo<input name="nome" defaultValue={perfil.nome ?? ""} required /></label><label>E-mail<input name="email" type="email" defaultValue={perfil.email ?? ""} required /></label><label>Telefone (opcional)<input name="telefone" inputMode="tel" defaultValue={perfil.telefone ?? ""} /></label><label>CPF<input name="cpf" inputMode="numeric" defaultValue={perfil.cpf ?? ""} required /></label></div></section>
-          <section><header><b>2</b><div><h2>Endereço de entrega</h2><small>Use o endereço salvo ou altere para este pedido</small></div></header><div className="form-grid"><label className={`cep-field ${cotacaoFrete !== null ? "cep-ok" : ""}`}>CEP<div><input name="cep" inputMode="numeric" value={cepFrete} onChange={(e) => { consultaFrete.current++; setCalculando(false); setCepFrete(formatarCep(e.target.value)); setCotacaoFrete(null); setMensagem(""); }} placeholder="00000-000" required /><button type="button" className={calculando ? "loading" : ""} onClick={calcularFrete} disabled={calculando}>{modoTeste ? "FRETE NA VENDA REAL" : calculando ? <><i /> CALCULANDO...</> : cotacaoFrete !== null ? <><Icon name="check" /> RECALCULAR</> : "CALCULAR FRETE"}</button></div>{cotacaoFrete !== null && <span className="cep-confirmation"><b><Icon name="check" /></b> CEP confirmado: {cotacaoFrete.destino}</span>}</label><label>Rua<input name="rua" defaultValue={perfil.rua ?? ""} required /></label><label>Número<input name="numero" defaultValue={perfil.numero ?? ""} required /></label><label>Complemento<input name="complemento" defaultValue={perfil.complemento ?? ""} /></label><label>Bairro<input name="bairro" defaultValue={perfil.bairro ?? ""} required /></label><label>Cidade<input name="cidade" defaultValue={perfil.cidade ?? ""} required /></label><label>Estado<input name="estado" defaultValue={perfil.estado ?? ""} maxLength={2} required /></label></div></section>
-          <section><header><b>3</b><div><h2>Entrega</h2><small>Valor e prazo calculados pelo CEP</small></div></header>{cotacaoFrete === null ? <p className="shipping-pending">{modoTeste ? "O frete e o prazo serão informados na compra real após a configuração da entrega." : "Informe o CEP acima e clique em “Calcular frete”."}</p> : <label className="delivery-option"><input type="radio" name="entrega" value={String(cotacaoFrete.servicoId ?? "padrao")} defaultChecked /><span><b>{cotacaoFrete.servico} por {cotacaoFrete.transportadora}</b><small>{cotacaoFrete.prazoMinimo} a {cotacaoFrete.prazoMaximo} dias úteis para {cotacaoFrete.destino}{cotacaoFrete.estimado ? " • estimativa sujeita à confirmação" : ""}</small></span><strong>{cotacaoFrete.valor ? moeda(cotacaoFrete.valor) : "GRÁTIS"}</strong></label>}</section>
-          <section><header><b>4</b><div><h2>Como deseja pagar?</h2><small>Escolha uma forma de pagamento</small></div></header><div className="payment-choice"><label className={metodoPagamento === "pix" ? "active" : ""}><input type="radio" name="metodo_pagamento" value="pix" checked={metodoPagamento === "pix"} onChange={() => setMetodoPagamento("pix")} /><b>Pix</b><small>Pagamento rápido e à vista</small></label><label className={metodoPagamento === "cartao" ? "active" : ""}><input type="radio" name="metodo_pagamento" value="cartao" checked={metodoPagamento === "cartao"} onChange={() => setMetodoPagamento("cartao")} /><b>Cartão de crédito</b><small>Parcele em até 6x sem juros</small></label></div><p className="payment-security"><Icon name="lock" /> {modoTeste ? "Prévia visual: nenhuma cobrança será realizada." : "Seus dados são protegidos durante todo o pagamento."}</p></section>
+          <section><header><b>2</b><div><h2>Endereço de entrega</h2><small>Use o endereço salvo ou altere para este pedido</small></div></header><div className="form-grid"><label className={`cep-field ${cotacaoFrete !== null ? "cep-ok" : ""}`}>CEP<div><input name="cep" inputMode="numeric" value={cepFrete} onChange={(e) => { consultaFrete.current++; setCalculando(false); setCepFrete(formatarCep(e.target.value)); setCotacaoFrete(null); setMensagem(""); }} placeholder="00000-000" required /><button type="button" className={calculando ? "loading" : ""} onClick={calcularFrete} disabled={calculando}>{calculando ? <><i /> CALCULANDO...</> : cotacaoFrete !== null ? <><Icon name="check" /> RECALCULAR</> : "CALCULAR FRETE"}</button></div>{cotacaoFrete !== null && <span className="cep-confirmation"><b><Icon name="check" /></b> CEP confirmado: {cotacaoFrete.destino}</span>}</label><label>Rua<input name="rua" defaultValue={perfil.rua ?? ""} required /></label><label>Número<input name="numero" defaultValue={perfil.numero ?? ""} required /></label><label>Complemento<input name="complemento" defaultValue={perfil.complemento ?? ""} /></label><label>Bairro<input name="bairro" defaultValue={perfil.bairro ?? ""} required /></label><label>Cidade<input name="cidade" defaultValue={perfil.cidade ?? ""} required /></label><label>Estado<input name="estado" defaultValue={perfil.estado ?? ""} maxLength={2} required /></label></div></section>
+          <section><header><b>3</b><div><h2>Entrega</h2><small>Valor e prazo calculados pelo CEP</small></div></header>{cotacaoFrete === null ? <p className="shipping-pending">Informe o CEP acima e clique em “Calcular frete”.</p> : <label className="delivery-option"><input type="radio" name="entrega" value={String(cotacaoFrete.servicoId ?? "padrao")} defaultChecked /><span><b>{cotacaoFrete.servico} por {cotacaoFrete.transportadora}</b><small>{cotacaoFrete.prazoMinimo} a {cotacaoFrete.prazoMaximo} dias úteis para {cotacaoFrete.destino}{cotacaoFrete.estimado ? " • estimativa sujeita à confirmação" : ""}</small></span><strong>{cotacaoFrete.valor ? moeda(cotacaoFrete.valor) : "GRÁTIS"}</strong></label>}</section>
+          <section><header><b>4</b><div><h2>Como deseja pagar?</h2><small>Escolha uma forma de pagamento</small></div></header><div className="payment-choice"><label className={metodoPagamento === "pix" ? "active" : ""}><input type="radio" name="metodo_pagamento" value="pix" checked={metodoPagamento === "pix"} onChange={() => setMetodoPagamento("pix")} /><b>Pix</b><small>Pagamento rápido e à vista</small></label><label className={metodoPagamento === "cartao" ? "active" : ""}><input type="radio" name="metodo_pagamento" value="cartao" checked={metodoPagamento === "cartao"} onChange={() => setMetodoPagamento("cartao")} /><b>Cartão de crédito</b><small>Parcele em até 6x sem juros</small></label></div><p className="payment-security"><Icon name="lock" /> {modoTeste ? "A forma de pagamento será confirmada antes de qualquer cobrança." : "Seus dados são protegidos durante todo o pagamento."}</p></section>
         </div>
-        <aside className="order-summary"><h2>Resumo do pedido</h2>{itens.map((item) => <article key={item.id}><div className="summary-image"><ProductImage nome={item.nome} imagemAtual={item.imagem_url} /></div><div><b>{item.nome}</b><small>Quantidade: {item.quantidade}</small></div><strong>{moeda(Number(item.preco) * item.quantidade)}</strong></article>)}<div className="summary-line"><span>Subtotal</span><b>{moeda(total)}</b></div><div className="summary-line"><span>Frete</span><b>{modoTeste ? "Pendente" : cotacaoFrete === null ? "A calcular" : cotacaoFrete.valor ? moeda(cotacaoFrete.valor) : "Grátis"}</b></div><div className="summary-total"><span>{modoTeste ? "Subtotal de teste" : "Total"}</span><b>{moeda(total + (cotacaoFrete?.valor ?? 0))}</b></div><button disabled={processando}>{modoTeste ? "REGISTRAR PEDIDO DE TESTE" : processando ? "ABRINDO PAGAMENTO..." : metodoPagamento === "pix" ? "PAGAR COM PIX" : "PAGAR COM CARTÃO"}</button><p>{mensagem}</p><small>{modoTeste ? "Pedido de teste: sem cobrança e sem baixa de estoque." : "Pagamento protegido e confirmação automática do pedido."}</small></aside>
+        <aside className="order-summary"><h2>Resumo do pedido</h2>{itens.map((item) => <article key={item.id}><div className="summary-image"><ProductImage nome={item.nome} imagemAtual={item.imagem_url} /></div><div><b>{item.nome}</b><small>Quantidade: {item.quantidade}</small></div><strong>{moeda(Number(item.preco) * item.quantidade)}</strong></article>)}<div className="summary-line"><span>Subtotal</span><b>{moeda(total)}</b></div><div className="summary-line"><span>Frete</span><b>{cotacaoFrete === null ? "A calcular" : cotacaoFrete.valor ? moeda(cotacaoFrete.valor) : "Grátis"}</b></div><div className="summary-total"><span>Total</span><b>{moeda(total + (cotacaoFrete?.valor ?? 0))}</b></div><button disabled={processando}>{modoTeste ? processando ? "REGISTRANDO PEDIDO..." : "REGISTRAR PEDIDO" : processando ? "ABRINDO PAGAMENTO..." : metodoPagamento === "pix" ? "PAGAR COM PIX" : "PAGAR COM CARTÃO"}</button><p>{mensagem}</p><small>{modoTeste ? "O pagamento online será disponibilizado após a configuração." : "Pagamento protegido e confirmação automática do pedido."}</small></aside>
       </form>
     </div>
   );
