@@ -30,7 +30,7 @@ function mensagemErro(erro: unknown) {
   const detalhe = erro instanceof Error ? erro.message : "";
   if (detalhe.startsWith("ESTOQUE:")) return `Estoque insuficiente para ${detalhe.slice(8)}.`;
   if (detalhe === "DADOS_PAGAMENTO_INVALIDOS") return "Informe nome, e-mail e um CPF válido para continuar ao PagBank.";
-  if (detalhe === "PAGBANK_CREDENCIAL_RECUSADA") return "O PagBank recusou a credencial da loja. O responsável precisa revisar o token de produção antes de receber pagamentos.";
+  if (detalhe === "PAGBANK_CREDENCIAL_RECUSADA") return "O pagamento online está temporariamente indisponível. Fale com a Botica para receber ajuda.";
   if (detalhe === "PAGBANK_ACESSO_NEGADO") return "O PagBank não autorizou o checkout desta loja. Entre em contato com a Botica para concluir sua compra.";
   if (detalhe === "CHECKOUT_RECUSADO") return "Não foi possível abrir o pagamento. Tente novamente em instantes ou fale com a Botica.";
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento online está temporariamente indisponível. Fale com a Botica para receber ajuda.";
