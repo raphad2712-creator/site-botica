@@ -46,7 +46,7 @@ O webhook valida `x-authenticity-token`, valor e identificação do pagamento. R
 
 Escolher uma opção após validação da loja:
 
-- Configurar `MELHOR_ENVIO_TOKEN` e medidas corretas de todos os produtos. A cotação precisa ser confirmada no checkout.
+- Configurar `MELHOR_ENVIO_KEY` (ou `MELHOR_ENVIO_TOKEN`) na Vercel como variável sensível de Production e informar peso e dimensões reais das embalagens de todos os produtos. Após trocar a chave, criar novo deploy para que as funções usem o novo valor. A cotação precisa ser confirmada no checkout. Nunca publicar a chave em código ou mensagens.
 - Usar a tabela própria somente após a empresa conferir preços e prazos e definir `FRETE_TABELA_APROVADA=true`.
 
 Sem confirmação, uma estimativa pode ser exibida para consulta, mas não é usada para aceitar pagamento. A integração com transportadora e os prazos comerciais ainda precisam de teste real.

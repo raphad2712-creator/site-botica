@@ -104,7 +104,7 @@ function possuiMedidas(produto: ProdutoFrete) {
 }
 
 async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, produtos: ProdutoFrete[]) {
-  const token = process.env.MELHOR_ENVIO_TOKEN;
+  const token = process.env.MELHOR_ENVIO_TOKEN || process.env.MELHOR_ENVIO_KEY;
   if (!token) return null;
   if (!produtos.length || !produtos.every(possuiMedidas)) throw new Error("MEDIDAS_FRETE_INCOMPLETAS");
   const baseUrl = process.env.MELHOR_ENVIO_SANDBOX === "true"
@@ -128,7 +128,7 @@ async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, p
     signal: AbortSignal.timeout(15000), cache: "no-store",
   });
   if (!resposta.ok) {
-    console.error("ERRO_MELHOR_ENVIO", { status: resposta.status, resposta: (await resposta.text()).slice(0, 500) });
+    console.error("ERRO_MELHOR_ENVIO", { status: resposta.status });
     throw new Error("COTACAO_INDISPONIVEL");
   }
   const dados = (await resposta.json()) as MelhorEnvioResposta[];
