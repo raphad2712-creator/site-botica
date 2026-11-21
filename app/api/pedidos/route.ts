@@ -30,6 +30,8 @@ function mensagemErro(erro: unknown) {
   const detalhe = erro instanceof Error ? erro.message : "";
   if (detalhe.startsWith("ESTOQUE:")) return `Estoque insuficiente para ${detalhe.slice(8)}.`;
   if (detalhe === "DADOS_PAGAMENTO_INVALIDOS") return "Informe nome, e-mail e um CPF válido para continuar ao PagBank.";
+  if (detalhe === "PAGBANK_CREDENCIAL_RECUSADA") return "O PagBank recusou a credencial da loja. O responsável precisa revisar o token de produção antes de receber pagamentos.";
+  if (detalhe === "PAGBANK_ACESSO_NEGADO") return "O PagBank não autorizou o checkout desta loja. Entre em contato com a Botica para concluir sua compra.";
   if (detalhe === "CHECKOUT_RECUSADO") return "Não foi possível abrir o pagamento. Tente novamente em instantes ou fale com a Botica.";
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento online está temporariamente indisponível. Fale com a Botica para receber ajuda.";
   if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
@@ -46,7 +48,8 @@ export async function POST(request: Request) {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
-  const accessToken = process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN;
+  // Aceita um token colado com o prefixo "Bearer", sem duplicá-lo no cabeçalho.
+  const accessToken = (process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN || "").trim().replace(/^Bearer\s+/i, "");
   if (!await comprasLiberadas()) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
   let body: { itens: ItemRecebido[]; cliente: ReturnType<typeof validarCliente>; metodo_pagamento: unknown };
   try {
@@ -186,7 +189,16 @@ export async function POST(request: Request) {
     const checkout = await checkoutResposta.json();
     const checkoutUrl = checkout?.links?.find((link: { rel?: string; href?: string }) => link.rel === "PAY")?.href;
     if (!checkoutResposta.ok || !checkout?.id || !checkoutUrl) {
-      console.error("ERRO_CHECKOUT_PAGBANK", { status: checkoutResposta.status, pedidoId: pedido.id, resposta: checkout });
+      console.error("ERRO_CHECKOUT_PAGBANK", {
+        status: checkoutResposta.status,
+        pedidoId: pedido.id,
+        // Os códigos do provedor bastam para diagnosticar; a resposta inteira pode conter dados pessoais.
+        erros: Array.isArray(checkout?.error_messages)
+          ? checkout.error_messages.map((item: { error?: string; parameter_name?: string }) => ({ codigo: item.error, campo: item.parameter_name }))
+          : [],
+      });
+      if (checkoutResposta.status === 401) throw new Error("PAGBANK_CREDENCIAL_RECUSADA");
+      if (checkoutResposta.status === 403) throw new Error("PAGBANK_ACESSO_NEGADO");
       throw new Error("CHECKOUT_RECUSADO");
     }
     await avisarLojaNovoPedido({ pedidoId: pedido.id, cliente, itens: itensPedido, subtotal, frete, total, pagamento: `${pagamentoCartao ? "Cartão de crédito" : "Pix"} — aguardando confirmação` });
