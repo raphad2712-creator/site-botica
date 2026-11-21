@@ -21,7 +21,7 @@ import { SupportWidget } from "@/components/support-widget";
 import { CookieConsent, CookieSettingsButton } from "@/components/cookie-consent";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://site-botica.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.boticabioenergetica.com.br"),
   title: "Botica Bioenergética | Produtos naturais e manipulação",
   description: "Produtos naturais, fórmulas manipuladas e atendimento farmacêutico com compra segura e entrega para todo o Brasil.",
   twitter: { card: "summary_large_image" },

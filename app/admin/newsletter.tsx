@@ -30,7 +30,7 @@ export function AdminNewsletter({ total }: { total: number }) {
         <label>Título da mensagem<input name="titulo" maxLength={120} placeholder="Ex.: Uma novidade para cuidar de você" required /></label>
         <label>Mensagem<textarea name="mensagem" maxLength={4000} placeholder="Escreva aqui o conteúdo que os clientes receberão..." required /></label>
         <label>Texto do botão <input name="texto_botao" maxLength={40} placeholder="Ex.: VER PRODUTOS (opcional)" /></label>
-        <label>Link do botão <input name="link_botao" type="url" placeholder="https://site-botica.vercel.app (opcional)" /></label>
+        <label>Link do botão <input name="link_botao" type="url" placeholder="https://www.boticabioenergetica.com.br (opcional)" /></label>
         <button disabled={enviando || total === 0}>{enviando ? "ENVIANDO..." : `ENVIAR PARA ${total} INSCRITOS`}</button>
         {mensagem && <p role="status">{mensagem}</p>}
       </form>

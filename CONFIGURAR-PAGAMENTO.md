@@ -2,7 +2,7 @@
 
 O checkout usa o PagBank hospedado: o cliente escolhe Pix ou cartão no ambiente do PagBank. O token fica somente no servidor da Vercel.
 
-## Roteiro rápido para amanhã
+## Roteiro para configurar o token
 
 1. Entre na conta **PagBank da Botica**, pelo computador. Abra **Vendas > Integrações > Gerar Token** e obtenha o token **de produção**. Se a tela oferecer o token já existente, reutilize-o: gerar outro pode invalidar o anterior.
 2. Entre em **Vercel > site-botica > Settings > Environment Variables**. Crie ou edite a variável `PAGBANK_TOKEN`, cole o token no campo **Value**, marque **Production** e salve. Não envie o valor pelo WhatsApp, chat ou GitHub.
@@ -14,11 +14,11 @@ O checkout usa o PagBank hospedado: o cliente escolhe Pix ou cartão no ambiente
 
 ## Estado atual
 
-As migrações do banco foram aplicadas ao projeto Supabase da Botica. Por solicitação do responsável, os **16 produtos ativos foram definidos com 16 unidades cada e marcados como estoque confirmado**. O pedido sem cobrança pode ser registrado no checkout enquanto o pagamento real não estiver liberado. Para receber pagamentos reais ainda faltam as configurações e validações abaixo.
+As migrações do banco foram aplicadas ao projeto Supabase da Botica. Por solicitação do responsável, os **19 produtos ativos foram definidos com 15 unidades cada**. Essa quantidade foi estimada e deve ser conferida fisicamente na loja. Para receber pagamentos reais ainda faltam as configurações e validações abaixo.
 
 ## 1. Confirmar estoque e medidas
 
-Entre em `https://site-botica.vercel.app/admin` com uma conta administradora. A troca para `flavio_farmaceutico@hotmail.com` depende de cadastrar e confirmar esse e-mail na loja; até lá, o acesso administrativo existente permanece ativo. Confira fisicamente se as 16 unidades de cada produto estão corretas. Preencha peso e medidas de cada produto se for usar o Melhor Envio. O estoque pode ser corrigido no painel caso a contagem real seja diferente.
+Entre em `https://www.boticabioenergetica.com.br/admin` com uma conta administradora. A troca para `flavio_farmaceutico@hotmail.com` depende de cadastrar e confirmar esse e-mail na loja; até lá, o acesso administrativo existente permanece ativo. Confira fisicamente se as 15 unidades estimadas de cada produto estão corretas. Preencha peso e medidas de cada produto se for usar o Melhor Envio. O estoque pode ser corrigido no painel caso a contagem real seja diferente.
 
 ## 2. Configurar a entrega
 
@@ -29,7 +29,7 @@ Cadastre o token de produção do Melhor Envio como `MELHOR_ENVIO_TOKEN` na Verc
 Gere o token na conta PagBank da Botica. Configure a URL de notificações conforme o painel do PagBank:
 
 ```text
-https://site-botica.vercel.app/api/pagbank/webhook
+https://www.boticabioenergetica.com.br/api/pagbank/webhook
 ```
 
 Nunca envie o token em chat ou commit e não use a variável pública `NEXT_PUBLIC_`.
