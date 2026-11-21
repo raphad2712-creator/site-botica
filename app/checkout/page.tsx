@@ -2,7 +2,7 @@ import { comprasLiberadas } from "@/lib/launch-readiness";
 import CheckoutForm from "./checkout-form";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Finalizar compra | Botica Bioenergética" };
+export const metadata = { title: "Pagar | Botica Bioenergética" };
 
 export default async function CheckoutPage() {
   const liberado = await comprasLiberadas();
