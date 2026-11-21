@@ -12,7 +12,7 @@ import { CustomerReviews } from "./customer-reviews";
 import { ConsultationProductCard } from "./consultation-product-card";
 import { buildCatalog, filterCatalog, isConsultation, type CatalogProduct } from "@/lib/catalog";
 
-const categorias = ["Naturais", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
+const categoriasBase = ["Naturais", "Academia", "Sono", "Florais", "Vitaminas", "Emagrecimento", "Beleza"];
 const icones: Record<string, string> = {
   Naturais: "M20 4c-8-1-15 2-15 8a6 6 0 0 0 6 6c6 0 9-7 9-14ZM4 21 15 10",
   Academia: "M5 9v6M2.5 10.5v3M19 9v6M21.5 10.5v3M5 12h14",
@@ -30,6 +30,7 @@ function CatalogCard({ produto }: { produto: CatalogProduct }) {
 }
 
 export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: string }) {
+  const categorias = useMemo(() => [...new Set([...categoriasBase, ...produtos.map((produto) => produto.categoria).filter(Boolean)])], [produtos]);
   const [categoria, setCategoria] = useState("Naturais");
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("relevancia");
@@ -147,7 +148,7 @@ export function Storefront({ produtos, erro }: { produtos: Produto[]; erro?: str
         <div className="objective-grid">
           {categorias.map((item) => (
             <button className={!busca && categoria === item ? "active" : ""} key={item} onClick={() => { setBusca(""); setCategoria(item); document.querySelector("#produtos")?.scrollIntoView(); }} aria-pressed={!busca && categoria === item}>
-              <i><svg viewBox="0 0 24 24"><path d={icones[item]} /></svg></i>
+              <i><svg viewBox="0 0 24 24"><path d={icones[item] ?? icones.Naturais} /></svg></i>
               <b>{item}</b><small>{filterCatalog(catalogo, item, "", "relevancia").length || "Em breve"}{filterCatalog(catalogo, item, "", "relevancia").length > 0 ? (filterCatalog(catalogo, item, "", "relevancia").length === 1 ? " produto" : " produtos") : ""}</small>
             </button>
           ))}

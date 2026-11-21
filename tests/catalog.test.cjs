@@ -22,7 +22,7 @@ function load(relative) {
 }
 const { consultationProducts, matchConsultationProduct, consultationImage, consultationDarkImage, consultationArtwork, consultationDarkArtwork } = load('lib/consultation-products.ts');
 const { buildCatalog, filterCatalog, isConsultation } = load('lib/catalog.ts');
-const { imagemCatalogo } = load('lib/product-images.ts');
+const { imagemCatalogo, comImagemCatalogo } = load('lib/product-images.ts');
 const registered = {
   id: 101, nome: 'Passiflora 300mg — 60 Cápsulas', descricao: 'Descrição cadastrada pela loja.',
   categoria: 'Sono', preco: 59.9, preco_antigo: 69.9, estoque: 8,
@@ -43,13 +43,23 @@ test('quatorze produtos com imagens, preços e apresentações da loja', () => {
   }
 });
 
-test('cadastro real substitui a apresentação em consulta, sem duplicar e recebe o preço atualizado', () => {
+test('cadastro real substitui a apresentação em consulta, sem duplicar e respeita o preço do painel', () => {
   const catalog = buildCatalog([registered]);
   assert.equal(catalog.length, 14);
   assert.equal(catalog[0].id, registered.id);
   assert.equal(catalog[0].estoque, registered.estoque);
   assert.equal(catalog.filter(isConsultation).length, 13);
-  assert.equal(filterCatalog(catalog, 'Todos', 'passiflora', 'relevancia')[0].preco, 55.9);
+  assert.equal(filterCatalog(catalog, 'Todos', 'passiflora', 'relevancia')[0].preco, 59.9);
+});
+
+test('produto novo aparece no catálogo e foto e preço cadastrados prevalecem', () => {
+  const novo = { ...registered, id: 202, nome: 'Produto próprio da Botica', categoria: 'Beleza', preco: 92.5, imagem_url: 'https://example.test/foto.webp' };
+  const catalog = buildCatalog([registered, novo]);
+  assert.equal(catalog.length, 15);
+  assert.equal(filterCatalog(catalog, 'Beleza', 'Produto próprio', 'relevancia')[0].id, 202);
+  assert.equal(comImagemCatalogo(registered).imagem_url, '/foto-antiga.jpg');
+  assert.equal(comImagemCatalogo(registered).preco, 59.9);
+  assert.equal(imagemCatalogo('Passiflora 300mg — 60 Cápsulas', novo.imagem_url), novo.imagem_url);
 });
 
 test('fórmula, concentração e apresentação diferentes mantêm a própria foto', () => {
@@ -76,7 +86,7 @@ test('ordenação usa os preços exibidos, com os valores atualizados da loja', 
   const second = { ...registered, id: 102, nome: 'Outro produto', preco: 19.9 };
   const catalog = buildCatalog([registered, second]);
   const displayedPrice = p => isConsultation(p) ? p.precoDemonstrativo : p.preco;
-  const expected = [29, 29.9, 39.9, 39.9, 49.9, 55.9, 59.9, 59.9, 79.9, 85.9, 89.9, 95, 99.9, 99.9];
+  const expected = [19.9, 29, 29.9, 39.9, 39.9, 49.9, 59.9, 59.9, 59.9, 79.9, 85.9, 89.9, 95, 99.9, 99.9];
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'menor').map(displayedPrice), expected);
   assert.deepEqual(filterCatalog(catalog, 'Todos', '', 'maior').map(displayedPrice), [...expected].reverse());
 });

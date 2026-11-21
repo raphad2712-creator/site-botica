@@ -1,5 +1,5 @@
 import type { Produto } from "@/lib/types";
-import { consultationImage, matchConsultationProduct, aplicarPrecoCatalogo } from "./consultation-products";
+import { consultationImage, matchConsultationProduct } from "./consultation-products";
 
 const imagensCatalogo: Array<[RegExp, string]> = [
   [/creatina monohidratada/, "/produtos/padrao/creatina-300g.webp"],
@@ -16,12 +16,13 @@ function normalizar(texto: string) {
 }
 
 export function imagemCatalogo(nome: string, imagemAtual?: string | null) {
+  if (imagemAtual) return imagemAtual;
   const produtoRotulo = matchConsultationProduct(nome);
   if (produtoRotulo) return consultationImage(produtoRotulo);
   const nomeNormalizado = normalizar(nome);
-  return imagensCatalogo.find(([padrao]) => padrao.test(nomeNormalizado))?.[1] ?? imagemAtual ?? null;
+  return imagensCatalogo.find(([padrao]) => padrao.test(nomeNormalizado))?.[1] ?? null;
 }
 
 export function comImagemCatalogo(produto: Produto): Produto {
-  return { ...aplicarPrecoCatalogo(produto), imagem_url: imagemCatalogo(produto.nome, produto.imagem_url) };
+  return { ...produto, imagem_url: imagemCatalogo(produto.nome, produto.imagem_url) };
 }

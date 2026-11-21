@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
-import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { comprasLiberadas, segurancaBancoPronta } from "@/lib/launch-readiness";
 import { validarItens, validarClienteSemPagamento } from "@/lib/checkout-validation";
 import { consultarFrete } from "@/lib/frete";
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
 
   const linhas = itens.map((item) => {
     const produto = produtos.find((produto) => produto.id === item.produto_id)!;
-    const atualizado = aplicarPrecoCatalogo(produto);
+    const atualizado = produto;
     return { produto_id: item.produto_id, quantidade: item.quantidade, preco_unitario: Number(atualizado.preco) };
   });
   if (linhas.some((linha) => !Number.isFinite(linha.preco_unitario) || linha.preco_unitario < 0)) {

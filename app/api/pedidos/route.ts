@@ -1,5 +1,4 @@
 import { comprasLiberadas } from "@/lib/launch-readiness";
-import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
@@ -67,7 +66,6 @@ export async function POST(request: Request) {
     error = consultaLegada.error;
   }
   if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
-  produtos = produtos.map(aplicarPrecoCatalogo);
 
   let pedidoId: number | null = null;
   let etapa = "validar pedido";

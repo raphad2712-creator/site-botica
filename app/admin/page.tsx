@@ -9,7 +9,6 @@ import { AdminTabs } from "./tabs";
 import { AdminNewsletter } from "./newsletter";
 import { AdminRecipes } from "./recipes";
 import { Icon } from "@/components/ui-icon";
-import { pendenciasConfiguracaoLoja, segurancaBancoPronta } from "@/lib/launch-readiness";
 
 export default async function AdminPage() {
   const supabase = await criarClienteServidor();
@@ -27,9 +26,6 @@ export default async function AdminPage() {
     admin.from("receitas").select("id,usuario_id,observacao,resposta_admin,status,status_entrega,transportadora,codigo_rastreio,link_rastreio,criado_em").order("criado_em", { ascending: false }).limit(50),
   ]);
   const produtos = (data ?? []) as Produto[];
-  const pendenciasPagamento = pendenciasConfiguracaoLoja();
-  const bancoPronto = await segurancaBancoPronta();
-  const estoquePendente = produtos.filter((produto) => produto.ativo && produto.estoque_confirmado !== true).length;
   const pedidosBase = pedidos ?? [];
   const receitasBase = receitas ?? [];
   const usuariosIds = [...new Set([...pedidosBase.map((pedido) => pedido.usuario_id), ...receitasBase.map((receita) => receita.usuario_id)].filter(Boolean))];
@@ -58,21 +54,15 @@ export default async function AdminPage() {
       <div><small>GESTÃO BOTICA</small><h1>Painel administrativo</h1><p>Produtos, entregas e atendimento organizados em um só lugar.</p></div>
       <a href="/">VER LOJA <Icon name="arrow-up-right" /></a>
     </header>
-    <section className="admin-launch-status" aria-labelledby="admin-launch-title">
-      <h2 id="admin-launch-title">Situação da loja</h2>
-      <p>{estoquePendente ? `${estoquePendente} produtos ativos precisam de conferência do estoque físico. Informe a quantidade real e as medidas na seção Produtos da loja.` : "Todos os produtos ativos têm estoque conferido."}</p>
-      {estoquePendente > 0 && <a href="#produtos-admin">Conferir produtos</a>}
-      {pendenciasPagamento.length || !bancoPronto ? <><p>O pagamento online permanecerá indisponível até resolver:</p><ul>{pendenciasPagamento.map((pendencia) => <li key={pendencia}>{pendencia}</li>)}{!bancoPronto && <li>Concluir a verificação de segurança do banco de dados.</li>}</ul></> : <p>Configuração de pagamento e segurança verificada.</p>}
-    </section>
     <AdminTabs numeros={{ deliveries: pedidosParaPreparar, requests: pendentes, recipes: receitasParaAnalisar }} />
     <section className={`admin-pending-summary ${totalPendencias ? "has-pending" : "is-clear"}`} aria-live="polite">
       <span><Icon name={totalPendencias ? "document" : "check"} /></span><div><strong>{totalPendencias ? `${totalPendencias} ${totalPendencias === 1 ? "ação precisa" : "ações precisam"} da sua atenção` : "Tudo em dia por aqui"}</strong><p>{totalPendencias ? "Use os números vermelhos no menu para encontrar rapidamente o que está pendente." : "Quando chegar um pedido, receita ou solicitação, o aviso aparecerá neste painel."}</p></div>
     </section>
     <section className="admin-overview" id="visao-geral">
-      <article><span><Icon name="document" /></span><div><small>PRODUTOS</small><strong>{produtos.length}</strong><p>{produtos.filter((produto) => produto.ativo).length} ativos na loja</p></div></article>
-      <article><span><Icon name="document" /></span><div><small>PEDIDOS</small><strong>{pedidosLista.length}</strong><p>{pedidosLista.filter((pedido) => pedido.status_entrega !== "entregue").length} em andamento</p></div></article>
-      <article><span><Icon name="truck" /></span><div><small>EM ENTREGA</small><strong>{pedidosLista.filter((pedido) => ["postado", "em_transito", "saiu_para_entrega"].includes(pedido.status_entrega || "")).length}</strong><p>Acompanhe e atualize abaixo</p></div></article>
-      <article><span><Icon name="document" /></span><div><small>EM ANÁLISE</small><strong>{solicitacoesLista.filter((item) => item.status === "em_analise").length}</strong><p>Solicitações de pós-venda</p></div></article>
+      <a href="#admin-deliveries"><span><Icon name="truck" /></span><div><small>PEDIDOS PARA PREPARAR</small><strong>{pedidosParaPreparar}</strong><p>Abrir pedidos <Icon name="arrow-up-right" /></p></div></a>
+      <a href="#admin-recipes"><span><Icon name="document" /></span><div><small>RECEITAS PARA ANALISAR</small><strong>{receitasParaAnalisar}</strong><p>Abrir receitas <Icon name="arrow-up-right" /></p></div></a>
+      <a href="#admin-requests"><span><Icon name="clock" /></span><div><small>PÓS-VENDA PENDENTE</small><strong>{pendentes}</strong><p>Abrir solicitações <Icon name="arrow-up-right" /></p></div></a>
+      <a href="#admin-products"><span><Icon name="leaf" /></span><div><small>PRODUTOS ATIVOS</small><strong>{produtos.filter((produto) => produto.ativo).length}</strong><p>Gerenciar produtos <Icon name="arrow-up-right" /></p></div></a>
     </section>
     <AdminProducts produtosIniciais={produtos} />
     <AdminAftercare pedidos={pedidosLista} solicitacoes={solicitacoesLista} receitasAprovadas={receitasLista.filter((item) => item.status === "aprovada")} />
