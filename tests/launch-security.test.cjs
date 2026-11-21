@@ -40,6 +40,29 @@ test('webhook rejeita assinatura inválida antes de acessar o banco',async()=>{
  const route=load('app/api/pagbank/webhook/route.ts',name=>name==='next/server'?response:name==='node:crypto'?require(name):{criarClienteAdmin:()=>{calls++;throw Error('not allowed')}});
  try{const r=await route.POST(new Request('https://botica.test/api/pagbank/webhook',{method:'POST',body:'{}',headers:{'x-authenticity-token':'bad'}}));assert.equal(r.status,401);assert.equal(calls,0);}finally{if(old===undefined)delete process.env.PAGBANK_TOKEN;else process.env.PAGBANK_TOKEN=old;}
 });
+test('webhook aceita assinatura ECDSA do corpo original e rejeita conteúdo alterado',async()=>{
+ const crypto=require('node:crypto');const pair=crypto.generateKeyPairSync('ec',{namedCurve:'prime256v1'});
+ const prev={token:process.env.PAGBANK_TOKEN,key:process.env.PAGBANK_WEBHOOK_PUBLIC_KEY};
+ process.env.PAGBANK_TOKEN='test-only';
+ process.env.PAGBANK_WEBHOOK_PUBLIC_KEY=pair.publicKey.export({format:'der',type:'spki'}).toString('base64');
+ let calls=0;
+ const route=load('app/api/pagbank/webhook/route.ts',name=>name==='next/server'?response:name==='node:crypto'?require(name):name.includes('launch-readiness')?{segurancaBancoPronta:async()=>{calls++;return false}}:{criarClienteAdmin:()=>{throw Error('not allowed')}});
+ const raw='{"reference_id":"1", "charges":[]}';
+ const signature=crypto.sign('sha256',Buffer.from(raw),pair.privateKey).toString('base64');
+ try{
+  const accepted=await route.POST(new Request('https://botica.test/api/pagbank/webhook',{method:'POST',body:raw,headers:{'x-payload-signature':`invalid, ${signature}`}}));
+  assert.equal(accepted.status,503);assert.equal(calls,1);
+  const rejected=await route.POST(new Request('https://botica.test/api/pagbank/webhook',{method:'POST',body:raw+' ',headers:{'x-payload-signature':signature,'x-authenticity-token':crypto.createHash('sha256').update('test-only-'+raw+' ').digest('hex')}}));
+  assert.equal(rejected.status,401);assert.equal(calls,1);
+ }finally{for(const [key,value] of Object.entries(prev)){const env=key==='token'?'PAGBANK_TOKEN':'PAGBANK_WEBHOOK_PUBLIC_KEY';if(value===undefined)delete process.env[env];else process.env[env]=value;}}
+});
+test('tentativa recusada não cancela pedido que ainda pode ser pago no checkout',async()=>{
+ const old=process.env.PAGBANK_TOKEN;process.env.PAGBANK_TOKEN='test-only';let writes=0;
+ const payload=JSON.stringify({reference_id:'17',charges:[{id:'DECLINED-1',status:'DECLINED'}]});
+ const signature=require('node:crypto').createHash('sha256').update('test-only-'+payload).digest('hex');
+ const route=load('app/api/pagbank/webhook/route.ts',name=>name==='next/server'?response:name==='node:crypto'?require(name):name.includes('launch-readiness')?{segurancaBancoPronta:async()=>true}:{criarClienteAdmin:()=>{writes++;throw Error('unexpected write')}});
+ try{const r=await route.POST(new Request('https://botica.test/api/pagbank/webhook',{method:'POST',body:payload,headers:{'x-authenticity-token':signature}}));assert.equal(r.status,200);assert.equal(writes,0);}finally{if(old===undefined)delete process.env.PAGBANK_TOKEN;else process.env.PAGBANK_TOKEN=old;}
+});
 test('limitador ignora cabeçalho Cloudflare controlado pelo visitante e falha fechado em produção',async()=>{
  const old={secret:process.env.RATE_LIMIT_SECRET,env:process.env.NODE_ENV};process.env.RATE_LIMIT_SECRET='isolated-test-only';process.env.NODE_ENV='production';let ok=true;const keys=[];
  const mod=load('lib/security.ts',name=>name==='next/server'?response:name==='node:crypto'?require(name):{criarClienteAdmin:()=>({rpc:async(_,args)=>{keys.push(args.p_chave);if(!ok)throw Error('offline');return{data:true}}})});
