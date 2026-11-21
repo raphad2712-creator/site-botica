@@ -1,49 +1,45 @@
-# Configurar o pagamento da Botica com PagBank
+# Ativar pagamentos da Botica
 
-O site usa o Checkout PagBank hospedado. O cliente é redirecionado ao ambiente seguro do PagBank, escolhe Pix ou cartão e volta ao site após o pagamento.
+O checkout usa o PagBank hospedado: o cliente escolhe Pix ou cartão no ambiente do PagBank. O token fica somente no servidor da Vercel.
 
-## 1. Atualizar o banco
+## Estado atual
 
-No Supabase, abra **SQL Editor**, crie uma nova consulta, cole todo o conteúdo de `supabase/corrigir-pedidos.sql` e execute.
+As migrações do banco foram aplicadas ao projeto Supabase da Botica. O pedido sem cobrança pode ser registrado no checkout enquanto o pagamento real não estiver liberado. Para receber pagamentos reais ainda faltam as configurações e validações abaixo.
 
-## 2. Obter a chave administrativa do Supabase
+## 1. Confirmar estoque e medidas
 
-No Supabase, abra **Project Settings > API Keys** e copie a chave `service_role`. Ela é secreta.
+Entre em `https://site-botica.vercel.app/admin` com a conta administradora `raphad2712@gmail.com`. Confira a quantidade real, peso e medidas de cada produto e confirme no painel. O banco não marca quantidades antigas como conferidas automaticamente.
 
-## 3. Obter o token do PagBank
+## 2. Configurar a entrega
 
-Entre no ambiente de desenvolvedores do PagBank e gere primeiro um token de Sandbox. Não coloque esse token no GitHub e não use o prefixo `NEXT_PUBLIC_`.
+Cadastre o token de produção do Melhor Envio como `MELHOR_ENVIO_TOKEN` na Vercel, ou aprove formalmente os valores da tabela de frete da loja e então defina `FRETE_TABELA_APROVADA=true`. Não ative esta última opção antes de conferir os valores que serão cobrados. O checkout recalcula o frete no servidor.
 
-O site já envia esta URL ao PagBank para receber as notificações de pagamento:
+## 3. Obter o token de produção PagBank
+
+Gere o token na conta PagBank da Botica. Configure a URL de notificações conforme o painel do PagBank:
 
 ```text
 https://site-botica.vercel.app/api/pagbank/webhook
 ```
 
+Nunca envie o token em chat ou commit e não use a variável pública `NEXT_PUBLIC_`.
+
 ## 4. Configurar a Vercel
 
-Em **Vercel > projeto > Settings > Environment Variables**, adicione para Production e Preview:
+Em **Vercel > site-botica > Settings > Environment Variables**, selecione **Production** e confira:
 
 ```text
-SUPABASE_SERVICE_ROLE_KEY = chave service_role do Supabase
-PAGBANK_TOKEN = token privado do PagBank
-PAGBANK_SANDBOX = true
+PAGBANK_TOKEN = token de produção privado
+PAGBANK_SANDBOX = false
+MODO_PEDIDO_TESTE = false
+SUPABASE_SERVICE_ROLE_KEY = chave service_role do projeto euxodutzqcurpeiwelxj
+MELHOR_ENVIO_TOKEN = token de produção de frete (ou FRETE_TABELA_APROVADA = true após aprovação)
 ```
 
-Depois, abra **Deployments**, selecione o último deploy e clique em **Redeploy**.
+A chave service_role já está presente no projeto; não a substitua por chave de outro Supabase. Salve as variáveis e faça **Redeploy** em **Deployments** para que o servidor leia os novos valores.
 
-## 5. Testar no Sandbox
+## 5. Conferir antes de aceitar pagamentos
 
-Use os dados de teste fornecidos pelo PagBank e confirme se:
+Verifique se o cálculo de frete corresponde ao serviço e destino contratados, se todos os produtos vendidos têm estoque confirmado e se a URL de retorno e as notificações do PagBank atualizam os pedidos. Faça uma compra controlada com um valor pequeno e confira o pedido, o pagamento, o estoque e os e-mails. A integração de e-mail Brevo está retornando HTTP 401 no diagnóstico: atualize ou valide a chave e o remetente antes de depender das notificações.
 
-1. O checkout abre no PagBank.
-2. Pix e cartão aparecem como opções.
-3. O pagamento aprovado retorna ao site.
-4. Um pagamento recusado ou cancelado aparece como não concluído e permite nova tentativa.
-5. Um Pix ainda não pago permanece como pendente, sem baixar estoque.
-6. O pedido aprovado aparece como `pago` em Minha conta.
-7. O estoque é reduzido uma única vez.
-
-## 6. Ativar pagamentos reais
-
-Somente depois dos testes, substitua o token pelo token de produção, altere `PAGBANK_SANDBOX` para `false` e faça um novo deploy.
+O botão do checkout pode estar escrito **Pagar** mesmo quando a cobrança ainda não está habilitada. Nesse estado, o fluxo registra um pedido sem cobrar; a cobrança real só fica disponível quando todas as verificações do servidor forem atendidas.
