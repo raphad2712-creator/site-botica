@@ -105,7 +105,7 @@ function possuiMedidas(produto: ProdutoFrete) {
 }
 
 async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, produtos: ProdutoFrete[]) {
-  const token = process.env.MELHOR_ENVIO_TOKEN || process.env.MELHOR_ENVIO_KEY;
+  const token = process.env.FRETE_BOTICA_ENVIO || process.env.MELHOR_ENVIO_TOKEN || process.env.MELHOR_ENVIO_KEY;
   if (!token) return null;
   if (!produtos.length || !produtos.every(possuiMedidas)) throw new Error("MEDIDAS_FRETE_INCOMPLETAS");
   const baseUrl = process.env.MELHOR_ENVIO_SANDBOX === "true"

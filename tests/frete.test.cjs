@@ -73,6 +73,35 @@ test('reconhece MELHOR_ENVIO_KEY para uma cotação com medidas sem registrar o 
   }
 });
 
+test('usa FRETE_BOTICA_ENVIO antes da chave antiga na cotação', async () => {
+  const anterior = process.env.FRETE_BOTICA_ENVIO;
+  const chaveAnterior = process.env.MELHOR_ENVIO_KEY;
+  process.env.FRETE_BOTICA_ENVIO = 'token-novo-ficticio';
+  process.env.MELHOR_ENVIO_KEY = 'token-antigo-ficticio';
+  const fetchAnterior = global.fetch;
+  const chamadas = [];
+  global.fetch = async (url, options = {}) => {
+    chamadas.push({ url, authorization: options.headers?.Authorization });
+    return chamadas.length === 1
+      ? { ok: true, json: async () => ({cep:'08180050',localidade:'São Paulo',uf:'SP'}) }
+      : { ok: true, json: async () => ([{id:1,name:'PAC',price:'18.90',delivery_time:5,company:{name:'Correios'}}]) };
+  };
+  try {
+    const cotacao = await moduleFrete.exports.consultarFrete('08180050', 55.9, [{
+      id: 1, nome: 'Produto', preco: 55.9, quantidade: 1,
+      peso_kg: 0.3, altura_cm: 12, largura_cm: 10, comprimento_cm: 15,
+    }]);
+    assert.equal(cotacao.valor, 18.9);
+    assert.equal(chamadas[1].authorization, 'Bearer token-novo-ficticio');
+  } finally {
+    global.fetch = fetchAnterior;
+    if (anterior === undefined) delete process.env.FRETE_BOTICA_ENVIO;
+    else process.env.FRETE_BOTICA_ENVIO = anterior;
+    if (chaveAnterior === undefined) delete process.env.MELHOR_ENVIO_KEY;
+    else process.env.MELHOR_ENVIO_KEY = chaveAnterior;
+  }
+});
+
 test('cotação da transportadora com embalagem provisória permanece identificada como estimativa', async () => {
   const anterior = process.env.MELHOR_ENVIO_KEY;
   const tokenAnterior = process.env.MELHOR_ENVIO_TOKEN;

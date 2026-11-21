@@ -4,7 +4,7 @@ export function pagamentosProducaoConfigurados() {
   return Boolean((process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN) && process.env.SUPABASE_SERVICE_ROLE_KEY)
     && process.env.PAGBANK_SANDBOX === "false"
     && process.env.MODO_PEDIDO_TESTE !== "true"
-    && Boolean(process.env.MELHOR_ENVIO_TOKEN || process.env.MELHOR_ENVIO_KEY || process.env.FRETE_TABELA_APROVADA === "true");
+    && Boolean(process.env.FRETE_BOTICA_ENVIO || process.env.MELHOR_ENVIO_TOKEN || process.env.MELHOR_ENVIO_KEY || process.env.FRETE_TABELA_APROVADA === "true");
 }
 
 
@@ -13,7 +13,7 @@ export function pendenciasConfiguracaoLoja() {
   if (!process.env.PAGBANK_TOKEN && !process.env.PAGAMENTO_TOKEN) pendencias.push("Configurar o token do PagBank na produção da Vercel.");
   if (process.env.PAGBANK_SANDBOX !== "false") pendencias.push("Definir PAGBANK_SANDBOX como false para produção.");
   if (process.env.MODO_PEDIDO_TESTE === "true") pendencias.push("Desativar MODO_PEDIDO_TESTE na produção.");
-  if (!process.env.MELHOR_ENVIO_TOKEN && !process.env.MELHOR_ENVIO_KEY && process.env.FRETE_TABELA_APROVADA !== "true") pendencias.push("Configurar MELHOR_ENVIO_KEY ou aprovar FRETE_TABELA_APROVADA.");
+  if (!process.env.FRETE_BOTICA_ENVIO && !process.env.MELHOR_ENVIO_TOKEN && !process.env.MELHOR_ENVIO_KEY && process.env.FRETE_TABELA_APROVADA !== "true") pendencias.push("Configurar FRETE_BOTICA_ENVIO ou aprovar FRETE_TABELA_APROVADA.");
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) pendencias.push("Configurar SUPABASE_SERVICE_ROLE_KEY no servidor.");
   return pendencias;
 }
