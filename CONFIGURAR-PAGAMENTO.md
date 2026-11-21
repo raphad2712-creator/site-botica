@@ -2,13 +2,23 @@
 
 O checkout usa o PagBank hospedado: o cliente escolhe Pix ou cartão no ambiente do PagBank. O token fica somente no servidor da Vercel.
 
+## Roteiro rápido para amanhã
+
+1. Entre na conta **PagBank da Botica**, pelo computador. Abra **Vendas > Integrações > Gerar Token** e obtenha o token **de produção**. Se a tela oferecer o token já existente, reutilize-o: gerar outro pode invalidar o anterior.
+2. Entre em **Vercel > site-botica > Settings > Environment Variables**. Crie ou edite a variável `PAGBANK_TOKEN`, cole o token no campo **Value**, marque **Production** e salve. Não envie o valor pelo WhatsApp, chat ou GitHub.
+3. Na mesma tela, confira `PAGBANK_SANDBOX=false` e `MODO_PEDIDO_TESTE=false` em **Production**. A chave `SUPABASE_SERVICE_ROLE_KEY` já está cadastrada; não a substitua.
+4. Abra **Deployments** na Vercel, escolha o deploy de produção mais recente e clique em **Redeploy**, mantendo as variáveis de ambiente de produção. Aguarde o status **Ready**.
+5. Faça uma compra controlada no site: coloque um produto no carrinho, calcule o frete, clique em **Pagar** e conclua um pagamento pequeno no PagBank. Confira o pedido, o valor, o estoque e a notificação no painel. O pagamento é real e pode gerar cobrança; use os dados da loja e combine o teste com o responsável.
+
+**Antes do passo 5:** o frete de produção ainda precisa do token `MELHOR_ENVIO_TOKEN` e das medidas dos produtos, ou de aprovação dos valores da tabela atual para habilitar `FRETE_TABELA_APROVADA=true`. O token PagBank sozinho não libera o pagamento enquanto esse ponto estiver pendente.
+
 ## Estado atual
 
-As migrações do banco foram aplicadas ao projeto Supabase da Botica. O pedido sem cobrança pode ser registrado no checkout enquanto o pagamento real não estiver liberado. Para receber pagamentos reais ainda faltam as configurações e validações abaixo.
+As migrações do banco foram aplicadas ao projeto Supabase da Botica. Por solicitação do responsável, os **16 produtos ativos foram definidos com 16 unidades cada e marcados como estoque confirmado**. O pedido sem cobrança pode ser registrado no checkout enquanto o pagamento real não estiver liberado. Para receber pagamentos reais ainda faltam as configurações e validações abaixo.
 
 ## 1. Confirmar estoque e medidas
 
-Entre em `https://site-botica.vercel.app/admin` com uma conta administradora. A troca para `flavio_farmaceutico@hotmail.com` depende de cadastrar e confirmar esse e-mail na loja; até lá, o acesso administrativo existente permanece ativo. Confira a quantidade real, peso e medidas de cada produto e confirme no painel. O banco não marca quantidades antigas como conferidas automaticamente.
+Entre em `https://site-botica.vercel.app/admin` com uma conta administradora. A troca para `flavio_farmaceutico@hotmail.com` depende de cadastrar e confirmar esse e-mail na loja; até lá, o acesso administrativo existente permanece ativo. Confira fisicamente se as 16 unidades de cada produto estão corretas. Preencha peso e medidas de cada produto se for usar o Melhor Envio. O estoque pode ser corrigido no painel caso a contagem real seja diferente.
 
 ## 2. Configurar a entrega
 
