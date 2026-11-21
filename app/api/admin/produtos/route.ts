@@ -38,7 +38,8 @@ function dadosProduto(body: Record<string, unknown>) {
     !Number.isInteger(estoque) || estoque < 0 || estoque > 100000 ||
     [peso, altura, largura, comprimento].some((valor) => valor !== null && (!Number.isFinite(valor) || valor <= 0 || valor > 10000))) return null;
   return { nome, descricao, categoria, preco, preco_antigo: precoAntigo, estoque, estoque_confirmado: true,
-    peso_kg: peso, altura_cm: altura, largura_cm: largura, comprimento_cm: comprimento };
+    peso_kg: peso, altura_cm: altura, largura_cm: largura, comprimento_cm: comprimento,
+    medidas_confirmadas: body.medidas_confirmadas === "on" && [peso, altura, largura, comprimento].every((valor) => valor !== null) };
 }
 
 async function receberDados(request: Request) {

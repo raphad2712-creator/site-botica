@@ -59,11 +59,40 @@ test('reconhece MELHOR_ENVIO_KEY para uma cotação com medidas sem registrar o 
   try {
     const cotacao = await moduleFrete.exports.consultarFrete('08180050', 55.9, [{
       id: 1, nome: 'Produto', preco: 55.9, quantidade: 1,
-      peso_kg: 0.3, altura_cm: 12, largura_cm: 10, comprimento_cm: 15,
+      peso_kg: 0.3, altura_cm: 12, largura_cm: 10, comprimento_cm: 15, medidas_confirmadas: true,
     }]);
     assert.equal(cotacao.valor, 18.9);
     assert.equal(cotacao.estimado, false);
     assert.equal(chamadas[1].authorization, 'Bearer token-ficticio');
+  } finally {
+    global.fetch = fetchAnterior;
+    if (anterior === undefined) delete process.env.MELHOR_ENVIO_KEY;
+    else process.env.MELHOR_ENVIO_KEY = anterior;
+    if (tokenAnterior === undefined) delete process.env.MELHOR_ENVIO_TOKEN;
+    else process.env.MELHOR_ENVIO_TOKEN = tokenAnterior;
+  }
+});
+
+test('cotação da transportadora com embalagem provisória permanece identificada como estimativa', async () => {
+  const anterior = process.env.MELHOR_ENVIO_KEY;
+  const tokenAnterior = process.env.MELHOR_ENVIO_TOKEN;
+  delete process.env.MELHOR_ENVIO_TOKEN;
+  process.env.MELHOR_ENVIO_KEY = 'token-ficticio';
+  const fetchAnterior = global.fetch;
+  let chamadas = 0;
+  global.fetch = async () => {
+    chamadas++;
+    return chamadas === 1
+      ? {ok:true,json:async()=>({cep:'08180050',localidade:'São Paulo',uf:'SP'})}
+      : {ok:true,json:async()=>[{id:1,name:'PAC',price:'18.90',delivery_time:5,company:{name:'Correios'}}]};
+  };
+  try {
+    const cotacao = await moduleFrete.exports.consultarFrete('08180050', 55.9, [{
+      id: 1, nome: 'Produto', preco: 55.9, quantidade: 1, peso_kg: 0.3,
+      altura_cm: 12, largura_cm: 10, comprimento_cm: 15, medidas_confirmadas: false,
+    }]);
+    assert.equal(cotacao.valor, 18.9);
+    assert.equal(cotacao.estimado, true);
   } finally {
     global.fetch = fetchAnterior;
     if (anterior === undefined) delete process.env.MELHOR_ENVIO_KEY;

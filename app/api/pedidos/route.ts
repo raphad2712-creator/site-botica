@@ -35,6 +35,7 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
   if (detalhe === "FRETE_NAO_HOMOLOGADO") return "A entrega para este pedido precisa ser confirmada pela Botica antes do pagamento.";
   if (detalhe === "MEDIDAS_FRETE_INCOMPLETAS") return "A Botica precisa informar peso e medidas das embalagens antes de calcular o frete deste pedido.";
+  if (detalhe === "MEDIDAS_NAO_CONFIRMADAS") return "A Botica precisa conferir o peso e as medidas das embalagens antes de aceitar este pedido.";
   if (detalhe === "CEP_INDISPONIVEL") return "Não foi possível confirmar o frete agora. Tente novamente.";
   if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Não foi possível iniciar o pedido. Tente novamente em instantes ou fale com a Botica.";
   if (codigo === "42P01" || codigo === "PGRST205") return "Não foi possível registrar o pedido agora. Tente novamente em instantes.";
@@ -60,10 +61,10 @@ export async function POST(request: Request) {
   }
   if (body.metodo_pagamento !== "pix" && body.metodo_pagamento !== "cartao") return NextResponse.json({ erro: "Escolha Pix ou cartão de crédito." }, { status: 400 });
   const ids = [...new Set(body.itens.map((item) => Number(item.produto_id)))];
-  let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,estoque_confirmado,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", ids).eq("ativo", true);
+  let { data: produtos, error } = await supabase.from("produtos").select("id,nome,preco,estoque,estoque_confirmado,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm,medidas_confirmadas").in("id", ids).eq("ativo", true);
   if (error) {
     const consultaLegada = await supabase.from("produtos").select("id,nome,preco,estoque,ativo").in("id", ids).eq("ativo", true);
-    produtos = consultaLegada.data?.map((produto) => ({ ...produto, estoque_confirmado: false, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null })) ?? null;
+    produtos = consultaLegada.data?.map((produto) => ({ ...produto, estoque_confirmado: false, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null, medidas_confirmadas: false })) ?? null;
     error = consultaLegada.error;
   }
   if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está mais disponível." }, { status: 400 });
@@ -81,6 +82,7 @@ export async function POST(request: Request) {
       subtotal += Number(produto.preco) * quantidade;
       return { produto_id: produto.id, nome: produto.nome, quantidade, preco_unitario: Number(produto.preco) };
     });
+    if (produtos.some((produto) => produto.medidas_confirmadas !== true)) throw new Error("MEDIDAS_NAO_CONFIRMADAS");
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
     etapa = "confirmar o frete";
@@ -88,6 +90,7 @@ export async function POST(request: Request) {
       const produto = produtos.find((atual) => Number(atual.id) === Number(item.produto_id))!;
       return {
         id: produto.id, nome: produto.nome, preco: Number(produto.preco), quantidade: item.quantidade,
+        medidas_confirmadas: produto.medidas_confirmadas,
         peso_kg: produto.peso_kg === null ? null : Number(produto.peso_kg),
         altura_cm: produto.altura_cm === null ? null : Number(produto.altura_cm),
         largura_cm: produto.largura_cm === null ? null : Number(produto.largura_cm),

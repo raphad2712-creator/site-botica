@@ -47,6 +47,7 @@ O webhook valida `x-authenticity-token`, valor e identificação do pagamento. R
 Escolher uma opção após validação da loja:
 
 - Configurar `MELHOR_ENVIO_KEY` (ou `MELHOR_ENVIO_TOKEN`) na Vercel como variável sensível de Production e informar peso e dimensões reais das embalagens de todos os produtos. Após trocar a chave, criar novo deploy para que as funções usem o novo valor. A cotação precisa ser confirmada no checkout. Nunca publicar a chave em código ou mensagens.
+- As 19 embalagens cadastradas em 21/11/2026 receberam pesos e dimensões **provisórios** apenas para prévia de frete. A coluna `medidas_confirmadas` permanece `false` e o servidor bloqueia pagamento desses itens até que o administrador informe medidas físicas, marque a confirmação no produto e salve. Não copiar medidas provisórias para etiquetas de transporte.
 - Usar a tabela própria somente após a empresa conferir preços e prazos e definir `FRETE_TABELA_APROVADA=true`.
 
 Sem confirmação, uma estimativa pode ser exibida para consulta, mas não é usada para aceitar pagamento. A integração com transportadora e os prazos comerciais ainda precisam de teste real.

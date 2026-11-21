@@ -13,6 +13,7 @@ export type Produto = {
   altura_cm: number | null;
   largura_cm: number | null;
   comprimento_cm: number | null;
+  medidas_confirmadas?: boolean;
 };
 
 export type ItemCarrinho = Produto & { quantidade: number };

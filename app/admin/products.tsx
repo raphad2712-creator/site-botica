@@ -11,6 +11,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
   const semMedidas = produtos.filter((produto) => produto.ativo &&
     [produto.peso_kg, produto.altura_cm, produto.largura_cm, produto.comprimento_cm]
       .some((medida) => medida === null || Number(medida) <= 0));
+  const medidasProvisorias = produtos.filter((produto) => produto.ativo && produto.medidas_confirmadas !== true);
 
   async function lerResposta(resposta: Response) {
     const texto = await resposta.text();
@@ -75,7 +76,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
   return (
     <section className="admin-page admin-products-panel" id="produtos-admin">
       <div className="admin-panel-heading"><div><small>CATÁLOGO</small><h2>Produtos da loja</h2><p>Cadastre, fotografe e atualize os produtos. As alterações salvas aparecem na loja.</p></div><span>{produtos.filter((produto) => produto.ativo).length} ATIVOS</span></div>
-      {semMedidas.length > 0 && <p className="form-message" role="status">Para calcular o frete com transportadora, preencha peso, altura, largura e comprimento da embalagem em {semMedidas.length} {semMedidas.length === 1 ? "produto ativo" : "produtos ativos"}. Abra “Editar foto e informações” em cada produto marcado abaixo.</p>}
+      {medidasProvisorias.length > 0 && <p className="form-message" role="status">Frete para pagamento aguardando conferência: {medidasProvisorias.length} {medidasProvisorias.length === 1 ? "produto ativo precisa" : "produtos ativos precisam"} do peso e das medidas reais da embalagem. Abra “Editar foto e informações”, corrija os valores e marque “Conferi as medidas reais”. {semMedidas.length > 0 ? `${semMedidas.length} ainda estão sem valores.` : "Valores provisórios servem apenas para consulta."}</p>}
       <form className="admin-product-form" onSubmit={cadastrar}>
         <h3>Adicionar produto</h3>
         <p>Preencha os dados e escolha uma foto do aparelho. Formatos JPG, PNG ou WebP, até 3 MB.</p>
@@ -92,6 +93,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         <label>Altura (cm)<input name="altura_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 12" /></label>
         <label>Largura (cm)<input name="largura_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 10" /></label>
         <label>Comprimento (cm)<input name="comprimento_cm" type="number" min="0.1" step="0.1" placeholder="Ex.: 15" /></label>
+        <label className="admin-description"><input name="medidas_confirmadas" type="checkbox" /> Conferi o peso e as medidas reais da embalagem para envio</label>
         <button disabled={salvando !== null}>{salvando === "novo" ? "SALVANDO PRODUTO..." : "ADICIONAR À LOJA"}</button>
       </form>
       {mensagem && <p className="form-message" role="status">{mensagem}</p>}
@@ -100,7 +102,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         {produtos.map((produto) => (
           <article key={produto.id}>
             <div className="admin-product-thumb"><ProductImage nome={produto.nome} imagemAtual={produto.imagem_url} /></div>
-            <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque_confirmado ? `${produto.estoque} unidades conferidas` : "Estoque precisa de conferência"}</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em>{semMedidas.some((pendente) => pendente.id === produto.id) && <small>Faltam medidas para cotação com transportadora</small>}</div>
+            <div><b>{produto.nome}</b><small>{produto.categoria} • {produto.estoque_confirmado ? `${produto.estoque} unidades conferidas` : "Estoque precisa de conferência"}</small><em className={produto.ativo ? "is-active" : "is-inactive"}>{produto.ativo ? "Ativo" : "Inativo"}</em>{medidasProvisorias.some((pendente) => pendente.id === produto.id) && <small>Medidas provisórias: conferir antes de aceitar pagamento</small>}</div>
             <strong>R$ {Number(produto.preco).toFixed(2).replace(".", ",")}</strong>
             <button type="button" disabled={salvando !== null} onClick={() => alternar(produto)}>{produto.ativo ? "DESATIVAR" : "ATIVAR"}</button>
             <details className="admin-product-edit"><summary>Editar foto e informações</summary>
@@ -116,6 +118,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
                 <label>Altura (cm)<input name="altura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.altura_cm ?? ""} /></label>
                 <label>Largura (cm)<input name="largura_cm" type="number" min="0.1" step="0.1" defaultValue={produto.largura_cm ?? ""} /></label>
                 <label>Comprimento (cm)<input name="comprimento_cm" type="number" min="0.1" step="0.1" defaultValue={produto.comprimento_cm ?? ""} /></label>
+                <label className="admin-description"><input name="medidas_confirmadas" type="checkbox" defaultChecked={produto.medidas_confirmadas === true} /> Conferi o peso e as medidas reais da embalagem para envio</label>
                 <button disabled={salvando !== null}>{salvando === produto.id ? "SALVANDO..." : "SALVAR ALTERAÇÕES"}</button>
               </form>
             </details>

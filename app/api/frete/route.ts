@@ -24,11 +24,11 @@ export async function POST(request: Request) {
     if (ids.length) {
       const supabase = await criarClienteServidor();
       let { data: produtos, error } = await supabase.from("produtos")
-        .select("id,nome,preco,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm")
+        .select("id,nome,preco,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm,medidas_confirmadas")
         .in("id", ids).eq("ativo", true);
       if (error) {
         const consultaLegada = await supabase.from("produtos").select("id,nome,preco,ativo").in("id", ids).eq("ativo", true);
-        produtos = consultaLegada.data?.map((produto) => ({ ...produto, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null })) ?? null;
+        produtos = consultaLegada.data?.map((produto) => ({ ...produto, peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null, medidas_confirmadas: false })) ?? null;
         error = consultaLegada.error;
       }
       if (error || !produtos || produtos.length !== ids.length) return NextResponse.json({ erro: "Um produto não está disponível para calcular o frete." }, { status: 400 });

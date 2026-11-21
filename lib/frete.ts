@@ -9,6 +9,7 @@ export type ProdutoFrete = {
   altura_cm: number | null;
   largura_cm: number | null;
   comprimento_cm: number | null;
+  medidas_confirmadas?: boolean;
 };
 
 export type CotacaoFrete = {
@@ -146,7 +147,8 @@ async function consultarMelhorEnvio(endereco: EnderecoFrete, subtotal: number, p
   return {
     valor: gratis ? 0 : Number(melhor.valor.toFixed(2)), prazoMinimo: melhor.prazoMinimo, prazoMaximo: melhor.prazoMaximo,
     destino: `${endereco.cidade}/${endereco.estado}`, gratis, transportadora: melhor.transportadora,
-    servico: melhor.nome, servicoId: melhor.id, estimado: false,
+    servico: melhor.nome, servicoId: melhor.id,
+    estimado: produtos.some((produto) => produto.medidas_confirmadas === false),
   } satisfies CotacaoFrete;
 }
 
