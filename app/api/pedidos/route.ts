@@ -35,7 +35,6 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
   if (detalhe === "FRETE_NAO_HOMOLOGADO") return "A entrega para este pedido precisa ser confirmada pela Botica antes do pagamento.";
   if (detalhe === "MEDIDAS_FRETE_INCOMPLETAS") return "A Botica precisa informar peso e medidas das embalagens antes de calcular o frete deste pedido.";
-  if (detalhe === "MEDIDAS_NAO_CONFIRMADAS") return "A Botica precisa conferir o peso e as medidas das embalagens antes de aceitar este pedido.";
   if (detalhe === "CEP_INDISPONIVEL") return "Não foi possível confirmar o frete agora. Tente novamente.";
   if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Não foi possível iniciar o pedido. Tente novamente em instantes ou fale com a Botica.";
   if (codigo === "42P01" || codigo === "PGRST205") return "Não foi possível registrar o pedido agora. Tente novamente em instantes.";
@@ -82,7 +81,6 @@ export async function POST(request: Request) {
       subtotal += Number(produto.preco) * quantidade;
       return { produto_id: produto.id, nome: produto.nome, quantidade, preco_unitario: Number(produto.preco) };
     });
-    if (produtos.some((produto) => produto.medidas_confirmadas !== true)) throw new Error("MEDIDAS_NAO_CONFIRMADAS");
     const cliente = body.cliente ?? {};
     if (!cliente.cep || !cliente.rua || !cliente.numero || !cliente.bairro || !cliente.cidade || !cliente.estado) return NextResponse.json({ erro: "Preencha o endereço de entrega." }, { status: 400 });
     etapa = "confirmar o frete";
@@ -97,7 +95,9 @@ export async function POST(request: Request) {
         comprimento_cm: produto.comprimento_cm === null ? null : Number(produto.comprimento_cm),
       };
     }));
-    if (cotacaoFrete.estimado && process.env.FRETE_TABELA_APROVADA !== "true") throw new Error("FRETE_NAO_HOMOLOGADO");
+    // A cotação real da transportadora pode usar medidas provisórias cadastradas pela Botica.
+    // A tabela fixa continua exigindo aprovação explícita da loja.
+    if (cotacaoFrete.servicoId === null && process.env.FRETE_TABELA_APROVADA !== "true") throw new Error("FRETE_NAO_HOMOLOGADO");
     const frete = cotacaoFrete.valor;
 
     etapa = "salvar os dados do comprador";
