@@ -54,11 +54,11 @@ export function validarClienteSemPagamento(value: unknown) {
     if (typeof dado !== "string" || dado.trim().length > limite) throw new Error("Confira os dados do comprador e do endereço.");
     cliente[campo as keyof typeof limites] = dado.trim();
   }
-  if (cliente.nome.length < 3 || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cliente.email)) {
+  if (cliente.nome.length < 3 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.email)) {
     throw new Error("Informe seu nome e um e-mail válido.");
   }
   if (![cliente.rua, cliente.numero, cliente.bairro, cliente.cidade].every(Boolean)
-    || !/^\\d{5}-?\\d{3}$/.test(cliente.cep)
+    || !/^\d{5}-?\d{3}$/.test(cliente.cep)
     || !/^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/i.test(cliente.estado)) {
     throw new Error("Confira o CEP e preencha o endereço completo, com a sigla do estado.");
   }
