@@ -3,12 +3,10 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 import { aplicarPrecoCatalogo } from "@/lib/consultation-products";
 import { comprasLiberadas, segurancaBancoPronta } from "@/lib/launch-readiness";
-import { validarItens, validarCliente } from "@/lib/checkout-validation";
+import { validarItens, validarClienteSemPagamento } from "@/lib/checkout-validation";
 import { consultarFrete } from "@/lib/frete";
-import { limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
 export async function POST(request: Request) {
-  if (await limiteExcedido(request, "pedido-teste", 3, 60)) return respostaMuitasTentativas(60);
   if (await comprasLiberadas()) return NextResponse.json({ erro: "O pagamento real já está disponível. Use o checkout normal." }, { status: 409 });
   if (!await segurancaBancoPronta()) return NextResponse.json({ erro: "A segurança do banco ainda precisa ser verificada para registrar pedidos." }, { status: 503 });
 
@@ -18,21 +16,27 @@ export async function POST(request: Request) {
 
   let itens: ReturnType<typeof validarItens>;
   let metodoPagamento: "pix" | "cartao";
-  let cliente: ReturnType<typeof validarCliente>;
+  let cliente: ReturnType<typeof validarClienteSemPagamento>;
   try {
     if (Number(request.headers.get("content-length")) > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
     const body = await request.text();
     if (new TextEncoder().encode(body).length > 32768) return NextResponse.json({ erro: "Pedido muito grande." }, { status: 413 });
     const dados = JSON.parse(body);
     itens = validarItens(dados?.itens);
-    cliente = validarCliente(dados?.cliente);
+    cliente = validarClienteSemPagamento(dados?.cliente);
     if (dados?.metodo_pagamento !== "pix" && dados?.metodo_pagamento !== "cartao") throw new Error("Método inválido");
     metodoPagamento = dados.metodo_pagamento;
-  } catch {
-    return NextResponse.json({ erro: "Confira os produtos e as quantidades do carrinho." }, { status: 400 });
+  } catch (erro) {
+    return NextResponse.json({ erro: erro instanceof Error ? erro.message : "Confira os dados do pedido." }, { status: 400 });
   }
 
   const admin = criarClienteAdmin();
+  const umaHoraAtras = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count: recentes, error: contagemError } = await admin.from("pedidos")
+    .select("id", { count: "exact", head: true }).eq("usuario_id", auth.user.id)
+    .like("pagamento_id", "TESTE-%").gte("criado_em", umaHoraAtras);
+  if (contagemError) return NextResponse.json({ erro: "Não foi possível verificar os pedidos recentes." }, { status: 503 });
+  if ((recentes ?? 0) >= 20) return NextResponse.json({ erro: "Aguarde antes de registrar mais pedidos." }, { status: 429 });
   let { data: produtos, error } = await admin.from("produtos").select("id,nome,preco,ativo,peso_kg,altura_cm,largura_cm,comprimento_cm").in("id", itens.map((item) => item.produto_id)).eq("ativo", true);
   if (error) {
     const legado = await admin.from("produtos").select("id,nome,preco,ativo").in("id", itens.map((item) => item.produto_id)).eq("ativo", true);
