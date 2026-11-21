@@ -9,6 +9,7 @@ function mensagemFrete(erro: unknown) {
   if (codigo === "CEP_NAO_ENCONTRADO") return { mensagem: "CEP não encontrado. Confira os números digitados.", status: 404 };
   if (codigo === "COTACAO_SEM_OPCOES") return { mensagem: "Nenhuma transportadora atende esse endereço para os produtos escolhidos.", status: 422 };
   if (codigo === "COTACAO_INDISPONIVEL") return { mensagem: "A transportadora não conseguiu calcular o frete agora. Tente novamente.", status: 503 };
+  if (codigo === "MEDIDAS_FRETE_INCOMPLETAS") return { mensagem: "Ainda não é possível calcular o frete destes produtos. A Botica precisa informar o peso e as medidas das embalagens.", status: 422 };
   return { mensagem: "Não foi possível consultar o CEP agora. Tente novamente.", status: 503 };
 }
 

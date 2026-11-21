@@ -34,6 +34,7 @@ function mensagemErro(erro: unknown) {
   if (detalhe === "PAGAMENTO_NAO_CONFIGURADO") return "O pagamento online está temporariamente indisponível. Fale com a Botica para receber ajuda.";
   if (detalhe === "CEP_INVALIDO" || detalhe === "CEP_NAO_ENCONTRADO") return "O CEP de entrega não foi encontrado.";
   if (detalhe === "FRETE_NAO_HOMOLOGADO") return "A entrega para este pedido precisa ser confirmada pela Botica antes do pagamento.";
+  if (detalhe === "MEDIDAS_FRETE_INCOMPLETAS") return "A Botica precisa informar peso e medidas das embalagens antes de calcular o frete deste pedido.";
   if (detalhe === "CEP_INDISPONIVEL") return "Não foi possível confirmar o frete agora. Tente novamente.";
   if (detalhe === "SUPABASE_ADMIN_NAO_CONFIGURADO") return "Não foi possível iniciar o pedido. Tente novamente em instantes ou fale com a Botica.";
   if (codigo === "42P01" || codigo === "PGRST205") return "Não foi possível registrar o pedido agora. Tente novamente em instantes.";

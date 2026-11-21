@@ -27,6 +27,23 @@ test('frete grátis respeita o valor mínimo da compra', () => {
   assert.equal(cotacao.destino, 'Manaus/AM');
 });
 
+test('com transportadora configurada, não substitui cotação real por valor fixo quando faltam medidas', async () => {
+  const tokenAnterior = process.env.MELHOR_ENVIO_TOKEN;
+  process.env.MELHOR_ENVIO_TOKEN = 'token-apenas-para-teste';
+  try {
+    await comFetch([{status:200,body:{cep:'08180050',localidade:'São Paulo',uf:'SP'}}], async (chamadas) => {
+      await assert.rejects(moduleFrete.exports.consultarFrete('08180050', 55.9, [{
+        id: 1, nome: 'Produto sem medidas', preco: 55.9, quantidade: 1,
+        peso_kg: null, altura_cm: null, largura_cm: null, comprimento_cm: null,
+      }]), /MEDIDAS_FRETE_INCOMPLETAS/);
+      assert.equal(chamadas.length, 1);
+    });
+  } finally {
+    if (tokenAnterior === undefined) delete process.env.MELHOR_ENVIO_TOKEN;
+    else process.env.MELHOR_ENVIO_TOKEN = tokenAnterior;
+  }
+});
+
 async function comFetch(respostas, executar) {
   const original = global.fetch;
   const chamadas = [];
