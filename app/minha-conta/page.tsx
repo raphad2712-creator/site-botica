@@ -4,10 +4,7 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { ProfileEditor } from "@/components/profile-editor";
 import { OrderAftercare } from "@/components/order-aftercare";
-import { CustomerRequests } from "@/components/customer-requests";
-import { AftercareCenter } from "@/components/aftercare-center";
 import { ProfilePhoto } from "@/components/profile-photo";
-import { Icon } from "@/components/ui-icon";
 import { AccountNavigation } from "./account-navigation";
 
 export default async function MinhaContaPage() {
@@ -25,23 +22,19 @@ export default async function MinhaContaPage() {
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
   ]);
   const pedidos = pedidosResposta?.data ?? [];
-  const { data: solicitacoes } = await supabase.from("solicitacoes_pos_venda").select("id,pedido_id,tipo,status,motivo,resposta_admin,criado_em").order("criado_em", { ascending: false });
   const { data: perfilSalvo } = await supabase.from("perfil_clientes").select("*").eq("usuario_id", auth.user.id).maybeSingle();
   const nome = perfilSalvo?.nome || auth.user.user_metadata.nome || auth.user.email?.split("@")[0] || "cliente";
   const inicial = nome.trim().charAt(0).toUpperCase();
   const pedidosVisiveis = pedidos.filter((pedido) => pedido.itens_pedido?.length);
-  const emAndamento = pedidosVisiveis.filter((pedido) => ["pago", "aprovado", "preparando", "enviado"].includes(pedido.status) && pedido.status_entrega !== "entregue").length;
-  const entregues = pedidosVisiveis.filter((pedido) => pedido.status_entrega === "entregue" || pedido.status === "entregue").length;
 
   return (
     <section className="account-page account-dashboard" data-account-tab="orders">
       <div className="account-dashboard-title"><div><Link className="account-breadcrumb" href="/">Início <span aria-hidden="true">/</span> <span>Minha conta</span></Link><small>SEU ESPAÇO NA BOTICA</small><h1>Minha conta</h1><p>Olá, {nome}. Acompanhe suas compras e mantenha seus dados atualizados.</p></div><LogoutButton /></div>
-      <div className="account-overview" aria-label="Resumo dos seus pedidos"><article><span><Icon name="document" /></span><div><strong>{pedidosVisiveis.length}</strong><small>Pedidos realizados</small></div></article><article><span><Icon name="truck" /></span><div><strong>{emAndamento}</strong><small>Em andamento</small></div></article><article><span><Icon name="check" /></span><div><strong>{entregues}</strong><small>Pedidos entregues</small></div></article></div>
       <div className="account-dashboard-grid">
         <aside className="account-side">
           <div className="account-side-welcome"><ProfilePhoto fotoUrl={auth.user.user_metadata.foto_url} inicial={inicial} nome={nome} email={auth.user.email} compact /></div>
           <p>Minha área</p>
-          <AccountNavigation pedidos={pedidosVisiveis.length} solicitacoes={solicitacoes?.length ?? 0} />
+          <AccountNavigation pedidos={pedidosVisiveis.length} />
         </aside>
 
         <div className="account-main">
@@ -50,12 +43,6 @@ export default async function MinhaContaPage() {
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2><p>Confira os detalhes e acompanhe cada entrega.</p></div><span>{pedidosVisiveis.length} {pedidosVisiveis.length === 1 ? "pedido" : "pedidos"}</span></div>
             <OrderAftercare pedidos={pedidosVisiveis} />
-          </section>
-          <section className="account-history account-requests" id="solicitacoes">
-            <div className="account-orders-head"><div><small>ATENDIMENTO E PÓS-VENDA</small><h2>Trocas e reembolsos</h2><p>Abra uma solicitação e acompanhe a resposta da equipe.</p></div></div>
-            <AftercareCenter pedidos={pedidosVisiveis} />
-            <div className="account-requests-history"><h3>Suas solicitações</h3><span>{solicitacoes?.length ?? 0} {(solicitacoes?.length ?? 0) === 1 ? "solicitação" : "solicitações"}</span></div>
-            <CustomerRequests solicitacoes={solicitacoes ?? []} pedidos={pedidos} />
           </section>
         </div>
       </div>

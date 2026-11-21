@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <a className="footer-contact-button" href="mailto:flavio_farmaceutico@hotmail.com?subject=Atendimento%20Botica">Falar com a Botica <span aria-hidden="true"><Icon name="arrow-right" /></span></a>
                 </div>
                 <nav aria-label="Institucional"><b>INSTITUCIONAL</b><a href="/#sobre">Sobre a Botica</a><a href="/politica-de-privacidade">Política de privacidade</a><a href="/privacidade">Central de Privacidade</a><a href="/termos-de-uso">Termos de uso</a><CookieSettingsButton /></nav>
-                <nav aria-label="Ajuda e atendimento"><b>AJUDA E ATENDIMENTO</b><a href="mailto:flavio_farmaceutico@hotmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a><a href="/politica-de-trocas-e-devolucoes">Trocas e devoluções</a></nav>
+                <nav aria-label="Ajuda e atendimento"><b>AJUDA E ATENDIMENTO</b><a href="mailto:flavio_farmaceutico@hotmail.com?subject=Atendimento%20Botica">Fale conosco</a><a href="/#receita">Envie sua receita</a><a href="/minha-conta">Meus pedidos</a><a href="/pos-venda">Trocas e reembolsos</a><a href="/politica-de-trocas-e-devolucoes">Política de trocas</a></nav>
                 <div className="footer-shopping"><b>FORMAS DE PAGAMENTO</b><PaymentMethods /><b>SEGURANÇA</b><div className="security-stamps"><span><strong><Icon name="lock" /> SSL</strong><small>Ambiente protegido</small></span><span><strong>LGPD</strong><small>Seus dados seguros</small></span></div></div>
               </section>
               <section className="footer-legal" aria-label="Informações legais da Botica Bioenergética">

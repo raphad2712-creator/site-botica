@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   if (auth.user.email) await enviarEmail({
     para: auth.user.email,
     assunto: `Recebemos sua solicitação — ${codigoPedido}`,
-    html: `<h2>Solicitação recebida</h2><p>Olá, ${escaparHtml(nome)}. Sua solicitação referente ao pedido <b>${codigoPedido}</b> foi registrada e está <b>em análise</b>.</p><p>Protocolo: #${solicitacao.id}. A Botica enviará as próximas orientações por e-mail e pela área “Minha conta”.</p>`,
+    html: `<h2>Solicitação recebida</h2><p>Olá, ${escaparHtml(nome)}. Sua solicitação referente ao pedido <b>${codigoPedido}</b> foi registrada e está <b>em análise</b>.</p><p>Protocolo: #${solicitacao.id}. A Botica enviará as próximas orientações por e-mail e pela página de Trocas e reembolsos.</p>`,
   });
 
   return NextResponse.json({ mensagem: "Solicitação enviada e colocada em análise.", solicitacao });

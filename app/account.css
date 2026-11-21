@@ -205,3 +205,26 @@ html[data-theme="dark"] .account-dashboard .account-side nav button.active { bac
   .account-dashboard .aftercare-center-form { padding: 15px; }
   .account-dashboard .aftercare-center-form .aftercare-field :is(input, select, textarea) { font-size: 16px; }
 }
+
+.account-dashboard .account-dashboard-title { margin-bottom: 30px; }
+.account-dashboard .order-card-actions > .order-details-toggle {
+  width: 100%; min-height: 52px; border: 0; border-radius: 9px;
+  background: #14503c !important; color: #fff !important;
+  font-size: 13px !important; font-weight: 700;
+}
+.account-dashboard .order-card-actions > .order-details-toggle span,
+.account-dashboard .order-card-actions > .order-details-toggle b { color: #fff !important; }
+.account-dashboard .order-card-actions > .order-details-toggle b { background: #ffffff30; }
+.account-dashboard .order-card-actions > .order-details-toggle:hover { background: #1c6249 !important; }
+html[data-theme="dark"] .account-dashboard .order-card-actions > .order-details-toggle { background: #b7d3a5 !important; color: #17261d !important; }
+html[data-theme="dark"] .account-dashboard .order-card-actions > .order-details-toggle :is(span, b) { color: #17261d !important; }
+html[data-theme="dark"] .account-dashboard .order-card-actions > .order-details-toggle b { background: #173d2b1f; }
+.account-aftercare-page { max-width: 960px !important; }
+.account-aftercare-page .account-dashboard-title h1 { font-size: clamp(34px, 5vw, 52px) !important; }
+.account-aftercare-page .aftercare-back { display: inline-flex; align-items: center; min-height: 42px; margin: 0 0 20px; color: var(--account-text); font-size: 13px; font-weight: 700; text-decoration: none; }
+.account-aftercare-page .aftercare-back:hover { text-decoration: underline; }
+.account-aftercare-page .account-history { margin: 0; }
+@media (max-width: 760px) {
+  .account-dashboard .order-card-actions > .order-details-toggle { min-height: 50px; font-size: 12px !important; }
+  .account-aftercare-page .account-dashboard-title h1 { font-size: 34px !important; }
+}

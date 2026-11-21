@@ -35,7 +35,6 @@ export function OrderAftercare({ pedidos }: { pedidos: Pedido[] }) {
       </div>
       <div className="order-card-actions">
         <button className="order-details-toggle" type="button" aria-expanded={detalhesAbertos === pedido.id} aria-controls={`order-details-${pedido.id}`} onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "Ocultar detalhes" : "Ver detalhes e entrega"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
-        <a className="aftercare-open" href="#solicitacoes">Trocas e reembolsos <Icon name="arrow-right" /></a>
       </div>
       {detalhesAbertos === pedido.id && <div className="order-expanded-content" id={`order-details-${pedido.id}`}>
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image"><ProductImage nome={produto?.nome || "Produto Botica"} imagemAtual={produto?.imagem_url} /></div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>

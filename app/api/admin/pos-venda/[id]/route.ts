@@ -28,7 +28,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (usuario.user?.email) await enviarEmail({
     para: usuario.user.email,
     assunto: `Atualização da solicitação #${id}`,
-    html: `<h2>Sua solicitação foi atualizada</h2><p>Pedido #${solicitacao.pedido_id}</p><p>Novo status: <b>${escaparHtml(status.replaceAll("_", " "))}</b></p><p>${escaparHtml(solicitacao.resposta_admin || "Consulte a área Minha conta para acompanhar.")}</p>`,
+    html: `<h2>Sua solicitação foi atualizada</h2><p>Pedido #${solicitacao.pedido_id}</p><p>Novo status: <b>${escaparHtml(status.replaceAll("_", " "))}</b></p><p>${escaparHtml(solicitacao.resposta_admin || "Consulte a página Trocas e reembolsos para acompanhar.")}</p>`,
   });
   return NextResponse.json({ mensagem: "Solicitação atualizada.", solicitacao });
 }
