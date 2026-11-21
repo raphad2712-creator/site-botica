@@ -10,7 +10,7 @@ function ipDaRequisicao(request: Request) {
 }
 
 export async function limiteExcedido(request: Request, escopo: string, limite: number, janelaSegundos: number) {
-  const segredo = process.env.RATE_LIMIT_SECRET || process.env.PAGBANK_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const segredo = process.env.RATE_LIMIT_SECRET || process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!segredo) return true;
   const identificador = createHash("sha256").update(`${segredo}:${escopo}:${ipDaRequisicao(request)}`).digest("hex");
   try {

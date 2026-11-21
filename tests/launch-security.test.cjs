@@ -3,11 +3,12 @@ const fs=require('node:fs');const ts=require('typescript');
 function load(file,deps){const module={exports:{}};new Function('require','module','exports',ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(deps,module,module.exports);return module.exports;}
 const response={NextResponse:{json:(body,options={})=>({body,status:options.status||200})}};
 test('liberação de compra falha fechada sem banco corrigido, token, produção e frete conferido',async()=>{
- const keys=['PAGBANK_TOKEN','SUPABASE_SERVICE_ROLE_KEY','PAGBANK_SANDBOX','MODO_PEDIDO_TESTE','MELHOR_ENVIO_TOKEN','FRETE_TABELA_APROVADA'];const prior=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
+ const keys=['PAGBANK_TOKEN','PAGAMENTO_TOKEN','SUPABASE_SERVICE_ROLE_KEY','PAGBANK_SANDBOX','MODO_PEDIDO_TESTE','MELHOR_ENVIO_TOKEN','FRETE_TABELA_APROVADA'];const prior=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
  let data=true;const mod=load('lib/launch-readiness.ts',()=>({criarClienteAdmin:()=>({rpc:async()=>({data})})}));
  try{
  Object.assign(process.env,{PAGBANK_TOKEN:'test-only',SUPABASE_SERVICE_ROLE_KEY:'test-only',PAGBANK_SANDBOX:'false',MODO_PEDIDO_TESTE:'false',FRETE_TABELA_APROVADA:'true'});delete process.env.MELHOR_ENVIO_TOKEN;
  assert.equal(await mod.comprasLiberadas(),true);
+ delete process.env.PAGBANK_TOKEN;process.env.PAGAMENTO_TOKEN='test-only';assert.equal(await mod.comprasLiberadas(),true);delete process.env.PAGAMENTO_TOKEN;process.env.PAGBANK_TOKEN='test-only';
  for(const [key,value]of [['PAGBANK_TOKEN',''],['SUPABASE_SERVICE_ROLE_KEY',''],['PAGBANK_SANDBOX','true'],['MODO_PEDIDO_TESTE','true'],['FRETE_TABELA_APROVADA','false']]){const old=process.env[key];process.env[key]=value;assert.equal(await mod.comprasLiberadas(),false,key);process.env[key]=old;}
  data=false;assert.equal(await mod.comprasLiberadas(),false);data=null;assert.equal(await mod.comprasLiberadas(),false);
  }finally{for(const k of keys)if(prior[k]===undefined)delete process.env[k];else process.env[k]=prior[k];}

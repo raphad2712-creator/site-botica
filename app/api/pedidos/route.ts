@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   const supabase = await criarClienteServidor();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return NextResponse.json({ erro: "Entre na sua conta antes de finalizar." }, { status: 401 });
-  const accessToken = process.env.PAGBANK_TOKEN;
+  const accessToken = process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN;
   if (!await comprasLiberadas()) return NextResponse.json({ erro: mensagemErro(new Error("PAGAMENTO_NAO_CONFIGURADO")) }, { status: 503 });
   let body: { itens: ItemRecebido[]; cliente: ReturnType<typeof validarCliente>; metodo_pagamento: unknown };
   try {

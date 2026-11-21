@@ -47,7 +47,7 @@ function verificarAssinaturas(payload: Buffer, cabecalho: string, chave: string)
 
 export async function POST(request: Request) {
   try {
-    const token = process.env.PAGBANK_TOKEN;
+    const token = process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN;
     if (!token) return NextResponse.json({ erro: "Serviço temporariamente indisponível." }, { status: 503 });
     if (Number(request.headers.get("content-length")) > 65536) return NextResponse.json({ erro: "Notificação muito grande." }, { status: 413 });
     const bruto = Buffer.from(await request.arrayBuffer());

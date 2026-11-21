@@ -1,7 +1,7 @@
 // Diagnóstico somente-leitura. Nunca imprime valores de credenciais ou dados de clientes.
 import { createClient } from '@supabase/supabase-js';
 const env=process.env;
-const report={banco_seguro:false,pagamento_producao_configurado:Boolean(env.PAGBANK_TOKEN)&&env.PAGBANK_SANDBOX==='false'&&env.MODO_PEDIDO_TESTE!=='true',entrega_configurada:Boolean(env.MELHOR_ENVIO_TOKEN)||env.FRETE_TABELA_APROVADA==='true',estoque_conferido:false,remetente_brevo_ativo:false,homologacao_compra_e_recebimento_email:'pendente_de_teste_real'};
+const report={banco_seguro:false,pagamento_producao_configurado:Boolean(env.PAGBANK_TOKEN||env.PAGAMENTO_TOKEN)&&env.PAGBANK_SANDBOX==='false'&&env.MODO_PEDIDO_TESTE!=='true',entrega_configurada:Boolean(env.MELHOR_ENVIO_TOKEN)||env.FRETE_TABELA_APROVADA==='true',estoque_conferido:false,remetente_brevo_ativo:false,homologacao_compra_e_recebimento_email:'pendente_de_teste_real'};
 const timeoutFetch=(input,options={})=>fetch(input,{...options,signal:AbortSignal.timeout(6000)});
 const checks=[];
 if(env.NEXT_PUBLIC_SUPABASE_URL&&env.SUPABASE_SERVICE_ROLE_KEY){

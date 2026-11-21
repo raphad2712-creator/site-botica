@@ -1,7 +1,7 @@
 import { criarClienteAdmin } from "@/lib/supabase/admin";
 
 export function pagamentosProducaoConfigurados() {
-  return Boolean(process.env.PAGBANK_TOKEN && process.env.SUPABASE_SERVICE_ROLE_KEY)
+  return Boolean((process.env.PAGBANK_TOKEN || process.env.PAGAMENTO_TOKEN) && process.env.SUPABASE_SERVICE_ROLE_KEY)
     && process.env.PAGBANK_SANDBOX === "false"
     && process.env.MODO_PEDIDO_TESTE !== "true"
     && Boolean(process.env.MELHOR_ENVIO_TOKEN || process.env.FRETE_TABELA_APROVADA === "true");
@@ -10,7 +10,7 @@ export function pagamentosProducaoConfigurados() {
 
 export function pendenciasConfiguracaoLoja() {
   const pendencias: string[] = [];
-  if (!process.env.PAGBANK_TOKEN) pendencias.push("Configurar PAGBANK_TOKEN na produção da Vercel.");
+  if (!process.env.PAGBANK_TOKEN && !process.env.PAGAMENTO_TOKEN) pendencias.push("Configurar o token do PagBank na produção da Vercel.");
   if (process.env.PAGBANK_SANDBOX !== "false") pendencias.push("Definir PAGBANK_SANDBOX como false para produção.");
   if (process.env.MODO_PEDIDO_TESTE === "true") pendencias.push("Desativar MODO_PEDIDO_TESTE na produção.");
   if (!process.env.MELHOR_ENVIO_TOKEN && process.env.FRETE_TABELA_APROVADA !== "true") pendencias.push("Configurar MELHOR_ENVIO_TOKEN ou aprovar FRETE_TABELA_APROVADA.");
