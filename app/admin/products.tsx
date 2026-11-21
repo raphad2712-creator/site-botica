@@ -81,7 +81,7 @@ export function AdminProducts({ produtosIniciais }: { produtosIniciais: Produto[
         <label className="admin-description">Descrição<textarea name="descricao" placeholder="Composição, apresentação, modo de uso e informações da loja" maxLength={4000} required /></label>
         <label>Preço (R$)<input name="preco" type="number" min="0.01" step="0.01" placeholder="55,90" required /></label>
         <label>Preço anterior (opcional)<input name="preco_antigo" type="number" min="0.01" step="0.01" placeholder="Se houver promoção" /></label>
-        <label>Quantidade em estoque<input name="estoque" type="number" min="0" max="100000" step="1" placeholder="16" required /></label>
+        <label>Quantidade em estoque<input name="estoque" type="number" min="0" max="100000" step="1" placeholder="15" required /></label>
         <label className="admin-photo-field">Foto do produto<input name="foto" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
         <p className="admin-measures-hint">Medidas para calcular o frete com a transportadora. Você pode preenchê-las depois em Editar.</p>
         <label>Peso (kg)<input name="peso_kg" type="number" min="0.001" step="0.001" placeholder="Ex.: 0.300" /></label>

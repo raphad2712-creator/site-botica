@@ -3,12 +3,14 @@ import { consultationImage, matchConsultationProduct } from "./consultation-prod
 
 const imagensCatalogo: Array<[RegExp, string]> = [
   [/creatina monohidratada/, "/produtos/padrao/creatina-300g.webp"],
-  [/melatonina.*gotas/, "/produtos/melatonina-gotas-20ml.jpg"],
+  [/melatonina.*gotas/, "/produtos/padrao/melatonina-gotas-20ml.png"],
   [/floral rescue/, "/produtos/padrao/floral-rescue-30ml.webp"],
+  [/vitamina b12 1000/, "/produtos/padrao/vitamina-b12-1000mcg.png"],
   [/vit(?:amina)? b12|metilcobalamina/, "/produtos/padrao/vit-b12-metilcobalamina.webp"],
   [/vit(?:amina)? d(?:3)? 1000/, "/produtos/padrao/vit-d-1000ui.webp"],
-  [/psyllium/, "/produtos/psyllium-200g.jpg"],
-  [/serum.*vitamina c/, "/produtos/serum-vitamina-c-30ml.jpg"],
+  [/vitamina d3 2000/, "/produtos/padrao/vitamina-d3-2000ui.png"],
+  [/psyllium/, "/produtos/padrao/psyllium-200g.png"],
+  [/serum.*vitamina c/, "/produtos/padrao/serum-vitamina-c-30ml.png"],
 ];
 
 function normalizar(texto: string) {

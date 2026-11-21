@@ -60,6 +60,7 @@ export function normalizeCatalogText(text: string) {
 function productKey(name: string) {
   return normalizeCatalogText(name)
     .replace(/\bbotica(?:\s+bioenergetica)?\b/g, "")
+    .replace(/\bansiedade\b/g, "")
     .replace(/\b(?:30|60)\s*(?:capsulas|caps)\b/g, "")
     .replace(/[^a-z0-9]/g, "");
 }
