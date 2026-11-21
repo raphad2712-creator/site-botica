@@ -8,7 +8,7 @@ As migrações do banco foram aplicadas ao projeto Supabase da Botica. O pedido 
 
 ## 1. Confirmar estoque e medidas
 
-Entre em `https://site-botica.vercel.app/admin` com a conta administradora `raphad2712@gmail.com`. Confira a quantidade real, peso e medidas de cada produto e confirme no painel. O banco não marca quantidades antigas como conferidas automaticamente.
+Entre em `https://site-botica.vercel.app/admin` com uma conta administradora. A troca para `flavio_farmaceutico@hotmail.com` depende de cadastrar e confirmar esse e-mail na loja; até lá, o acesso administrativo existente permanece ativo. Confira a quantidade real, peso e medidas de cada produto e confirme no painel. O banco não marca quantidades antigas como conferidas automaticamente.
 
 ## 2. Configurar a entrega
 
