@@ -36,10 +36,12 @@ SUPABASE_SERVICE_ROLE_KEY = chave service_role do projeto euxodutzqcurpeiwelxj
 MELHOR_ENVIO_TOKEN = token de produção de frete (ou FRETE_TABELA_APROVADA = true após aprovação)
 ```
 
+O webhook aceita a assinatura antiga e a assinatura ECDSA atual do PagBank. Com o token, busca automaticamente a chave pública de notificações. Caso o PagBank informe uma URL de produção diferente para a consulta da chave, é possível cadastrar `PAGBANK_WEBHOOK_PUBLIC_KEY` com o valor Base64 da chave X.509 emitida pelo PagBank; não use uma chave gerada por conta própria. Essa chave é pública, mas o token continua privado.
+
 A chave service_role já está presente no projeto; não a substitua por chave de outro Supabase. Salve as variáveis e faça **Redeploy** em **Deployments** para que o servidor leia os novos valores.
 
 ## 5. Conferir antes de aceitar pagamentos
 
-Verifique se o cálculo de frete corresponde ao serviço e destino contratados, se todos os produtos vendidos têm estoque confirmado e se a URL de retorno e as notificações do PagBank atualizam os pedidos. Faça uma compra controlada com um valor pequeno e confira o pedido, o pagamento, o estoque e os e-mails. A integração de e-mail Brevo está retornando HTTP 401 no diagnóstico: atualize ou valide a chave e o remetente antes de depender das notificações.
+Verifique se o cálculo de frete corresponde ao serviço e destino contratados, se todos os produtos vendidos têm estoque confirmado e se a URL de retorno e as notificações do PagBank atualizam os pedidos. Faça uma compra controlada com um valor pequeno e confira o pedido, o pagamento, o estoque e os e-mails. A integração de e-mail Brevo está retornando HTTP 401 no diagnóstico. O remetente `flavio_farmaceutico@hotmail.com` ainda precisa concluir a verificação na conta Brevo, e o bloqueio de IPs não autorizados está ativo. Regularize esses pontos antes de depender das notificações por e-mail.
 
 O botão do checkout pode estar escrito **Pagar** mesmo quando a cobrança ainda não está habilitada. Nesse estado, o fluxo registra um pedido sem cobrar; a cobrança real só fica disponível quando todas as verificações do servidor forem atendidas.
