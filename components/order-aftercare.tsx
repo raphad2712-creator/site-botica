@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Icon } from "./ui-icon";
 import { ProductImage } from "./product-image";
 
@@ -11,25 +11,12 @@ type Pedido = {
   status_entrega?: string | null; rastreio_atualizado_em?: string | null;
   itens_pedido?: Array<{ quantidade: number; preco_unitario: number; produto?: { id: number; nome: string; imagem_url?: string | null; categoria?: string | null } | Array<{ id: number; nome: string; imagem_url?: string | null; categoria?: string | null }> | null }>;
 };
-type Solicitacao = { id: number; pedido_id: number; tipo: string; status: string; motivo: string; resposta_admin?: string | null; criado_em: string };
 
 const etapas = ["preparando", "postado", "em_transito", "saiu_para_entrega", "entregue"];
 const rotulos: Record<string, string> = { preparando: "Em preparação", postado: "Postado", em_transito: "Em trânsito", saiu_para_entrega: "Saiu para entrega", entregue: "Entregue", atrasado: "Entrega atrasada" };
 
-export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; solicitacoes: Solicitacao[] }) {
-  const [aberto, setAberto] = useState<number | null>(null);
+export function OrderAftercare({ pedidos }: { pedidos: Pedido[] }) {
   const [detalhesAbertos, setDetalhesAbertos] = useState<number | null>(null);
-  const [enviando, setEnviando] = useState(false);
-  const [mensagem, setMensagem] = useState("");
-
-  async function solicitar(event: FormEvent<HTMLFormElement>, pedidoId: number) {
-    event.preventDefault(); setEnviando(true); setMensagem("");
-    const form = new FormData(event.currentTarget);
-    const resposta = await fetch("/api/pos-venda", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pedido_id: pedidoId, codigo_pedido: form.get("codigo_pedido"), tipo: form.get("tipo"), motivo: form.get("motivo"), detalhes: form.get("detalhes") }) });
-    const data = await resposta.json();
-    setMensagem(data.mensagem || data.erro || "Não foi possível enviar."); setEnviando(false);
-    if (resposta.ok) setTimeout(() => window.location.reload(), 900);
-  }
 
   const pedidosComProdutos = pedidos.filter((pedido) => pedido.itens_pedido?.length);
   if (!pedidosComProdutos.length) return <div className="account-empty"><span><Icon name="document" /></span><h3>Você ainda não finalizou nenhum pedido</h3><p>Depois de concluir o checkout, sua compra aparecerá aqui com produtos, código e acompanhamento.</p><Link href="/#produtos">VER PRODUTOS</Link></div>;
@@ -38,7 +25,6 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
     const indice = Math.max(0, etapas.indexOf(pedido.status_entrega || "preparando"));
     const codigoPedido = String(pedido.id).padStart(6, "0");
     const teste = pedido.pagamento_id?.startsWith("TESTE-") === true;
-    const podeSolicitar = ["pago", "aprovado", "preparando", "enviado", "entregue"].includes(pedido.status);
     return <article className="order-card" key={pedido.id}>
       <header className="order-card-header"><div><small>{teste ? "PEDIDO REGISTRADO — PAGAMENTO PENDENTE" : "CÓDIGO DO PEDIDO"}</small><h3>{codigoPedido}</h3></div><span>{teste ? "Aguardando orientação da Botica" : rotulos[pedido.status_entrega || "preparando"] || "Em preparação"}</span></header>
       <div className="order-summary-row">
@@ -49,19 +35,8 @@ export function OrderAftercare({ pedidos, solicitacoes }: { pedidos: Pedido[]; s
       </div>
       <div className="order-card-actions">
         <button className="order-details-toggle" type="button" aria-expanded={detalhesAbertos === pedido.id} aria-controls={`order-details-${pedido.id}`} onClick={() => setDetalhesAbertos(detalhesAbertos === pedido.id ? null : pedido.id)}><span>{detalhesAbertos === pedido.id ? "Ocultar detalhes" : "Ver detalhes e entrega"}</span><b>{detalhesAbertos === pedido.id ? "−" : "+"}</b></button>
-        {podeSolicitar ? <button className="aftercare-open" type="button" aria-expanded={aberto === pedido.id} onClick={() => { setAberto(aberto === pedido.id ? null : pedido.id); setMensagem(""); }}>{aberto === pedido.id ? "Fechar solicitação" : "Preciso de ajuda"}</button> : <p className="aftercare-unavailable">Pós-venda disponível após o pagamento.</p>}
+        <a className="aftercare-open" href="#solicitacoes">Trocas e reembolsos <Icon name="arrow-right" /></a>
       </div>
-      {aberto === pedido.id && <form className="aftercare-form" onSubmit={(e) => solicitar(e, pedido.id)}>
-        <div className="aftercare-form-heading"><span>ATENDIMENTO DESTE PEDIDO</span><strong>{codigoPedido}</strong><p>Preencha os dados abaixo para nossa equipe analisar sua solicitação.</p></div>
-        <input type="hidden" name="codigo_pedido" value={codigoPedido} />
-        <div className="aftercare-field aftercare-type"><label htmlFor={`tipo-${pedido.id}`}>O que você precisa?</label><select id={`tipo-${pedido.id}`} name="tipo" required><option value="arrependimento">Desistir da compra (direito de arrependimento)</option><option value="troca">Trocar produto</option><option value="devolucao">Devolver produto</option><option value="defeito">Produto com defeito ou avaria</option><option value="reembolso">Solicitar reembolso</option></select></div>
-        <div className="aftercare-field"><label htmlFor={`motivo-${pedido.id}`}>Motivo</label><input id={`motivo-${pedido.id}`} name="motivo" minLength={5} maxLength={160} required placeholder="Conte resumidamente o motivo" /></div>
-        <div className="aftercare-field aftercare-details"><label htmlFor={`detalhes-${pedido.id}`}>Detalhes</label><textarea id={`detalhes-${pedido.id}`} name="detalhes" maxLength={2000} placeholder="Informe o produto, o problema e outras informações importantes" /></div>
-        <p>Ao enviar, a solicitação ficará em análise. Você receberá a confirmação e as próximas orientações por e-mail.</p>
-        <button disabled={enviando}>{enviando ? "ENVIANDO..." : "ENVIAR SOLICITAÇÃO"}</button>
-        {mensagem && <strong className="aftercare-message">{mensagem}</strong>}
-        <Link href="/politica-de-trocas-e-devolucoes">Consultar política de trocas, devoluções e reembolso</Link>
-      </form>}
       {detalhesAbertos === pedido.id && <div className="order-expanded-content" id={`order-details-${pedido.id}`}>
       <div className="order-products"><h4>Produtos deste pedido</h4>{pedido.itens_pedido?.map((item, indice) => { const produto = Array.isArray(item.produto) ? item.produto[0] : item.produto; return <div className="order-product" key={`${produto?.id || 0}-${indice}`}><div className="order-product-image"><ProductImage nome={produto?.nome || "Produto Botica"} imagemAtual={produto?.imagem_url} /></div><div><b>{produto?.nome || "Produto"}</b><small>{produto?.categoria || "Produto Botica"}</small><span>Quantidade: {item.quantidade}</span></div><strong>{(Number(item.preco_unitario) * item.quantidade).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</strong></div>; })}</div>
       <div className="tracking-box">

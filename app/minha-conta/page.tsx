@@ -5,6 +5,7 @@ import { LogoutButton } from "./logout-button";
 import { ProfileEditor } from "@/components/profile-editor";
 import { OrderAftercare } from "@/components/order-aftercare";
 import { CustomerRequests } from "@/components/customer-requests";
+import { AftercareCenter } from "@/components/aftercare-center";
 import { ProfilePhoto } from "@/components/profile-photo";
 import { Icon } from "@/components/ui-icon";
 import { AccountNavigation } from "./account-navigation";
@@ -34,7 +35,7 @@ export default async function MinhaContaPage() {
 
   return (
     <section className="account-page account-dashboard" data-account-tab="orders">
-      <div className="account-dashboard-title"><div><Link className="account-breadcrumb" href="/">Início <span aria-hidden="true">/</span> <span>Minha conta</span></Link><small>SEU ESPAÇO NA BOTICA</small><h1>Minha conta</h1><p>Seu cuidado em um só lugar. Acompanhe pedidos e mantenha seu perfil atualizado.</p></div><LogoutButton /></div>
+      <div className="account-dashboard-title"><div><Link className="account-breadcrumb" href="/">Início <span aria-hidden="true">/</span> <span>Minha conta</span></Link><small>SEU ESPAÇO NA BOTICA</small><h1>Minha conta</h1><p>Olá, {nome}. Acompanhe suas compras e mantenha seus dados atualizados.</p></div><LogoutButton /></div>
       <div className="account-overview" aria-label="Resumo dos seus pedidos"><article><span><Icon name="document" /></span><div><strong>{pedidosVisiveis.length}</strong><small>Pedidos realizados</small></div></article><article><span><Icon name="truck" /></span><div><strong>{emAndamento}</strong><small>Em andamento</small></div></article><article><span><Icon name="check" /></span><div><strong>{entregues}</strong><small>Pedidos entregues</small></div></article></div>
       <div className="account-dashboard-grid">
         <aside className="account-side">
@@ -48,10 +49,12 @@ export default async function MinhaContaPage() {
 
           <section className="account-history" id="pedidos">
             <div className="account-orders-head"><div><small>HISTÓRICO DE COMPRAS</small><h2>Meus pedidos</h2><p>Confira os detalhes e acompanhe cada entrega.</p></div><span>{pedidosVisiveis.length} {pedidosVisiveis.length === 1 ? "pedido" : "pedidos"}</span></div>
-            <OrderAftercare pedidos={pedidosVisiveis} solicitacoes={solicitacoes ?? []} />
+            <OrderAftercare pedidos={pedidosVisiveis} />
           </section>
           <section className="account-history account-requests" id="solicitacoes">
-            <div className="account-orders-head"><div><small>ATENDIMENTO E PÓS-VENDA</small><h2>Minhas solicitações</h2><p>Acompanhe as respostas da nossa equipe.</p></div><span>{solicitacoes?.length ?? 0} {(solicitacoes?.length ?? 0) === 1 ? "solicitação" : "solicitações"}</span></div>
+            <div className="account-orders-head"><div><small>ATENDIMENTO E PÓS-VENDA</small><h2>Trocas e reembolsos</h2><p>Abra uma solicitação e acompanhe a resposta da equipe.</p></div></div>
+            <AftercareCenter pedidos={pedidosVisiveis} />
+            <div className="account-requests-history"><h3>Suas solicitações</h3><span>{solicitacoes?.length ?? 0} {(solicitacoes?.length ?? 0) === 1 ? "solicitação" : "solicitações"}</span></div>
             <CustomerRequests solicitacoes={solicitacoes ?? []} pedidos={pedidos} />
           </section>
         </div>

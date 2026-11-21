@@ -139,3 +139,69 @@ html[data-theme="dark"] .account-dashboard .profile-photo-message.error { color:
   .account-dashboard .account-side nav { grid-template-columns: 1fr; }
 }
 .account-dashboard .profile-photo-content input[hidden] { display: none !important; }
+
+/* Clear account navigation and a dedicated after-sales workspace. */
+.account-dashboard { padding-top: 54px !important; }
+.account-dashboard .account-dashboard-title {
+  position: relative; overflow: hidden; padding: 30px 36px; border-radius: 22px;
+  background: linear-gradient(115deg, #103f30, #1b684e); color: #fff;
+  box-shadow: 0 18px 42px #103f301c;
+}
+.account-dashboard .account-dashboard-title::after { content: ""; position: absolute; width: 270px; height: 270px; right: -88px; bottom: -165px; border: 45px solid #ffffff0b; border-radius: 50%; pointer-events: none; }
+.account-dashboard .account-dashboard-title > div, .account-dashboard .account-dashboard-title > button { position: relative; z-index: 1; }
+.account-dashboard .account-breadcrumb, .account-dashboard .account-breadcrumb span:last-child,
+.account-dashboard .account-dashboard-title small { color: #c8dfa8; }
+.account-dashboard .account-dashboard-title h1 { color: #fff !important; }
+.account-dashboard .account-dashboard-title p, html[data-theme="dark"] .account-dashboard .account-dashboard-title p { color: #e3eee7 !important; }
+.account-dashboard .account-dashboard-title > button { background: transparent; border-color: #ffffff70; color: #fff; border-radius: 30px; }
+.account-dashboard .account-dashboard-title > button:hover { background: #ffffff1c; }
+.account-dashboard .account-side > p { display: none; }
+.account-dashboard .account-side nav { padding: 8px; border: 1px solid var(--account-line); border-radius: 18px; background: var(--account-surface); }
+.account-dashboard .account-side nav .account-nav-group { display: block; padding: 17px 12px 4px; color: var(--account-muted); font-size: 10px; font-weight: 700; line-height: 1.3; text-transform: uppercase; letter-spacing: .12em; }
+.account-dashboard .account-side nav .account-nav-support, .account-dashboard .account-side nav .account-nav-profile { margin-top: 8px; padding-top: 19px; border-top: 1px solid var(--account-line); }
+.account-dashboard .account-side nav :is(button, a) { min-height: 52px; font-size: 13px; }
+.account-dashboard .account-side nav button.active { box-shadow: inset 3px 0 #729a58; }
+.account-dashboard .account-side nav i { background: var(--account-soft); }
+.account-dashboard .account-orders-head h2, .account-dashboard .account-profile h2 { font-size: 34px !important; }
+.account-dashboard .order-card-actions > .aftercare-open {
+  display: inline-flex; flex: 1; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 14px; border: 1px solid var(--account-line);
+  border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center; text-decoration: none;
+  background: var(--account-surface); color: var(--account-text);
+}
+.account-dashboard .order-card-actions > .aftercare-open .ui-icon { width: 15px; height: 15px; }
+.account-dashboard .account-requests { border-color: #cfdfd1; }
+.account-dashboard .aftercare-center { display: grid; gap: 15px; padding: 24px; border: 1px solid var(--account-line); border-radius: 16px; background: var(--account-soft); }
+.account-dashboard .aftercare-intro { display: flex; align-items: flex-start; gap: 16px; }
+.account-dashboard .aftercare-intro > span { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 12px; background: var(--account-surface); }
+.account-dashboard .aftercare-intro h3 { margin: 0 0 5px; color: var(--account-text); font: 600 19px/1.3 Arial, sans-serif; }
+.account-dashboard .aftercare-intro p, .account-dashboard .aftercare-no-orders { margin: 0; color: var(--account-muted); font-size: 13px; line-height: 1.6; }
+.account-dashboard .aftercare-order-label { font-size: 12px; font-weight: 700; }
+.account-dashboard .aftercare-center > select { width: 100%; min-height: 49px; padding: 10px 14px; border: 1px solid var(--account-line); border-radius: 8px; background: var(--account-surface); color: var(--account-text); font-size: 14px; }
+.account-dashboard .aftercare-center-form { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--account-line); border-radius: 12px; background: var(--account-surface); }
+.account-dashboard .aftercare-center-form .aftercare-field { display: grid; gap: 7px; }
+.account-dashboard .aftercare-center-form .aftercare-field label { font-size: 12px; font-weight: 700; }
+.account-dashboard .aftercare-center-form .aftercare-field :is(input, select, textarea) { width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid var(--account-line); border-radius: 8px; background: var(--account-surface); color: var(--account-text); font: inherit; }
+.account-dashboard .aftercare-center-form textarea { min-height: 110px !important; resize: vertical; }
+.account-dashboard .aftercare-center-form > p { margin: 0; color: var(--account-muted); font-size: 12px; line-height: 1.6; }
+.account-dashboard .aftercare-center-form > button { min-height: 48px; border: 0; border-radius: 9px; background: #15533e; color: #fff; font-weight: 700; cursor: pointer; }
+.account-dashboard .aftercare-center-form > button:disabled { opacity: .6; cursor: wait; }
+.account-dashboard .aftercare-center > a { color: var(--account-text); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.account-dashboard .account-requests-history { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 33px 0 16px; }
+.account-dashboard .account-requests-history h3 { margin: 0; color: var(--account-text); font: 400 25px Georgia, serif; }
+.account-dashboard .account-requests-history > span { border-radius: 20px; padding: 8px 12px; background: var(--account-soft); color: var(--account-text); font-size: 11px; white-space: nowrap; }
+html[data-theme="dark"] .account-dashboard .account-dashboard-title { background: linear-gradient(115deg, #103f30, #1b684e); }
+html[data-theme="dark"] .account-dashboard .account-dashboard-title h1 { color: #fff !important; }
+html[data-theme="dark"] .account-dashboard .account-side nav button.active { background: #294632 !important; }
+@media (max-width: 760px) {
+  .account-dashboard { padding-top: 28px !important; }
+  .account-dashboard .account-dashboard-title { padding: 24px 20px; flex-wrap: wrap; }
+  .account-dashboard .account-dashboard-title > button { margin: 8px 0 0; }
+  .account-dashboard .account-side nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px; }
+  .account-dashboard .account-side nav .account-nav-group { grid-column: 1/-1; padding: 11px 3px 0; }
+  .account-dashboard .account-side nav .account-nav-support, .account-dashboard .account-side nav .account-nav-profile { margin-top: 3px; padding-top: 14px; }
+  .account-dashboard .account-orders-head h2 { font-size: 29px !important; }
+  .account-dashboard .aftercare-center { padding: 17px; }
+  .account-dashboard .aftercare-center-form { padding: 15px; }
+  .account-dashboard .aftercare-center-form .aftercare-field :is(input, select, textarea) { font-size: 16px; }
+}

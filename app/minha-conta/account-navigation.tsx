@@ -25,8 +25,11 @@ export function AccountNavigation({ pedidos, solicitacoes }: { pedidos: number; 
     if (window.matchMedia("(max-width: 760px)").matches) document.querySelector(".account-main")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
   }
   return <nav aria-label="Opções da conta">
+    <span className="account-nav-group">Compras</span>
     <button type="button" aria-pressed={aba === "orders"} aria-controls="pedidos" className={aba === "orders" ? "active" : ""} onClick={() => selecionar("orders")}><i><Icon name="document" /></i><span>Meus pedidos</span><em>{pedidos}</em><b><Icon name="arrow-right" /></b></button>
-    <button type="button" aria-pressed={aba === "requests"} aria-controls="solicitacoes" className={aba === "requests" ? "active" : ""} onClick={() => selecionar("requests")}><i><Icon name="clock" /></i><span>Minhas solicitações</span><em>{solicitacoes}</em><b><Icon name="arrow-right" /></b></button>
+    <span className="account-nav-group account-nav-support">Atendimento</span>
+    <button type="button" aria-pressed={aba === "requests"} aria-controls="solicitacoes" className={aba === "requests" ? "active" : ""} onClick={() => selecionar("requests")}><i><Icon name="clock" /></i><span>Trocas e reembolsos</span><em>{solicitacoes}</em><b><Icon name="arrow-right" /></b></button>
+    <span className="account-nav-group account-nav-profile">Sua conta</span>
     <button type="button" aria-pressed={aba === "profile"} aria-controls="dados" className={aba === "profile" ? "active" : ""} onClick={() => selecionar("profile")}><i><Icon name="document" /></i><span>Dados pessoais</span><b><Icon name="arrow-right" /></b></button>
     <button type="button" onClick={abrirFavoritos}><i><Icon name="heart" /></i><span>Produtos favoritos</span><b><Icon name="arrow-right" /></b></button>
     <Link href="/#receita"><i><Icon name="upload" /></i><span>Enviar receita</span><b><Icon name="arrow-right" /></b></Link>
