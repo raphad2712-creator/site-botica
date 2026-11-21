@@ -44,3 +44,23 @@ export function validarCliente(value: unknown) {
   }
   return cliente;
 }
+
+/** Pedido sem cobrança não envia dados ao PagBank; CPF é exigido apenas no pagamento. */
+export function validarClienteSemPagamento(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Preencha os dados de entrega.");
+  const cliente = {} as Record<keyof typeof limites, string>;
+  for (const [campo, limite] of Object.entries(limites)) {
+    const dado = (value as Record<string, unknown>)[campo] ?? "";
+    if (typeof dado !== "string" || dado.trim().length > limite) throw new Error("Confira os dados do comprador e do endereço.");
+    cliente[campo as keyof typeof limites] = dado.trim();
+  }
+  if (cliente.nome.length < 3 || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(cliente.email)) {
+    throw new Error("Informe seu nome e um e-mail válido.");
+  }
+  if (![cliente.rua, cliente.numero, cliente.bairro, cliente.cidade].every(Boolean)
+    || !/^\\d{5}-?\\d{3}$/.test(cliente.cep)
+    || !/^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/i.test(cliente.estado)) {
+    throw new Error("Confira o CEP e preencha o endereço completo, com a sigla do estado.");
+  }
+  return cliente;
+}
