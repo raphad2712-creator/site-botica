@@ -13,6 +13,8 @@ const moeda = (valor: number) => valor.toLocaleString("pt-BR", { style: "currenc
 export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolean }) {
   const { itens, total } = useCart();
   const consultaFrete = useRef(0);
+  const autoConsultaFrete = useRef("");
+  const timerFrete = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chaveCarrinho = JSON.stringify(itens.map(({ id, quantidade }) => [id, quantidade]));
   const [mensagem, setMensagem] = useState("");
   const [cepFrete, setCepFrete] = useState("");
@@ -38,9 +40,21 @@ export default function CheckoutPage({ modoTeste = false }: { modoTeste?: boolea
   }, [modoTeste]);
 
   useEffect(() => { consultaFrete.current++; setCalculando(false); setCotacaoFrete(null); }, [total, chaveCarrinho]);
-  useEffect(() => () => { consultaFrete.current++; }, []);
+  useEffect(() => () => { consultaFrete.current++; if (timerFrete.current) clearTimeout(timerFrete.current); }, []);
+
+  useEffect(() => {
+    const cepNumerico = cepFrete.replace(/\D/g, "");
+    const chave = `${cepNumerico}:${chaveCarrinho}:${total}`;
+    if (cepNumerico.length !== 8 || !itens.length || autoConsultaFrete.current === chave) return;
+    timerFrete.current = setTimeout(() => { void calcularFrete(); }, 650);
+    return () => { if (timerFrete.current) clearTimeout(timerFrete.current); };
+  }, [cepFrete, chaveCarrinho, total]);
 
   async function calcularFrete() {
+    if (timerFrete.current) { clearTimeout(timerFrete.current); timerFrete.current = null; }
+    const cepNumerico = cepFrete.replace(/\D/g, "");
+    if (cepNumerico.length !== 8) return setMensagem("Digite um CEP válido com 8 números.");
+    autoConsultaFrete.current = `${cepNumerico}:${chaveCarrinho}:${total}`;
     const atual = ++consultaFrete.current;
     setCotacaoFrete(null);
     setCalculando(true);
