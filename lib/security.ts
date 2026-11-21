@@ -38,6 +38,35 @@ export async function limiteExcedido(request: Request, escopo: string, limite: n
   return atual.quantidade > limite;
 }
 
+/** Consulta de frete: se o limitador compartilhado falhar, usa limite local para manter a cotação disponível. */
+export async function limiteFreteExcedido(request: Request) {
+  const escopo = "frete";
+  const limite = 30;
+  const janelaSegundos = 60;
+  const segredo = process.env.RATE_LIMIT_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const identificador = createHash("sha256").update(`${segredo || "frete"}:${escopo}:${ipDaRequisicao(request)}`).digest("hex");
+  if (segredo) {
+    try {
+      const { data, error } = await criarClienteAdmin().rpc("consumir_limite_api", {
+        p_chave: identificador, p_limite: limite, p_janela_segundos: janelaSegundos,
+      });
+      if (!error && typeof data === "boolean") return !data;
+    } catch { /* A cotação pública usa o limite local abaixo. */ }
+  }
+  const agora = Date.now();
+  if (memoria.size >= 5000) {
+    for (const [chave, valor] of memoria) if (valor.expiraEm <= agora) memoria.delete(chave);
+    if (memoria.size >= 5000 && !memoria.has(identificador)) return true;
+  }
+  const atual = memoria.get(identificador);
+  if (!atual || atual.expiraEm <= agora) {
+    memoria.set(identificador, { quantidade: 1, expiraEm: agora + janelaSegundos * 1000 });
+    return false;
+  }
+  atual.quantidade++;
+  return atual.quantidade > limite;
+}
+
 export function respostaMuitasTentativas(segundos = 60) {
   return NextResponse.json({ erro: "Muitas tentativas. Aguarde um pouco e tente novamente." }, {
     status: 429,
