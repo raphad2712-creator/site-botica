@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
+const ORIGEM_SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.boticabioenergetica.com.br").replace(/\/+$/, "");
+
 export async function POST(request: Request) {
   try {
     if (await limiteExcedido(request, "auth", 8, 600)) return respostaMuitasTentativas(600);
@@ -14,14 +16,13 @@ export async function POST(request: Request) {
     if (!emailNormalizado || !["login", "cadastro"].includes(String(acao)) || senha.length < tamanhoMinimo || senha.length > 128 || (acao === "cadastro" && nomeNormalizado.length < 3)) return NextResponse.json({ erro: "Confira e-mail, nome e senha. Novas senhas devem ter pelo menos 8 caracteres." }, { status: 400 });
     if (acao === "cadastro" && !await segurancaBancoPronta()) return NextResponse.json({ erro: mensagemManutencao }, { status: 503 });
     const supabase = await criarClienteServidor();
-    const origem = new URL(request.url).origin;
     const resposta = acao === "cadastro"
       ? await supabase.auth.signUp({
           email: emailNormalizado,
           password: senha,
           options: {
             data: { nome: nomeNormalizado },
-            emailRedirectTo: `${origem}/auth/callback?next=/minha-conta`,
+            emailRedirectTo: `${ORIGEM_SITE}/auth/callback?next=/minha-conta`,
           },
         })
       : await supabase.auth.signInWithPassword({ email: emailNormalizado, password: senha });
