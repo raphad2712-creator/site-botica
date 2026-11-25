@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { emailValido, limiteExcedido, respostaMuitasTentativas } from "@/lib/security";
 
+const ORIGEM_SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.boticabioenergetica.com.br").replace(/\/+$/, "");
+
 export async function POST(request: Request) {
   try {
     if (await limiteExcedido(request, "recuperar-senha", 4, 3600)) return respostaMuitasTentativas(3600);
@@ -16,9 +18,8 @@ export async function POST(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       { auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false } },
     );
-    const origem = new URL(request.url).origin;
     await supabase.auth.resetPasswordForEmail(emailNormalizado, {
-      redirectTo: `${origem}/redefinir-senha`,
+      redirectTo: `${ORIGEM_SITE}/redefinir-senha`,
     });
     // A resposta é sempre genérica para não revelar se o e-mail possui conta.
     return NextResponse.json({ sucesso: true });
